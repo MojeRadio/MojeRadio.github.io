@@ -521,6 +521,11 @@
 #modalBg.open { opacity: 1; pointer-events: auto; }
 
 html.ios #app { height: 100%; }
+/* iPhone: html/body з position:fixed на краях екрана iOS 26 вважає "плаваючими" — розмиває верх під вирізом,
+   а висота 100dvh/100% у PWA бува коротша за екран (порожня смуга знизу). Тому тут html/body звичайні,
+   а #app прикріплений до всіх чотирьох країв вікна без position:fixed. */
+html.ios, html.ios body { position: static; top: auto; left: auto; right: auto; bottom: auto; width: 100%; height: 100%; overflow: hidden; }
+html.ios #app { position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: auto; width: auto; }
 html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 #modalBg .modal {
   max-width: none;
