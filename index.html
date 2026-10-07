@@ -173,7 +173,7 @@
   html.ios #panelStatusZone { display: block; height: var(--statusZoneH, env(safe-area-inset-top)); }
   html.ios #headerBand { padding-top: 0 !important; min-height: 58px !important; }
   html.ios #app.landscape > #headerBand { min-height: calc(27.5px * var(--app-scale, 1)) !important; }
-  html.ios { --statusZoneH: 35px; }
+  html.ios { --statusZoneH: 30px; }
   #app.power-save #headerBand, #app.ps-noblur #headerBand { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--headerbg, var(--g1)) !important; }
   #topbar { position: relative; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; min-height: 44px; }
   #topbar .side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; z-index: 1; }
@@ -1709,7 +1709,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.79</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.80</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2254,7 +2254,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.79";
+const APP_VERSION = "2.80";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
