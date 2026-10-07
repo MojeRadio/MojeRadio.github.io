@@ -3,31 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>моє радіо</title>
+<title>My Radio</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#23306e">
 <meta name="google" content="notranslate">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>try{if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1))document.documentElement.classList.add("ios");}catch(e){}</script>
 <script>
-/* iPhone/iPad: висоту #app міряємо з екрана (у встановленому PWA innerHeight/100dvh на старті бува
-   коротшим за екран — порожня смуга знизу), і щоразу скидаємо випадковий зсув сторінки вгору. */
 (function () {
   var root = document.documentElement;
   if (!root.classList.contains("ios")) return;
   function fit() {
     try {
-      var vv = window.visualViewport;
-      var h = Math.max(window.innerHeight || 0, root.clientHeight || 0, vv ? Math.round(vv.height + vv.offsetTop) : 0);
-      if (navigator.standalone) {
-        var lng = Math.max(screen.width, screen.height), sht = Math.min(screen.width, screen.height);
-        h = Math.max(h, (window.innerHeight >= window.innerWidth) ? lng : sht);
+      if (window.scrollY || root.scrollTop || document.body.scrollTop) {
+        window.scrollTo(0, 0);
+        root.scrollTop = 0;
+        document.body.scrollTop = 0;
       }
-      if (h > 0) root.style.setProperty("--app-h", h + "px");
-      if (window.scrollY || root.scrollTop || document.body.scrollTop) { window.scrollTo(0, 0); root.scrollTop = 0; document.body.scrollTop = 0; }
     } catch (e) {}
   }
   fit();
@@ -270,10 +265,24 @@
   #logoWrap.hidden { display: none; }
   #centerLogo { width: 100%; height: 100%; object-fit: contain; border-radius: 22px; }
   #pulse { position: relative; width: 100%; height: 100%; aspect-ratio: 1 / 1; transition: opacity 0.4s; display: flex; align-items: center; justify-content: center; }
-.ring { position: absolute; border-radius: 50%; box-shadow: 0 0 0 3px rgba(var(--ring),0.35); top: 50%; left: 50%; transform: translate(-50%, -50%); will-change: transform, opacity; }
-.ring.r1 { width: 40%; height: 40%; box-shadow: 0 0 0 3px rgba(var(--ring),0.55); }
-.ring.r2 { width: 70%; height: 70%; box-shadow: 0 0 0 3px rgba(var(--ring),0.35); }
-.ring.r3 { width: 100%; height: 100%; box-shadow: 0 0 0 3px rgba(var(--ring),0.22); }
+/* Кільця центруються через inset:0 + margin:auto, а НЕ через left/top + translate(-50%,-50%).
+   Причина: на iOS Safari будь-який елемент із will-change: transform отримує власний
+   композитний шар, і браузер «прилипає» цим шаром до підпіксельної позиції незалежно від
+   сусідніх шарів. Оскільки кільця мають різні розміри (40/70/100%), translate(-50%,-50%)
+   давав різні дробові зсуви — і вони роз'їжджались на 1–2 px. При inset:0 + margin:auto
+   браузер рахує позицію з однаковою точністю для всіх, і центри завжди збігаються.
+   will-change лишаємо тільки на opacity (transform анімується сам по собі). */
+.ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(var(--ring), 0.35);
+  will-change: opacity;
+}
+.ring.r1 { width: 40%; height: 40%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.55); }
+.ring.r2 { width: 70%; height: 70%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.35); }
+.ring.r3 { width: 100%; height: 100%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.22); }
 #pulse.playing .ring { animation: pulse 1.8s ease-out infinite; }
 #pulse.playing .r2 { animation-delay: 1.0s; }
 #pulse.playing .r3 { animation-delay: 0.5s; }
@@ -281,8 +290,11 @@
 #pulse.buffering .r2, #pulse.buffering .r3 { opacity: 0; }
 #pulse.error .r1 { animation: blink 0.5s ease-in-out infinite; opacity: 0.4; }
 #pulse.error .r2, #pulse.error .r3 { opacity: 0; }
-  @keyframes pulse { 0% { transform: translate(-50%,-50%) scale(0.9); opacity: 0.9; } 70% { opacity: 0.25; } 100% { transform: translate(-50%,-50%) scale(1.12); opacity: 0; } }
-  @keyframes blink { 0%,100% { opacity: 0.3; transform: translate(-50%,-50%) scale(0.85); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+/* Keyframes без translate(-50%,-50%) — базовий transform більше не має translate,
+   тож scale() йде рівно від центру елемента, який через margin:auto збігається
+   з центром контейнера #pulse. */
+@keyframes pulse { 0% { transform: scale(0.9); opacity: 0.9; } 70% { opacity: 0.25; } 100% { transform: scale(1.12); opacity: 0; } }
+@keyframes blink { 0%,100% { opacity: 0.3; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1); } }
   /* Під час свайпу підкладка сторінок м'яко розмиває те, що за нею. */
   #app:not(.neumorphic) #stations:not(.listStyle) .stationsPage { transition: backdrop-filter 0.2s ease, -webkit-backdrop-filter 0.2s ease; }
   #app:not(.neumorphic) #stations.swiping:not(.listStyle) .stationsPage { backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); }
@@ -550,7 +562,7 @@ html.ios #app { height: 100%; }
    а висота 100dvh/100% у PWA бува коротша за екран (порожня смуга знизу). Тому тут html/body звичайні,
    а #app прикріплений до всіх чотирьох країв вікна без position:fixed. */
 html.ios, html.ios body { position: static; top: auto; left: auto; right: auto; bottom: auto; width: 100%; height: 100%; overflow: hidden; }
-html.ios #app { position: absolute; top: 0; left: 0; right: 0; bottom: auto; height: var(--app-h, 100%); width: auto; }
+html.ios #app { position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: auto; width: auto; }
 html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 #modalBg .modal {
   max-width: none;
@@ -1679,7 +1691,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.70</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.73</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2054,7 +2066,7 @@ function applyBrowserChromeColor(th) {
     m.setAttribute("content", col);
     document.head.appendChild(m);
     const sb = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (sb) sb.setAttribute("content", th.ctrlDark ? "default" : "black-translucent");
+    if (sb) sb.setAttribute("content", "default");
     document.documentElement.style.backgroundColor = col;
     document.body.style.backgroundColor = col;
   } catch (e) {}
@@ -2224,7 +2236,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.72";
+const APP_VERSION = "2.73";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3513,7 +3525,10 @@ function fitStage() {
   // вільної висоти між назвою пісні і станціями (без бічної колонки) і масштабується під цю висоту.
   if (appEl.classList.contains("landscape")) {
     const avail = h - 4;
-    const vizOn = !!state.settings.vizEnabled;
+    // При енергозбереженні візуалізатор замінюється на лого — тож у
+    // компактному горизонтальному вигляді резервуємо місце під нього як
+    // під лого станції (більший розмір), а не як під смужку візуалізатора.
+    const vizOn = !!state.settings.vizEnabled && !state.settings.psNoViz;
     if (vizOn) {
       const vizScale = Math.max(0.4, Math.min(avail / 48, 1));
       appEl.style.setProperty("--vizScale", String(vizScale));
@@ -3710,7 +3725,11 @@ function renderStations() {
     stopFakeVisualizer();
   }
 
-  const showLogo = state.settings.centerMode === "logo" && !isListView;
+  const psNoVizOn = !!state.settings.psNoViz;
+  const showLogo = !isListView && (
+    state.settings.centerMode === "logo" ||
+    (state.settings.centerMode === "viz" && psNoVizOn)
+  );
   const logoWrap = document.getElementById("logoWrap");
   logoWrap.classList.toggle("hidden", !showLogo);
   document.getElementById("app").classList.toggle("center-logo", showLogo);
