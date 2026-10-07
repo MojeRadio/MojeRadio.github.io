@@ -1693,7 +1693,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.74</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.75</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2238,7 +2238,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.74";
+const APP_VERSION = "2.75";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -8517,18 +8517,37 @@ const PL_STARTER_DEFAULTS = [
 function parseStationChanges(rawText) {
   const out = [];
   if (!rawText) return out;
-  const lines = String(rawText).split(/\r?\n/);
+  let text = String(rawText);
+  // 1. Декодуємо HTML-сутності (про всяк випадок).
+  try {
+    const ta = document.createElement("textarea");
+    ta.innerHTML = text;
+    text = ta.value;
+  } catch (e) {}
+  // 2. Роздільники між операціями — ; або |. Разом із \n це дає три способи
+  //    відокремлювати операції, і всі вони витримують публікацію Google Docs.
+  text = text.replace(/[;|]/g, "\n");
+  // 3. Найголовніше: якщо Google склеїв усі рядки в один (що й сталось у вас),
+  //    вставляємо \n ПЕРЕД кожним ключовим словом дії. Так `Хвиляadd: Radio Kolor`
+  //    розпадається на два рядки навіть без оригінальних переносів.
+  text = text.replace(/\s*\b(replace|add|remove|keep)\s*:/gi, "\n$1:");
+  const lines = text.split(/\r?\n/);
   for (let line of lines) {
     line = line.trim();
     if (!line || line.startsWith("#") || line.startsWith("//")) continue;
-    const m = line.match(/^(replace|add|remove|keep)\s*[:=]\s*(.+?)(?:\s*(?:→|->|=>|>)\s*(.+))?$/i);
+    const m = line.match(/^(replace|add|remove|keep)\s*[:=]\s*(.*)$/i);
     if (!m) continue;
     const action = m[1].toLowerCase();
-    const from = (m[2] || "").trim();
-    const to = (m[3] || "").trim();
-    // Для "add:" перше поле — це назва станції, яку треба додати.
-    if (action === "add") out.push({ action, from: "", to: from });
-    else out.push({ action, from, to });
+    const body = (m[2] || "").trim();
+    if (!body) continue;
+    const arrow = body.match(/^(.+?)\s*(?:→|->|=>|>)\s*(.+)$/);
+    if (action === "add") {
+      out.push({ action, from: "", to: arrow ? arrow[2].trim() : body });
+    } else if (arrow) {
+      out.push({ action, from: arrow[1].trim(), to: arrow[2].trim() });
+    } else {
+      out.push({ action, from: body, to: "" });
+    }
   }
   return out;
 }
@@ -10212,8 +10231,15 @@ function extractPlainTextFromMaybeHtml(text) {
   const looksHtml = /<!DOCTYPE html|<html[\s>]/i.test(text.slice(0, 500));
   if (!looksHtml) return text;
   try {
-    const doc = new DOMParser().parseFromString(text, "text/html");
-    return doc.body ? doc.body.textContent : text;
+    // HTML-теги <p>/<br>/<li> не мають «текстових» переносів рядків — textContent
+    // просто склеїть усе підряд. Тому ПЕРЕД парсингом перетворюємо блокові
+    // теги на символи \n, які вже переживуть textContent.
+    let pre = text;
+    pre = pre.replace(/<br\s*\/?>/gi, "\n");
+    pre = pre.replace(/<\/(p|div|li|tr|h[1-6]|pre|blockquote)>/gi, "\n");
+    pre = pre.replace(/<(p|li|div|tr|h[1-6]|pre|blockquote)[^>]*>/gi, "\n");
+    const doc = new DOMParser().parseFromString(pre, "text/html");
+    return doc.body ? doc.body.textContent : pre;
   } catch (e) { return text; }
 }
 
@@ -10233,7 +10259,18 @@ function renderOtherParamsSpoiler() {
 
 function tag(text, name) {
   const m = text.match(new RegExp("<" + name + ">([\\s\\S]*?)</" + name + ">", "i"));
-  return m ? m[1].replace(/<[^>]+>/g, "").trim() : null;
+  if (!m) return null;
+  let inner = m[1];
+  // Прибираємо HTML-теги (якщо ще лишилися) і декодуємо сутності (&amp;, &lt;...).
+  inner = inner.replace(/<[^>]+>/g, "");
+  try {
+    const ta = document.createElement("textarea");
+    ta.innerHTML = inner;
+    inner = ta.value;
+  } catch (e) {}
+  // Нормалізуємо пробіли, але ЗБЕРІГАЄМО переноси рядків.
+  inner = inner.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n");
+  return inner.trim();
 }
 function extractOtherParams(text) {
   const knownPattern = /^stantion\d+_(button|path|name|song)$|^clock_song$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^pwa_site$|^pwa_site_backup$|^worker_url$|^backup_search_url$/;
