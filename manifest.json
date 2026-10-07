@@ -1,7 +1,7 @@
 {
   "id": "./",
   "name": "My Radio",
-  "short_name": "Radio",
+  "short_name": "MYRadio",
   "description": "Personal internet radio",
   "start_url": "./index.html",
   "scope": "./",
