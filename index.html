@@ -2390,7 +2390,8 @@ let state = {
     eqGains: [0,0,0,0,0],
     hidePulseThreshold: 12,
     dragDrop: true,
-    appScale: 100
+    appScale: 100,
+    pipRect: null
   },
   lastStationKey: null,
   deletedDefaultNames: [],
@@ -4382,7 +4383,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   try { updateStationTitleSides(); } catch (e) {}
   setTimeout(() => { try { updateStationTitleSides(); } catch (e) {} }, 400);
   const appEl = document.getElementById("app");
-  let pipWin = null, timer = null, lastPlayHtml = "";
+  let pipWin = null, timer = null, lastPlayHtml = "", lastRectJson = "";
   const cssVar = (n) => getComputedStyle(appEl).getPropertyValue(n).trim();
   const PIP_CSS = `
     html, body { margin:0; height:100%; overflow:hidden; }
@@ -4402,8 +4403,21 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     #mpPlay svg { width:26px; height:26px; }
     #mpPrev svg, #mpNext svg { width:18px; height:18px; }
   `;
+  // Запам'ятовуємо місце й розмір міні-вікна (screenX/Y + внутрішній розмір) і відновлюємо при наступному відкритті.
+  function trackRect() {
+    try {
+      const r = { x: Math.round(pipWin.screenX), y: Math.round(pipWin.screenY), w: Math.round(pipWin.innerWidth), h: Math.round(pipWin.innerHeight) };
+      if (!(r.w >= 150 && r.h >= 80)) return;
+      const j = JSON.stringify(r);
+      if (j === lastRectJson) return;
+      lastRectJson = j;
+      state.settings.pipRect = r;
+      saveState();
+    } catch (e) {}
+  }
   function sync() {
     if (!pipWin || pipWin.closed) { cleanup(); return; }
+    trackRect();
     try {
       const d = pipWin.document, root = d.documentElement;
       ["--g1","--g2","--g3","--fg","--ctrlfg","--ctrlborder","--ctrlbg"].forEach(n => root.style.setProperty(n, cssVar(n)));
@@ -4423,7 +4437,13 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   async function toggleMini() {
     if (pipWin && !pipWin.closed) { pipWin.close(); cleanup(); return; }
     try {
-      pipWin = await window.documentPictureInPicture.requestWindow({ width: 360, height: 170 });
+      const rc = state.settings.pipRect;
+      const okRc = rc && rc.w >= 150 && rc.h >= 80 && rc.w <= 1600 && rc.h <= 1200;
+      pipWin = await window.documentPictureInPicture.requestWindow({ width: okRc ? rc.w : 360, height: okRc ? rc.h : 170 });
+      if (okRc && Number.isFinite(rc.x) && Number.isFinite(rc.y)) {
+        try { pipWin.moveTo(rc.x, rc.y); } catch (e) {}
+      }
+      lastRectJson = okRc ? JSON.stringify(rc) : "";
     } catch (e) { try { devLog("Міні-плеєр: " + (e && e.message ? e.message : e)); } catch (e2) {} pipWin = null; return; }
     const d = pipWin.document;
     d.title = document.title;
@@ -4438,8 +4458,9 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     d.getElementById("mpPrev").onclick = () => { try { goToAdjacentStation(-1); } catch (e) {} };
     d.getElementById("mpNext").onclick = () => { try { goToAdjacentStation(1); } catch (e) {} };
     d.getElementById("mpPlay").onclick = () => { playBtn.click(); setTimeout(sync, 150); };
+    pipWin.addEventListener("resize", trackRect);
     pipWin.addEventListener("pagehide", cleanup);
-    timer = setInterval(sync, 400);
+    timer = setInterval(sync, 300);
     sync();
   }
   btn.onclick = toggleMini;
