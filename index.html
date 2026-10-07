@@ -254,8 +254,10 @@
   #trackInfo.hidden { display: none; }
   #messageLine { text-align: center; color: rgba(255,255,255,0.75); font-size: 13px; padding: 2px 22px 0; flex-shrink: 0; display: none; }
   #messageLine.show { display: block; }
-  #connStatus { text-align: center; font-size: 13px; line-height: 1.35; padding: 6px 22px 0; flex-shrink: 0; display: none; opacity: 0.88; }
-  #connStatus.show { display: flex; align-items: center; justify-content: center; gap: 6px; }
+  /* #connStatus тепер ЗАВЖДИ займає своє місце (min-height), лише змінює opacity
+     й visibility. Так поява/зникнення повідомлення не смикає #stageWrap і пульс/лого. */
+  #connStatus { text-align: center; font-size: 13px; line-height: 1.35; padding: 6px 22px 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; visibility: hidden; min-height: calc(1.35em + 6px); transition: opacity 0.2s ease; }
+  #connStatus.show { opacity: 0.88; visibility: visible; }
   #connStatus svg { width: 1.25em; height: 1.25em; flex: none; display: block; }
   #connStatus.fail { opacity: 1; font-weight: 600; }
 #stageWrap { flex: 1; position: relative; min-height: 0; display: grid; place-items: start center; padding-top: 24px; cursor: default; transition: transform 0.35s ease; transform: translateX(var(--drawerX, 0px)) translateY(var(--stageY, 0px)); }
@@ -4637,13 +4639,16 @@ function updateConnStatus() {
   if (st !== AUDIO_STATE.IDLE && st !== AUDIO_STATE.PAUSED) {
     if (navigator.onLine === false) { msg = t("connOffline"); offlineIcon = true; }
     else if (st === AUDIO_STATE.ERROR) { msg = t("connFailed"); fail = true; }
-    else if (st === AUDIO_STATE.RECOVERING && (hasPlayedOnceForCurrent || recoverAttempts > 0)) {
+    // Показуємо «спроба N/M» не лише у RECOVERING, а й у CONNECTING під час
+    // серії перепідключень. Інакше блок мигав: CONNECTING → ховаємо, RECOVERING
+    // → показуємо, CONNECTING → ховаємо… і разом із ним «стрибав» пульс.
+    else if ((st === AUDIO_STATE.RECOVERING || (st === AUDIO_STATE.CONNECTING && recoverAttempts > 0))
+             && (hasPlayedOnceForCurrent || recoverAttempts > 0)) {
       const slow = recoverAttempts > RECOVER_FAST_ATTEMPTS;
       msg = t(slow ? "connSlow" : "connRetrying").replace("{n}", Math.max(1, recoverAttempts))
         .replace("{max}", slow ? RECOVER_MAX_ATTEMPTS : RECOVER_FAST_ATTEMPTS);
     }
   }
-  const wasShown = el.classList.contains("show");
   if (msg) {
     el.innerHTML = (offlineIcon ? CLOUD_OFF_SVG : "") + "<span></span>";
     el.lastChild.textContent = (offlineIcon ? "" : "⚠ ") + msg;
@@ -4656,7 +4661,9 @@ function updateConnStatus() {
     el.textContent = "";
     el.style.transform = "";
   }
-  if (wasShown !== !!msg) requestAnimationFrame(() => { try { refitStageCenter(); } catch (e) {} });
+  // Раніше тут викликався refitStageCenter() на кожне перемикання — саме він
+  // смикав пульс/лого. Тепер #connStatus завжди резервує висоту (min-height у
+  // CSS), тож layout не змінюється і перерахунок більше не потрібен.
 }
 function setAudioState(newState) {
   audioState = newState;
@@ -5048,8 +5055,10 @@ function scheduleAutoRecover(token, url) {
     const finalDelay = Math.max(1000, delay + jitter);
     devLog("Відновлення через " + Math.round(finalDelay / 1000) + "с (спроба " + recoverAttempts + "/" + RECOVER_MAX_ATTEMPTS + ")");
     updateConnStatus();
-    if (!slow) showToast(t("streamLostRetrying") + recoverAttempts + "/" + RECOVER_FAST_ATTEMPTS);
-    else if (recoverAttempts === RECOVER_FAST_ATTEMPTS + 1) showToast(t("streamLostRetrying") + "…");
+    // Тост показуємо лише ОДИН раз на початку серії — далі прогрес видно у
+    // рядку стану під назвою треку (#connStatus), який не блимає. Інакше
+    // десяток тостів перекривають один одного і виглядають як мерехтіння.
+    if (recoverAttempts === 1) showToast(t("streamLostRetrying") + "…");
     clearAudioRecovery();
     recoverTimerToken = token;
     recoverTimer = setTimeout(() => {
@@ -8458,7 +8467,7 @@ document.querySelectorAll("#langPickBg .langRow button").forEach(btn => {
     document.getElementById("langPickBg").classList.remove("open");
     if (isFirstRun && !starterLangHandled) {
       starterLangHandled = true;
-      if (btn.dataset.lang === "pl") applyPolishStarterStations();
+      applyLanguageStarterStations(btn.dataset.lang);
     }
     if (isFirstRun) {
       renderThemePickRow();
@@ -8488,30 +8497,101 @@ function renderThemePickRow() {
 document.getElementById("themePickConfirmBtn").onclick = () => {
   document.getElementById("themePickBg").classList.remove("open");
 };
-// Перемальовує списки й підписи, які будуються з JS (а не через data-i18n),
-// щоб мова змінювалась миттєво без перезавантаження.
-// ===================== Стартовий набір для польської мови =====================
-// При ПЕРШОМУ ввімкненні з вибором польської: прибираємо українські станції
-// (Промінь, Бук. Хвиля) і дописуємо в кінець списку дві польські, знайдені
-// пошуком по назві в radio-browser. Для uk/en нічого не змінюється.
-const PL_STARTER_REMOVE = ["Промінь", "Бук. Хвиля", "Rock Mix"];
-const PL_STARTER_ADD = [
-  { query: "RMF FM", name: "Radio RMF FM", fullName: "Radio RMF FM" },
-  { query: "Radio Kolor", name: "Radio Kolor", fullName: "Radio Kolor" },
-  { query: "Eska 2", name: "Eska 2", fullName: "Eska 2" }
+// {action, from, to}. Станції "from" видаляються лише якщо вони не позначені
+// manuallyEdited (щоб не чіпати те, що користувач додав чи редагував сам).
+const PL_STARTER_DEFAULTS = [
+  { action: "remove",  from: "Промінь",     to: "" },
+  { action: "remove",  from: "Бук. Хвиля",  to: "" },
+  { action: "remove",  from: "Rock Mix",    to: "" },
+  { action: "add",     from: "",            to: "Radio RMF FM" },
+  { action: "add",     from: "",            to: "Radio Kolor" },
+  { action: "add",     from: "",            to: "Eska 2" }
 ];
-function applyPolishStarterStations() {
-  PL_STARTER_REMOVE.forEach(nm => {
-    const idx = state.stations.findIndex(s => !s.manuallyEdited && normalizeForMatch(s.name) === normalizeForMatch(nm));
-    if (idx === -1) return;
-    markStationDeleted(state.stations[idx]);
-    state.stations.splice(idx, 1);
-    if (activeIndex === idx) { activeIndex = -1; isPlaying = false; audioEl.pause(); updatePlayUI(); }
-    else if (activeIndex > idx) activeIndex--;
-  });
-  PL_STARTER_ADD.forEach(a => {
-    if (!state.pendingStarterStations.some(p => p.query === a.query)) state.pendingStarterStations.push(Object.assign({}, a));
-  });
+
+// Парсер секції <station_changes_XX>. Повертає масив {action, from, to}.
+//   replace: from → to    — видалити from і додати to (знайдеться в radio-browser)
+//   add: to               — додати to, не видаляючи нічого
+//   remove: from          — видалити from без заміни
+//   keep: from            — залишити без змін (no-op)
+// Порожні рядки й коментарі (# або //) ігноруються. Стрілки: →, ->, =>, >
+function parseStationChanges(rawText) {
+  const out = [];
+  if (!rawText) return out;
+  const lines = String(rawText).split(/\r?\n/);
+  for (let line of lines) {
+    line = line.trim();
+    if (!line || line.startsWith("#") || line.startsWith("//")) continue;
+    const m = line.match(/^(replace|add|remove|keep)\s*[:=]\s*(.+?)(?:\s*(?:→|->|=>|>)\s*(.+))?$/i);
+    if (!m) continue;
+    const action = m[1].toLowerCase();
+    const from = (m[2] || "").trim();
+    const to = (m[3] || "").trim();
+    // Для "add:" перше поле — це назва станції, яку треба додати.
+    if (action === "add") out.push({ action, from: "", to: from });
+    else out.push({ action, from, to });
+  }
+  return out;
+}
+
+// Знайти індекс станції в масиві за назвою (коротка або повна, без урахування
+// регістру), серед тих, що НЕ мають manuallyEdited (щоб не чіпати ручні станції).
+function findReplaceableStationIndex(name) {
+  const key = normalizeForMatch(name);
+  return state.stations.findIndex(s =>
+    !s.manuallyEdited &&
+    (normalizeForMatch(s.name) === key || normalizeForMatch(s.fullName) === key)
+  );
+}
+
+// Загальна функція: застосувати зміни станцій для вибраної мови.
+// Викликається при першому виборі мови (як і раніше — applyPolishStarterStations).
+// Робить: видаляє/додає станції згідно з секцією <station_changes_XX>; знайдені
+// за назвою нові станції підтягуються з radio-browser через pendingStarterStations.
+async function applyLanguageStarterStations(lang) {
+  const key = "stationChanges" + lang.charAt(0).toUpperCase() + lang.slice(1);
+  const raw = state.settings[key];
+  let changes = raw ? parseStationChanges(raw) : [];
+  // Fallback: якщо для польської у файлі немає секції — беремо вбудований набір.
+  if (!changes.length && lang === "pl") changes = PL_STARTER_DEFAULTS.slice();
+  if (!changes.length) return;
+
+  const toAdd = [];
+  for (const ch of changes) {
+    if (ch.action === "replace") {
+      if (ch.from) {
+        const idx = findReplaceableStationIndex(ch.from);
+        if (idx !== -1) {
+          markStationDeleted(state.stations[idx]);
+          state.stations.splice(idx, 1);
+          if (activeIndex === idx) { activeIndex = -1; isPlaying = false; audioEl.pause(); updatePlayUI(); }
+          else if (activeIndex > idx) activeIndex--;
+        }
+      }
+      if (ch.to) toAdd.push(ch.to);
+    } else if (ch.action === "add") {
+      if (ch.to) toAdd.push(ch.to);
+    } else if (ch.action === "remove") {
+      if (ch.from) {
+        const idx = findReplaceableStationIndex(ch.from);
+        if (idx !== -1) {
+          markStationDeleted(state.stations[idx]);
+          state.stations.splice(idx, 1);
+          if (activeIndex === idx) { activeIndex = -1; isPlaying = false; audioEl.pause(); updatePlayUI(); }
+          else if (activeIndex > idx) activeIndex--;
+        }
+      }
+    }
+    // action === "keep" — нічого не робимо
+  }
+
+  // Ставимо в чергу на підтягування з radio-browser. processPendingStarterStations()
+  // зробить пошук за назвою і додасть станцію з URL/країною/іконкою.
+  for (const name of toAdd) {
+    if (!state.pendingStarterStations.some(p => p.query === name)) {
+      state.pendingStarterStations.push({ query: name, name: name, fullName: name });
+    }
+  }
+
   saveState();
   try { renderStations(); } catch (e) {}
   try { renderModalList(); } catch (e) {}
@@ -10194,6 +10274,10 @@ function parseStationsText(rawText) {
     result.pwaSiteBackup = tag(trimmed, "pwa_site_backup");
     result.workerUrl = tag(trimmed, "worker_url");
     result.backupSearchUrl = tag(trimmed, "backup_search_url");
+    // Секції з замінами станцій під конкретну мову — див. шаблон у Google-файлі.
+    result.stationChangesPl = tag(trimmed, "station_changes_pl");
+    result.stationChangesEn = tag(trimmed, "station_changes_en");
+    result.stationChangesUk = tag(trimmed, "station_changes_uk");
     return result;
   }
   try {
@@ -10275,8 +10359,9 @@ async function syncStationsFromFile(manual) {
     lastOtherParams = parsed.otherParams || [];
     state.lastGoodSyncSnapshot = parsed;
     renderOtherParamsSpoiler();
-    if (parsed.pwaSite) { const site = normalizePwaSite(parsed.pwaSite); if (site) state.settings.pwaSite = site; }
-    if (parsed.pwaSiteBackup) { const site = normalizePwaSite(parsed.pwaSiteBackup); if (site) state.settings.pwaSiteBackup = site; }
+    if (parsed.stationChangesPl) state.settings.stationChangesPl = parsed.stationChangesPl;
+    if (parsed.stationChangesEn) state.settings.stationChangesEn = parsed.stationChangesEn;
+    if (parsed.stationChangesUk) state.settings.stationChangesUk = parsed.stationChangesUk;
     if (parsed.backupSearchUrl && !state.settings.overrideBackupSearch) {
       const b = normalizeBackupSearchUrl(parsed.backupSearchUrl);
       if (b) { state.settings.backupSearchUrl = b; renderBackupSearchLink(); }
