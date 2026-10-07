@@ -2192,7 +2192,8 @@ const DEFAULT_STATIONS_FILE_URL = "https://docs.google.com/document/d/e/2PACX-1v
 // Запасний сайт пошуку станцій. Якщо у файлі є тег <backup_search_url>, береться звідти.
 const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
-const DEFAULT_PWA_SITE = "https://mojeradio.github.io/";
+const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
+const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 const APP_VERSION = "2.70";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
@@ -5723,6 +5724,29 @@ function getShareBase() {
   if (fromFile) return fromFile;
   if (/^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return location.origin + location.pathname;
   return DEFAULT_PWA_SITE;
+}
+// Основний і запасний сайт: адреса з google-файлу, а якщо її нема — вбудована.
+function getMainSite() {
+  return (state.settings.pwaSite && normalizePwaSite(state.settings.pwaSite)) || DEFAULT_PWA_SITE;
+}
+function getBackupSite() {
+  return (state.settings.pwaSiteBackup && normalizePwaSite(state.settings.pwaSiteBackup)) || DEFAULT_PWA_SITE_BACKUP;
+}
+function isSiteReachable(url, ms) {
+  return new Promise((resolve) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => { ctrl.abort(); resolve(false); }, ms || 4000);
+    fetch(url, { mode: "no-cors", cache: "no-store", signal: ctrl.signal })
+      .then(() => { clearTimeout(timer); resolve(true); })
+      .catch(() => { clearTimeout(timer); resolve(false); });
+  });
+}
+// Основний сайт, а якщо він не відповідає — запасний; null, якщо недоступні обидва.
+async function pickWorkingSite() {
+  const main = getMainSite(), backup = getBackupSite();
+  if (await isSiteReachable(main)) return main;
+  if (backup !== main && await isSiteReachable(backup)) return backup;
+  return null;
 }
 function sharedUrlKey(u) { return String(u || "").replace(/^https?:\/\//i, "").replace(/\/+$/, "").toLowerCase(); }
 // Колір станції з логотипа: домінантний насичений відтінок, приведений до тону інших кольорів
@@ -10083,7 +10107,7 @@ function tag(text, name) {
   return m ? m[1].replace(/<[^>]+>/g, "").trim() : null;
 }
 function extractOtherParams(text) {
-  const knownPattern = /^stantion\d+_(button|path|name|song)$|^clock_song$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^pwa_site$|^worker_url$|^backup_search_url$/;
+  const knownPattern = /^stantion\d+_(button|path|name|song)$|^clock_song$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^pwa_site$|^pwa_site_backup$|^worker_url$|^backup_search_url$/;
   const results = [];
   const seen = new Set();
   const re = /(?:#\s*([^\n<#]*?)\s*(?:\n|(?=<)))?<([a-zA-Z0-9_]+)>([\s\S]*?)<\/\2>/g;
@@ -10118,6 +10142,7 @@ function parseStationsText(rawText) {
     result.stopWords = tag(trimmed, "stop_words");
     result.newestVersionWebapp = tag(trimmed, "newest_version_webapp");
     result.pwaSite = tag(trimmed, "pwa_site");
+    result.pwaSiteBackup = tag(trimmed, "pwa_site_backup");
     result.workerUrl = tag(trimmed, "worker_url");
     result.backupSearchUrl = tag(trimmed, "backup_search_url");
     return result;
@@ -10202,6 +10227,7 @@ async function syncStationsFromFile(manual) {
     state.lastGoodSyncSnapshot = parsed;
     renderOtherParamsSpoiler();
     if (parsed.pwaSite) { const site = normalizePwaSite(parsed.pwaSite); if (site) state.settings.pwaSite = site; }
+    if (parsed.pwaSiteBackup) { const site = normalizePwaSite(parsed.pwaSiteBackup); if (site) state.settings.pwaSiteBackup = site; }
     if (parsed.backupSearchUrl && !state.settings.overrideBackupSearch) {
       const b = normalizeBackupSearchUrl(parsed.backupSearchUrl);
       if (b) { state.settings.backupSearchUrl = b; renderBackupSearchLink(); }
@@ -10770,12 +10796,13 @@ function checkForNewerVersion(remoteVersion) {
 }
 document.getElementById("updateNowBtn").onclick = async () => {
   showToast(t("updatingToast"));
+  const site = await pickWorkingSite();
+  if (!site) { showToast(t("workerNoConn")); return; }
   try {
     if ("caches" in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); }
     if ("serviceWorker" in navigator) { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); }
   } catch (e) {}
-  const site = state.settings.pwaSite && normalizePwaSite(state.settings.pwaSite);
-  if (site) location.href = site; else location.reload();
+  location.href = site;
 };
 document.getElementById("updateHideBtn").onclick = () => {
   const banner = document.getElementById("updateBanner");
