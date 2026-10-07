@@ -6,7 +6,8 @@
 <title>My Radio</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#23306e">
+<meta name="theme-color" content="#23306e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c2044" media="(prefers-color-scheme: dark)">
 <meta name="google" content="notranslate">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -254,10 +255,8 @@
   #trackInfo.hidden { display: none; }
   #messageLine { text-align: center; color: rgba(255,255,255,0.75); font-size: 13px; padding: 2px 22px 0; flex-shrink: 0; display: none; }
   #messageLine.show { display: block; }
-  /* #connStatus тепер ЗАВЖДИ займає своє місце (min-height), лише змінює opacity
-     й visibility. Так поява/зникнення повідомлення не смикає #stageWrap і пульс/лого. */
-  #connStatus { text-align: center; font-size: 13px; line-height: 1.35; padding: 6px 22px 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 6px; opacity: 0; visibility: hidden; min-height: calc(1.35em + 6px); transition: opacity 0.2s ease; }
-  #connStatus.show { opacity: 0.88; visibility: visible; }
+  #connStatus { text-align: center; font-size: 13px; line-height: 1.35; padding: 6px 22px 0; flex-shrink: 0; display: none; opacity: 0.88; }
+  #connStatus.show { display: flex; align-items: center; justify-content: center; gap: 6px; }
   #connStatus svg { width: 1.25em; height: 1.25em; flex: none; display: block; }
   #connStatus.fail { opacity: 1; font-weight: 600; }
 #stageWrap { flex: 1; position: relative; min-height: 0; display: grid; place-items: start center; padding-top: 24px; cursor: default; transition: transform 0.35s ease; transform: translateX(var(--drawerX, 0px)) translateY(var(--stageY, 0px)); }
@@ -1693,7 +1692,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.75</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.76</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2057,20 +2056,23 @@ function applyPsHtmlClasses() {
 }
 function realVizWanted() { return !!(state.settings.realVizEnabled && state.settings.centerMode === "viz"); }
 function applyBrowserChromeColor(th) {
-  // Колір системної шапки/статус-бару: як у шапки додатку. Safari на iOS надійно підхоплює
-  // зміну лише коли <meta theme-color> пересоздається; плюс фон html/body (iOS 26 бере його).
   const col = th.neumorphic ? th.bg[1] : (th.headerBg || th.bg[1]);
   try {
-    const old = document.querySelectorAll('meta[name="theme-color"]');
-    old.forEach(m => m.remove());
-    const m = document.createElement("meta");
-    m.setAttribute("name", "theme-color");
-    m.setAttribute("content", col);
-    document.head.appendChild(m);
-    const sb = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
-    if (sb) sb.setAttribute("content", "default");
-    document.documentElement.style.backgroundColor = col;
-    document.body.style.backgroundColor = col;
+    // Оновлюємо існуючий meta В МІСЦІ — жодних remove()/appendChild().
+    // Якщо тег відсутній (перший виклик), створюємо один раз.
+    let meta = document.head.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.appendChild(meta);
+    }
+    if (meta.getAttribute("content") !== col) {
+      meta.setAttribute("content", col);
+    }
+    // apple-mobile-web-app-status-bar-style залишаємо "default" — цього
+    // достатньо, щоб iOS взяла колір саме з theme-color.
+    // Фон html/body НЕ чіпаємо: якщо його перебивати кольором теми,
+    // iOS PWA починає підхоплювати його під статус-баром і розмивати.
   } catch (e) {}
 }
 function applyTheme() {
@@ -2238,7 +2240,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.75";
+const APP_VERSION = "2.76";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
