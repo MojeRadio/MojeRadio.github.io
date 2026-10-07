@@ -12,6 +12,31 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>try{if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1))document.documentElement.classList.add("ios");}catch(e){}</script>
+<script>
+/* iPhone/iPad: висоту #app міряємо з екрана (у встановленому PWA innerHeight/100dvh на старті бува
+   коротшим за екран — порожня смуга знизу), і щоразу скидаємо випадковий зсув сторінки вгору. */
+(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains("ios")) return;
+  function fit() {
+    try {
+      var vv = window.visualViewport;
+      var h = Math.max(window.innerHeight || 0, root.clientHeight || 0, vv ? Math.round(vv.height + vv.offsetTop) : 0);
+      if (navigator.standalone) {
+        var lng = Math.max(screen.width, screen.height), sht = Math.min(screen.width, screen.height);
+        h = Math.max(h, (window.innerHeight >= window.innerWidth) ? lng : sht);
+      }
+      if (h > 0) root.style.setProperty("--app-h", h + "px");
+      if (window.scrollY || root.scrollTop || document.body.scrollTop) { window.scrollTo(0, 0); root.scrollTop = 0; document.body.scrollTop = 0; }
+    } catch (e) {}
+  }
+  fit();
+  ["resize", "orientationchange", "pageshow", "focus"].forEach(function (ev) { window.addEventListener(ev, function () { fit(); setTimeout(fit, 300); }); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { fit(); setTimeout(fit, 300); } });
+  window.addEventListener("load", function () { fit(); setTimeout(fit, 500); setTimeout(fit, 1500); });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", fit);
+})();
+</script>
 <meta http-equiv="Content-Language" content="uk">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -525,7 +550,7 @@ html.ios #app { height: 100%; }
    а висота 100dvh/100% у PWA бува коротша за екран (порожня смуга знизу). Тому тут html/body звичайні,
    а #app прикріплений до всіх чотирьох країв вікна без position:fixed. */
 html.ios, html.ios body { position: static; top: auto; left: auto; right: auto; bottom: auto; width: 100%; height: 100%; overflow: hidden; }
-html.ios #app { position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: auto; width: auto; }
+html.ios #app { position: absolute; top: 0; left: 0; right: 0; bottom: auto; height: var(--app-h, 100%); width: auto; }
 html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 #modalBg .modal {
   max-width: none;
@@ -2199,7 +2224,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.71";
+const APP_VERSION = "2.72";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
