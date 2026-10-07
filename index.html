@@ -159,6 +159,14 @@
 
   /* Великі телефони та малі планшети (iPhone Pro Max, Pixel, iPad mini в портреті) */
   #headerBand { background: var(--headerbg, var(--g1)); flex-shrink: 0; position: relative; z-index: 2; transition: background 0.5s; box-shadow: 0 6px 14px -6px rgba(0,0,0,0.28); min-height: calc(58px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); display: flex; flex-direction: column; align-items: stretch; }
+  /* Порожня зона під системним статус-баром. На iOS 26 PWA верхня смуга може отримувати
+     системне "рідке скло" (frosted blur). Розмиття суцільного кольору непомітне, тож
+     контент шапки (іконки, назва) лишається чітким. Поза iOS блок не займає місця.
+     Висоту можна підкрутити через --statusZoneH, якщо буде замало/забагато. */
+  #statusBarZone { display: none; flex-shrink: 0; background: var(--headerbg, var(--g1)); transition: background 0.5s; }
+  html.ios #statusBarZone { display: block; height: var(--statusZoneH, env(safe-area-inset-top)); }
+  html.ios #headerBand { padding-top: 0 !important; min-height: 58px !important; }
+  html.ios #app.landscape > #headerBand { min-height: calc(27.5px * var(--app-scale, 1)) !important; }
   #app.power-save #headerBand, #app.ps-noblur #headerBand { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--headerbg, var(--g1)) !important; }
   #topbar { position: relative; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; min-height: 44px; }
   #topbar .side { display: flex; align-items: center; gap: 8px; flex-shrink: 0; z-index: 1; }
@@ -1436,6 +1444,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 </head>
 <body>
 <div id="app">
+  <div id="statusBarZone"></div>
   <div id="headerBand">
     <div id="topbar">
       <div class="side" id="topbarLeft">
@@ -1692,7 +1701,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.76</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.77</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2056,23 +2065,20 @@ function applyPsHtmlClasses() {
 }
 function realVizWanted() { return !!(state.settings.realVizEnabled && state.settings.centerMode === "viz"); }
 function applyBrowserChromeColor(th) {
+  // Колір системної шапки/статус-бару: як у шапки додатку. Safari на iOS надійно підхоплює
+  // зміну лише коли <meta theme-color> перестворюється; плюс фон html/body (iOS 26 бере його).
   const col = th.neumorphic ? th.bg[1] : (th.headerBg || th.bg[1]);
   try {
-    // Оновлюємо існуючий meta В МІСЦІ — жодних remove()/appendChild().
-    // Якщо тег відсутній (перший виклик), створюємо один раз.
-    let meta = document.head.querySelector('meta[name="theme-color"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "theme-color");
-      document.head.appendChild(meta);
-    }
-    if (meta.getAttribute("content") !== col) {
-      meta.setAttribute("content", col);
-    }
-    // apple-mobile-web-app-status-bar-style залишаємо "default" — цього
-    // достатньо, щоб iOS взяла колір саме з theme-color.
-    // Фон html/body НЕ чіпаємо: якщо його перебивати кольором теми,
-    // iOS PWA починає підхоплювати його під статус-баром і розмивати.
+    const old = document.querySelectorAll('meta[name="theme-color"]');
+    old.forEach(m => m.remove());
+    const m = document.createElement("meta");
+    m.setAttribute("name", "theme-color");
+    m.setAttribute("content", col);
+    document.head.appendChild(m);
+    const sb = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (sb) sb.setAttribute("content", "default");
+    document.documentElement.style.backgroundColor = col;
+    document.body.style.backgroundColor = col;
   } catch (e) {}
 }
 function applyTheme() {
@@ -2240,7 +2246,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.76";
+const APP_VERSION = "2.77";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
