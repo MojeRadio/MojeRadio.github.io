@@ -1488,11 +1488,6 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.landscape.list-mode > #controls { margin-bottom: 0; }
   /* Вигляд "Список": шапка (з кнопкою повернення з бічної панелі) має лишатися над фоном панелі, інакше клік потрапляє на фон і кнопка лише блимає. */
   #app.list-mode.panel-side.drawer-active:not(.neumorphic) > #headerBand { z-index: 11; }
-    /* Прозорий theme-color дає прозору навігаційну смугу в PWA-додатку.
-     Але на деяких прошивках Chrome все одно малює смугу, тож додатково
-     змушуємо системні елементи бути темними — так контраст із світлим
-     градієнтом знизу не різкий. */
-  :root { color-scheme: dark; }
 </style>
 </head>
 <body>
@@ -2142,11 +2137,7 @@ function applyBrowserChromeColor(th) {
     old.forEach(m => m.remove());
     const m = document.createElement("meta");
     m.setAttribute("name", "theme-color");
-    // Прозорий theme-color: Chrome for Android у PWA рендерить і статус-бар
-    // зверху, і навігаційну смугу знизу як прозорі — крізь них видно фон
-    // додатку. Оскільки html/body ми фарбуємо в колір шапки (нижче), зверху
-    // виглядає як раніше, а внизу більше немає чорної смуги — видно градієнт.
-    m.setAttribute("content", "transparent");
+    m.setAttribute("content", col);
     document.head.appendChild(m);
     const sb = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
     if (sb) sb.setAttribute("content", "default");
