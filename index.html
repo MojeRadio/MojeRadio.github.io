@@ -4671,8 +4671,12 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 45%, var(--g3) 100%);
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.35rem; padding:0.5rem 0.75rem; box-sizing:border-box;
       user-select:none; -webkit-user-select:none; }
-    #mpStation { font-size:1rem; font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #mpTrack { font-size:0.74rem; opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1rem; letter-spacing:.3px; text-transform:uppercase; }
+    /* Шрифти заголовків прив'язані до ШИРИНИ вікна PiP (vw), а не до html
+       font-size (який залежить від vmin і у вузькому високому вікні давав
+       завеликий розмір). clamp тримає баланс: у маленькому вікні — компактно,
+       у широкому — пропорційно більше, без «стрибка» у 28px, як було раніше. */
+    #mpStation { font-size:clamp(14px, 7vw, 26px); font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #mpTrack { font-size:clamp(11px, 5vw, 18px); opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
     #mpCtrls { display:flex; align-items:center; gap:1rem; margin-top:0.25rem; }
     button { border:0.09rem solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
       border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
@@ -4780,7 +4784,12 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpList::-webkit-scrollbar-thumb { background: rgba(var(--ring,255,255,255), 0.18); border-radius:3px; transition: background .2s; }
     .mpList::-webkit-scrollbar-thumb:hover { background: rgba(var(--ring,255,255,255), 0.35); }
     .mpList::-webkit-scrollbar-corner { background:transparent; }
-    .mpRow { display:flex; align-items:center; gap:0.5rem; padding:0.25rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:0.74rem; }
+    /* Рядки списку станцій: шрифт масштабується разом із вікном PiP (як
+       решта інтерфейсу), але ніколи не стає меншим за 13px — max() тримає
+       нижню межу, а верхню нічим не обмежуємо, тож у великому вікні
+       назви виглядають так само пропорційно, як і заголовок станції. */
+    .mpRow { display:flex; align-items:center; gap:0.4rem; padding:0.22rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(13px, 0.62rem); }
+    .mpRow .favicon { width:max(18px, 0.95rem); height:max(18px, 0.95rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
     .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
@@ -4857,13 +4866,23 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   }
   function renderStations(force) {
     const d = pipWin.document, list = d.getElementById("mpStList");
-    const sig = activeIndex + "#" + state.stations.map(x => x.name).join("|");
+    const sig = activeIndex + "#" + state.stations.map(x => x.name + "|" + (x.favicon || "")).join("|");
     if (!force && sig === lastStSig) return;
     lastStSig = sig;
     list.textContent = "";
     let curRow = null;
     state.stations.forEach((st, i) => {
       const row = d.createElement("div"); row.className = "mpRow" + (i === activeIndex && !isSearchPlayback ? " cur" : "");
+      // Маленька іконка станції зліва (те саме лого, що й на головному
+      // екрані). proxifyIconUrl загортає HTTP-іконки у воркер, щоб вони
+      // не блокувались на HTTPS.
+      const ic = d.createElement("img");
+      ic.className = "favicon";
+      ic.alt = "";
+      const favUrl = st.favicon && st.favicon !== DEFAULT_STATION_ICON ? st.favicon : DEFAULT_STATION_ICON;
+      ic.onerror = () => { ic.src = DEFAULT_STATION_ICON; };
+      ic.src = proxifyIconUrl(favUrl);
+      row.appendChild(ic);
       const tt = d.createElement("span"); tt.className = "t"; tt.textContent = st.name || st.fullName || ""; tt.title = tt.textContent;
       row.onclick = () => {
         try {
