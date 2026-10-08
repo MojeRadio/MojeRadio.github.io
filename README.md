@@ -150,6 +150,3 @@ Attribution to the original author is appreciated but not required for personal 
 ```
 pwa  radio  radio-player  internet-radio  vanilla-javascript  no-dependencies  single-file  audio-player  hls  equalizer  web-audio  cloudflare-worker  netlify  offline-first  ukrainian  polish
 ```
-
-
-Бейдж `license-personal use only-orange` добре сигналізує користувачам, що це не MIT, а `commercial-contact author-red` — що для комерції треба писати лист.
