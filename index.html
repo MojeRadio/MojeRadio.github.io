@@ -558,9 +558,37 @@
   #playBtn:active { transform: scale(0.94); }
   #playBtn.paused-attn { background: var(--attn); animation: playPulse 1.3s ease-in-out infinite; }
 #playBtn.is-showing-pause { background: var(--accent); }
-#favSideBtn.favorited { color: #ffd54a !important; }
-#favSideBtn:disabled { opacity: 0.35; cursor: default; }
-#favSideBtn:disabled:active { transform: none; }
+/* Бокові кнопки головного плеєра (улюблені / історія) — без кругів, такий самий
+   вигляд і розмір, як у міні-плеєрі (#mpFav / #mpHistBtn). */
+.sideBtn {
+  border: none;
+  background: none;
+  border-radius: 6px;
+  /* Розмір прив'язаний до --app-scale, тож бокові кнопки змінюються разом
+     із повзунком «Масштаб інтерфейсу». */
+  width: calc(26px * var(--app-scale, 1));
+  height: calc(26px * var(--app-scale, 1));
+  color: var(--ctrlfg);
+  opacity: 0.85;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.sideBtn svg { width: calc(18px * var(--app-scale, 1)); height: calc(18px * var(--app-scale, 1)); display: block; }
+.sideBtn:hover { opacity: 1; }
+.sideBtn:active { transform: scale(0.9); }
+.sideBtn.favorited { color: #ffd54a !important; opacity: 1; }
+.sideBtn:disabled { opacity: 0.3; cursor: default; }
+.sideBtn:disabled:active { transform: none; }
+/* Міні-вікно «Історія пісень» — трохи вужче за стандартні модалки,
+   щоб виглядало як оверлей у міні-плеєрі. */
+#fullHistBg .modal { max-width: 340px; }
+#fullHistList .history-item { padding: 6px 8px; }
+#fullHistList .history-item.current { background: rgba(var(--ring), 0.14); border-radius: 6px; }
   @keyframes playPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 @keyframes playSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 #playBtn.is-loading #playIcon { animation: playSpin 0.9s linear infinite; transform-origin: center; }
@@ -1520,13 +1548,13 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   </div>
 
   <div id="controls">
-    <button class="ctrlBtn" id="favSideBtn" aria-label="favorite" title="Додати до улюблених" data-i18n-title="favAddTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+    <button class="sideBtn" id="favSideBtn" aria-label="favorite" title="Додати до улюблених" data-i18n-title="favAddTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
     <button class="ctrlBtn" id="menuBtn" aria-label="меню" data-i18n-aria="menuWord"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
     <button class="ctrlBtn" id="prevBtn" aria-label="попередня станція" style="display:none;" data-i18n-aria="prevStationWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
     <button id="playBtn" aria-label="грати" data-i18n-aria="playWord"><svg id="playIcon" width="46" height="46" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
     <button class="ctrlBtn" id="nextBtn" aria-label="наступна станція" style="display:none;" data-i18n-aria="nextStationWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
     <button class="ctrlBtn" id="stopBtn" aria-label="стоп" data-i18n-aria="stopWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>
-    <button class="ctrlBtn" id="histSideBtn" aria-label="history" title="Історія пісень" data-i18n-title="songHistoryTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+    <button class="sideBtn" id="histSideBtn" aria-label="history" title="Історія пісень" data-i18n-title="songHistoryTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -1718,7 +1746,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.94</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.95</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -1838,6 +1866,18 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           <button class="primaryBtn" id="trackOptionsSave" data-i18n="save">Зберегти</button>
           <button class="ghostBtn" id="trackOptionsSkip" data-i18n="trackOptionsSkip">Пропустити</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBg track-options-modal" id="fullHistBg" style="z-index:11;">
+    <div class="modal">
+      <div class="modalHead">
+        <button class="modalCloseX" id="fullHistClose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <h3 class="modalHeaderTitle" id="fullHistTitle" data-i18n="songHistoryTitle">Історія пісень</h3>
+      </div>
+      <div class="modalScroll">
+        <div id="fullHistList"></div>
       </div>
     </div>
   </div>
@@ -2266,7 +2306,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.94";
+const APP_VERSION = "2.95";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3462,6 +3502,10 @@ function toggleFavorite(title) {
   renderSongHistory();
   renderSongFavorites();
   try { updateFullFavBtnState(); } catch (e) {}
+  try {
+    const bg = document.getElementById("fullHistBg");
+    if (bg && bg.classList.contains("open")) renderFullHistory();
+  } catch (e) {}
 }
 // Екранування будь-яких сторонніх рядків (назви станцій з radio-browser/імпорту/синхронізації,
 // назви пісень з ICY-метаданих) перед вставкою в innerHTML/атрибути.
@@ -4612,78 +4656,151 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   setTimeout(() => { try { updateStationTitleSides(); } catch (e) {} }, 400);
   const appEl = document.getElementById("app");
   let pipWin = null, timer = null, lastPlayHtml = "", lastRectJson = "", histOpen = false, lastHistSig = "", stOpen = false, lastStSig = "";
+  // Прапорець відновлення розміру/позиції: поки true, trackRect не перезаписує
+  // збережений розмір тимчасовим дефолтним, який Chrome виставляє одразу після відкриття.
+  let restoringRect = false;
   const cssVar = (n) => getComputedStyle(appEl).getPropertyValue(n).trim();
+
   const PIP_CSS = `
+    /* Розмір шрифту html задається через vmin — усе, що в rem нижче,
+       автоматично масштабується разом із розміром вікна PiP. При
+       розтягуванні/звуженні вікна ростуть і шрифти, і іконки, і кнопки. */
+    html { font-size: clamp(13px, 10vmin, 28px); }
     html, body { margin:0; height:100%; overflow:hidden; }
-    body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--fg, #fff);
+    body { font-size:1rem; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--fg, #fff);
       background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 45%, var(--g3) 100%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:8px 12px; box-sizing:border-box;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.35rem; padding:0.5rem 0.75rem; box-sizing:border-box;
       user-select:none; -webkit-user-select:none; }
-    #mpStation { font-size:17px; font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #mpTrack { font-size:12.5px; opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:17px; letter-spacing:.3px; text-transform:uppercase; }
-    #mpCtrls { display:flex; align-items:center; gap:18px; margin-top:4px; }
-    button { border:1.5px solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
+    #mpStation { font-size:1rem; font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #mpTrack { font-size:0.74rem; opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1rem; letter-spacing:.3px; text-transform:uppercase; }
+    #mpCtrls { display:flex; align-items:center; gap:1rem; margin-top:0.25rem; }
+    button { border:0.09rem solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
       border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
     button:hover { filter:brightness(1.15); }
     button:active { transform:scale(.95); }
-    #mpPrev, #mpNext { width:38px; height:38px; }
-    #mpPlay { width:52px; height:52px; }
-    #mpPlay svg { width:26px; height:26px; }
-    #mpPrev svg, #mpNext svg { width:18px; height:18px; }
-    #mpCtrls { gap:14px; flex-wrap:wrap; justify-content:center; }
-    #mpMainBtns { display:flex; align-items:center; justify-content:center; gap:14px; order:1; }
-    #mpFav { order:0; } #mpHistBtn { order:2; }
-    @media (max-width:270px) {
-      #mpMainBtns { flex-basis:100%; order:0; }
-      #mpFav { order:1; } #mpHistBtn { order:2; }
-      #mpCtrls { column-gap:22px; row-gap:6px; }
+    #mpPrev, #mpNext { width:2.2rem; height:2.2rem; }
+    #mpPlay { width:3rem; height:3rem; }
+    #mpPlay svg { width:1.5rem; height:1.5rem; }
+    #mpPrev svg, #mpNext svg { width:1rem; height:1rem; }
+    /* Розкладка кнопок. Рівно три стани + приховування. Жодних іконок,
+       приклеєних до країв, і жодного стану з однією боковою кнопкою.
+       A) Нормальне вікно:  [★] [⏮ ⏯ ⏭] [☰] — компактною групою по центру
+                            (іконки впритул до кнопок керування, не до країв).
+       B) Вузьке (< 270px): керування на першому рядку, ★ і ☰ — парою
+                            по центру під ним.
+       C) Дуже вузьке (< 170px): тільки керування; ★ і ☰ ховаються разом. */
+    #mpCtrls {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      grid-template-areas: "fav main hist";
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem 0.7rem;
+      width: 100%;
+    }
+    #mpFav { grid-area: fav; }
+    #mpMainBtns { grid-area: main; display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
+    #mpHistBtn { grid-area: hist; }
+
+    /* Стан B: перемикаємось на flex, бо так гарантовано main на окремому
+       рядку, а ★ і ☰ разом переїжджають на другий рядок. Проміжного стану
+       з однією боковою кнопкою тут статись не може. */
+    @media (max-width: 270px) {
+      #mpCtrls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        gap: 0.3rem 0.4rem;
+      }
+      #mpMainBtns { flex-basis: 100%; order: 0; }
+      #mpFav { order: 1; margin-right: 1.5rem; }
+      #mpHistBtn { order: 2; }
+      /* Кнопки керування трохи зменшуємо, щоб усе влазило по ширині. */
+      #mpPrev, #mpNext { width: 1.9rem; height: 1.9rem; }
+      #mpPlay { width: 2.5rem; height: 2.5rem; }
+    }
+
+    /* Стан C: зовсім вузько — бокові іконки прибираємо, лишаються тільки
+       перемикання станцій і play. */
+    @media (max-width: 170px) {
+      #mpFav, #mpHistBtn { display: none; }
+    }
+
+    /* При широкому вікні PiP кнопки керування, іконки та відступи плавно
+       збільшуються, щоб група займала більше ширини й по краях лишалося
+       менше пустого простору. Група залишається центрованою, а ★ та ☰ —
+       впритул до кнопок керування. */
+    @media (min-width: 420px) {
+      #mpPrev, #mpNext { width: 3rem; height: 3rem; }
+      #mpPlay { width: 4rem; height: 4rem; }
+      #mpPrev svg, #mpNext svg { width: 1.4rem; height: 1.4rem; }
+      #mpPlay svg { width: 2rem; height: 2rem; }
+      #mpFav, #mpHistBtn { width: 1.7rem; height: 1.7rem; }
+      #mpFav svg, #mpHistBtn svg { width: 1.2rem; height: 1.2rem; }
+      #mpCtrls { gap: 0.4rem 1.2rem; }
+    }
+    @media (min-width: 560px) {
+      #mpPrev, #mpNext { width: 3.5rem; height: 3.5rem; }
+      #mpPlay { width: 4.7rem; height: 4.7rem; }
+      #mpPrev svg, #mpNext svg { width: 1.65rem; height: 1.65rem; }
+      #mpPlay svg { width: 2.35rem; height: 2.35rem; }
+      #mpFav, #mpHistBtn { width: 2rem; height: 2rem; }
+      #mpFav svg, #mpHistBtn svg { width: 1.4rem; height: 1.4rem; }
+      #mpCtrls { gap: 0.4rem 1.6rem; }
+    }
+    @media (min-width: 720px) {
+      #mpPrev, #mpNext { width: 4rem; height: 4rem; }
+      #mpPlay { width: 5.4rem; height: 5.4rem; }
+      #mpPrev svg, #mpNext svg { width: 1.9rem; height: 1.9rem; }
+      #mpPlay svg { width: 2.7rem; height: 2.7rem; }
+      #mpFav, #mpHistBtn { width: 2.3rem; height: 2.3rem; }
+      #mpFav svg, #mpHistBtn svg { width: 1.6rem; height: 1.6rem; }
+      #mpCtrls { gap: 0.4rem 2rem; }
     }
     #mpStation { position:relative; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-    #mpStationTxt { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 18px; box-sizing:border-box; }
-    #mpStationArrow { position:absolute; right:0; top:50%; transform:translateY(-50%); width:11px; height:11px; opacity:.7; }
+    #mpStationTxt { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 1.1rem; box-sizing:border-box; }
+    #mpStationArrow { position:absolute; right:0; top:50%; transform:translateY(-50%); width:0.65rem; height:0.65rem; opacity:.7; }
     #mpStation:hover #mpStationArrow { opacity:1; }
     #mpTrack { cursor:pointer; }
     /* малі кнопки без кіл: улюблене, історія, закрити, зірочки в списках */
-    #mpFav, #mpHistBtn, .mpX, .mpRow button { border:none; background:none; border-radius:4px; width:22px; height:22px; color:var(--fg, #fff); opacity:.85; }
+    #mpFav, #mpHistBtn, .mpX, .mpRow button { border:none; background:none; border-radius:0.25rem; width:1.3rem; height:1.3rem; color:var(--fg, #fff); opacity:.85; }
     #mpFav:hover, #mpHistBtn:hover, .mpX:hover, .mpRow button:hover { opacity:1; filter:none; }
-    #mpFav svg, #mpHistBtn svg, .mpRow button svg { width:15px; height:15px; }
-    .mpX { font-size:17px; line-height:1; }
+    #mpFav svg, #mpHistBtn svg, .mpRow button svg { width:0.9rem; height:0.9rem; }
+    .mpX { font-size:1rem; line-height:1; }
     #mpFav.on, .mpRow button.on { color:#ffd54a; opacity:1; }
     #mpFav:disabled { opacity:.3; cursor:default; filter:none; transform:none; }
     .mpOv { position:fixed; inset:0; display:none; flex-direction:column;
       background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 45%, var(--g3) 100%); }
     .mpOv.open { display:flex; }
-    .mpOvHead { display:flex; align-items:center; justify-content:space-between; padding:6px 10px 4px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
-    .mpList { flex:1; overflow-y:auto; padding:0 8px 8px; scrollbar-width:thin; scrollbar-color: rgba(var(--ring,255,255,255), 0.18) transparent; }
-    .mpList::-webkit-scrollbar { width:6px; height:6px; }
+    .mpOvHead { display:flex; align-items:center; justify-content:space-between; padding:0.35rem 0.6rem 0.25rem; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+    .mpList { flex:1; overflow-y:auto; padding:0 0.5rem 0.5rem; scrollbar-width:thin; scrollbar-color: rgba(var(--ring,255,255,255), 0.18) transparent; }
+    .mpList::-webkit-scrollbar { width:0.35rem; height:0.35rem; }
     .mpList::-webkit-scrollbar-track { background:transparent; }
     .mpList::-webkit-scrollbar-thumb { background: rgba(var(--ring,255,255,255), 0.18); border-radius:3px; transition: background .2s; }
     .mpList::-webkit-scrollbar-thumb:hover { background: rgba(var(--ring,255,255,255), 0.35); }
     .mpList::-webkit-scrollbar-corner { background:transparent; }
-    .mpRow { display:flex; align-items:center; gap:8px; padding:4px 2px; border-bottom:1px solid rgba(255,255,255,.12); font-size:12.5px; }
+    .mpRow { display:flex; align-items:center; gap:0.5rem; padding:0.25rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:0.74rem; }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
-    .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:6px; padding-left:6px; padding-right:6px; }
+    .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
-    .mpRow.cur::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex:none; }
+    .mpRow.cur::before { content:""; width:0.4rem; height:0.4rem; border-radius:50%; background:currentColor; flex:none; }
     body > * { transition: opacity .35s ease; }
-    /* компактні режими залежно від висоти / ширини вікна */
+    /* компактні режими: коли вікно зовсім низьке, ховаємо зайве */
     @media (max-height:135px) {
-      body { gap:2px; padding:4px 8px; }
+      body { gap:0.15rem; padding:0.3rem 0.5rem; }
       #mpTrack { display:none; }
-      #mpStation { font-size:14px; }
-      #mpCtrls { margin-top:0; gap:10px; }
-      #mpPrev, #mpNext { width:32px; height:32px; }
-      #mpPlay { width:42px; height:42px; }
-      #mpPlay svg { width:22px; height:22px; }
+      #mpCtrls { margin-top:0; gap:0.7rem; }
     }
     @media (max-height:92px) {
       #mpStation { display:none; }
-      body { padding:4px 8px; }
+      body { padding:0.3rem 0.5rem; }
     }
     @media (max-width:270px) and (max-height:135px) {
       #mpFav, #mpHistBtn { display:none; }
     }
   `;
+
   function trackRect() {
     if (restoringRect) return;
     try {
@@ -4800,6 +4917,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   function cleanup() {
     if (timer) { clearInterval(timer); timer = null; }
     pipWin = null; lastPlayHtml = ""; histOpen = false; lastHistSig = ""; stOpen = false; lastStSig = "";
+    restoringRect = false;
   }
   async function toggleMini() {
     if (pipWin && !pipWin.closed) { pipWin.close(); cleanup(); return; }
@@ -6491,6 +6609,10 @@ function copyTrackName(txtOverride, skipCopy) {
     renderSongHistory();
     renderSongFavorites();
   }
+  // Миттєво підсвічуємо зірочку на головному екрані. MutationObserver на
+  // #trackInfo не спрацює, бо текст не змінився — а без цього виклику кнопка
+  // лишалась би «не засвіченою» до наступного перемикання треку.
+  try { updateFullFavBtnState(); } catch (e) {}
 }
 function copyTextToClipboard(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -6683,8 +6805,45 @@ document.getElementById("nextBtn").onclick = () => goToAdjacentStation(1);
 document.getElementById("menuBtnTop").onclick = openModal;
 applyPrevNextButtonsMode();
 
-// Кнопка «історія» — відкриває вкладку «Статистика» (там історія пісень).
-document.getElementById("histSideBtn").onclick = () => { openModal(); switchTab("stats"); };
+// Кнопка «історія» — відкриває міні-вікно з історією пісень (той самий вигляд,
+// що й оверлей історії в міні-плеєрі).
+document.getElementById("histSideBtn").onclick = () => {
+  renderFullHistory();
+  document.getElementById("fullHistBg").classList.add("open");
+};
+document.getElementById("fullHistClose").onclick = () => document.getElementById("fullHistBg").classList.remove("open");
+document.getElementById("fullHistBg").addEventListener("click", (e) => {
+  if (!isTouchDevice) return;
+  if (e.target.id === "fullHistBg") e.target.classList.remove("open");
+});
+
+// Рендер списку історії у міні-вікні. Поточна пісня підсвічується фоном,
+// у кожного рядка — зірочка (в улюблені) і копіювання назви.
+function renderFullHistory() {
+  const container = document.getElementById("fullHistList");
+  if (!container) return;
+  const items = state.songHistory.slice(0, 50);
+  const curTrack = (trackInfo.textContent || "").trim();
+  if (!items.length) {
+    container.innerHTML = '<div class="history-empty">—</div>';
+    return;
+  }
+  container.innerHTML = items.map(h => {
+    const isFav = state.songFavorites.includes(h.title);
+    const isCurrent = h.title === curTrack;
+    return `<div class="history-item${isCurrent ? ' current' : ''}">
+      <span class="h-title" data-song-act="copy" data-title="${escapeHtml(h.title)}" title="${t('copied')}">${escapeHtml(h.title)}</span>
+      <div class="h-actions">
+        <button class="icon-btn ${isFav ? 'favorited' : ''}" data-song-act="fav" data-title="${escapeHtml(h.title)}" title="${isFav ? t('favRemoveTitle') : t('favAddTitle')}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <button class="icon-btn" data-song-act="copy" data-title="${escapeHtml(h.title)}" title="${t('copied')}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+}
 
 // Кнопка-зірочка: поводиться так само, як клік по назві пісні (копіює + додає в улюблені
 // + затухання), а якщо пісня вже в улюблених — прибирає зірочку.
@@ -6708,7 +6867,6 @@ document.getElementById("favSideBtn").onclick = () => {
   updateFullFavBtnState();
 };
 
-// Актуалізує стан зірочки (заповнена/порожня/недоступна) для поточної назви.
 function updateFullFavBtnState() {
   const btn = document.getElementById("favSideBtn");
   if (!btn) return;
@@ -9441,6 +9599,16 @@ document.getElementById("blackWhiteToggle").onchange = (e) => {
 document.getElementById("exportBtn").onclick = () => {
   const payload = { stations: state.stations, listenStats: state.listenStats || {},
     songHistory: state.songHistory, songFavorites: state.songFavorites };
+  // Еквалайзер експортуємо лише на пристроях, де він реально працює
+  // (Web Audio через createMediaElementSource на iOS або мовчить, або глушить звук).
+  if (!isIOSDevice) {
+    payload.eq = {
+      enabled: !!state.settings.eqEnabled,
+      gains: (state.settings.eqGains || [0,0,0,0,0]).slice(),
+      preset: state.settings.eqPreset || null,
+      mine: state.settings.eqMine ? state.settings.eqMine.slice() : null
+    };
+  }
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -9487,13 +9655,44 @@ document.getElementById("importFileInput").onchange = (e) => {
           state.stations.push(c); addedCount++;
         }
       });
-      if (parsed && !Array.isArray(parsed) && parsed.listenStats) state.listenStats = Object.assign(state.listenStats || {}, parsed.listenStats);
+      if (parsed && !Array.isArray(parsed) && parsed.listenStats) {
+        const cur = state.listenStats || {};
+        Object.keys(parsed.listenStats).forEach(k => {
+          const imp = parsed.listenStats[k];
+          if (!imp) return;
+          if (cur[k]) {
+            // total сумуємо, session не чіпаємо — це поточна сесія.
+            cur[k].total = (cur[k].total || 0) + (imp.total || 0);
+          } else {
+            cur[k] = { session: 0, total: imp.total || 0 };
+          }
+        });
+        state.listenStats = cur;
+      }
       if (parsed && !Array.isArray(parsed) && parsed.songHistory) state.songHistory = parsed.songHistory;
       // Улюблені пісні НЕ замінюємо, а зливаємо: те, що вже є у користувача,
       // залишається, а з файлу додаються ті, яких ще немає. Так імпорт не
       // стирає зірочки, які користувач поставив до імпорту.
       if (parsed && !Array.isArray(parsed) && Array.isArray(parsed.songFavorites)) {
         state.songFavorites = [...new Set([...(state.songFavorites || []), ...parsed.songFavorites])];
+      }
+      // Еквалайзер — лише на пристроях, де він реально працює. Значення
+      // обрізаємо до діапазону повзунків (−12…+12), щоб битий файл не зламав UI.
+      if (parsed && !Array.isArray(parsed) && parsed.eq && !isIOSDevice) {
+        const clampEq = (arr) => (Array.isArray(arr) && arr.length === 5)
+          ? arr.map(v => Math.max(-12, Math.min(12, Number(v) || 0)))
+          : null;
+        state.settings.eqEnabled = !!parsed.eq.enabled;
+        const g = clampEq(parsed.eq.gains);
+        if (g) state.settings.eqGains = g;
+        const m = clampEq(parsed.eq.mine);
+        if (m) state.settings.eqMine = m;
+        if (parsed.eq.preset) state.settings.eqPreset = parsed.eq.preset;
+        // Одразу підтягуємо значення у повзунки й у звуковий граф, якщо EQ увімкнено.
+        try { updateEqVisibility(); } catch (e) {}
+        if (state.settings.eqEnabled && eqNodes.length) {
+          eqNodes.forEach((f, i) => { try { f.gain.value = state.settings.eqGains[i] || 0; } catch (e) {} });
+        }
       }
       saveState(); renderModalList(); renderStations(); renderSongHistory(); renderSongFavorites();
       showToast(t("addedToast") + addedCount + ", " + t("updatedWord") + ": " + updatedCount);
