@@ -4887,8 +4887,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        решта інтерфейсу), але ніколи не стає меншим за 13px — max() тримає
        нижню межу, а верхню нічим не обмежуємо, тож у великому вікні
        назви виглядають так само пропорційно, як і заголовок станції. */
-    .mpRow { display:flex; align-items:center; gap:0.4rem; padding:0.22rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(13px, 0.62rem); }
-    .mpRow .favicon { width:max(18px, 0.95rem); height:max(18px, 0.95rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
+    .mpRow { display:flex; align-items:center; gap:0.35rem; padding:0.18rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(11px, 0.5rem); }
+    .mpRow .favicon { width:max(15px, 0.8rem); height:max(15px, 0.8rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
     .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
@@ -4951,7 +4951,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         if (now - lpLastHandled < 1000) return;
         lpLastHandled = now;
         try { if (navigator.vibrate) navigator.vibrate(15); } catch (err) {}
-        if (window.confirm(t("confirmDeleteSongHistory"))) {
+        // Діалог викликаємо З САМОГО ВІКНА PiP, а не з головного:
+        // Chrome блокує confirm() з нефокусованого (фонового) вікна, тож
+        // ПКМ у PiP-вікні раніше не приводив до видалення.
+        if (pipWin && !pipWin.closed && pipWin.confirm(t("confirmDeleteSongHistory"))) {
           try { removeSongFromHistory(h.title); } catch (e) {}
           renderHist(true);
         }
@@ -4978,6 +4981,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         setTimeout(() => { try { delete tt.dataset.lp; } catch (err) { tt.dataset.lp = ""; } }, 600);
         lpDelete();
       });
+      const b = d.createElement("button"); b.className = fav ? "on" : ""; b.innerHTML = STAR_SVG(fav);
+      b.onclick = () => { try { toggleFavorite(h.title); } catch (e) {} renderHist(true); };
+      row.appendChild(tt); row.appendChild(b); list.appendChild(row);
+    });
   }
   function copyText(txt, flashEl) {
     if (!txt) return;
@@ -5224,6 +5231,7 @@ function renderStats() {
     });
     row.addEventListener("contextmenu", (e) => { e.preventDefault(); doDelete(); });
   });
+}
 document.getElementById("resetStatsBtn").onclick = () => {
   if (confirm(t("resetStatsConfirmText"))) {
     state.listenStats = {}; saveState(); renderStats();
