@@ -558,6 +558,9 @@
   #playBtn:active { transform: scale(0.94); }
   #playBtn.paused-attn { background: var(--attn); animation: playPulse 1.3s ease-in-out infinite; }
 #playBtn.is-showing-pause { background: var(--accent); }
+#favSideBtn.favorited { color: #ffd54a !important; }
+#favSideBtn:disabled { opacity: 0.35; cursor: default; }
+#favSideBtn:disabled:active { transform: none; }
   @keyframes playPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 @keyframes playSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 #playBtn.is-loading #playIcon { animation: playSpin 0.9s linear infinite; transform-origin: center; }
@@ -1517,11 +1520,13 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   </div>
 
   <div id="controls">
+    <button class="ctrlBtn" id="favSideBtn" aria-label="favorite" title="Додати до улюблених" data-i18n-title="favAddTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
     <button class="ctrlBtn" id="menuBtn" aria-label="меню" data-i18n-aria="menuWord"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
     <button class="ctrlBtn" id="prevBtn" aria-label="попередня станція" style="display:none;" data-i18n-aria="prevStationWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
     <button id="playBtn" aria-label="грати" data-i18n-aria="playWord"><svg id="playIcon" width="46" height="46" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
     <button class="ctrlBtn" id="nextBtn" aria-label="наступна станція" style="display:none;" data-i18n-aria="nextStationWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
     <button class="ctrlBtn" id="stopBtn" aria-label="стоп" data-i18n-aria="stopWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>
+    <button class="ctrlBtn" id="histSideBtn" aria-label="history" title="Історія пісень" data-i18n-title="songHistoryTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -1713,7 +1718,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.91</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.94</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2261,7 +2266,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.93";
+const APP_VERSION = "2.94";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3456,6 +3461,7 @@ function toggleFavorite(title) {
   saveState();
   renderSongHistory();
   renderSongFavorites();
+  try { updateFullFavBtnState(); } catch (e) {}
 }
 // Екранування будь-яких сторонніх рядків (назви станцій з radio-browser/імпорту/синхронізації,
 // назви пісень з ICY-метаданих) перед вставкою в innerHTML/атрибути.
@@ -4632,9 +4638,9 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       #mpFav { order:1; } #mpHistBtn { order:2; }
       #mpCtrls { column-gap:22px; row-gap:6px; }
     }
-    #mpStation { display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer; }
-    #mpStationTxt { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    #mpStationArrow { width:11px; height:11px; flex:none; opacity:.7; }
+    #mpStation { position:relative; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    #mpStationTxt { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 18px; box-sizing:border-box; }
+    #mpStationArrow { position:absolute; right:0; top:50%; transform:translateY(-50%); width:11px; height:11px; opacity:.7; }
     #mpStation:hover #mpStationArrow { opacity:1; }
     #mpTrack { cursor:pointer; }
     /* малі кнопки без кіл: улюблене, історія, закрити, зірочки в списках */
@@ -4656,6 +4662,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpList::-webkit-scrollbar-corner { background:transparent; }
     .mpRow { display:flex; align-items:center; gap:8px; padding:4px 2px; border-bottom:1px solid rgba(255,255,255,.12); font-size:12.5px; }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+    .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:6px; padding-left:6px; padding-right:6px; }
     .mpRow.cur .t { font-weight:700; }
     .mpRow.cur::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; flex:none; }
     body > * { transition: opacity .35s ease; }
@@ -4695,14 +4702,16 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   function renderHist(force) {
     const d = pipWin.document, list = d.getElementById("mpHistList");
     const items = state.songHistory.slice(0, 30);
-    const sig = items.map(h => h.title + (state.songFavorites.includes(h.title) ? "*" : "")).join("|");
+    const curTrack = (document.getElementById("trackInfo") || {}).textContent || "";
+    const sig = curTrack + "@@" + items.map(h => h.title + (state.songFavorites.includes(h.title) ? "*" : "")).join("|");
     if (!force && sig === lastHistSig) return;
     lastHistSig = sig;
     list.textContent = "";
     if (!items.length) { const e = d.createElement("div"); e.className = "mpRow"; e.textContent = "—"; list.appendChild(e); return; }
     items.forEach(h => {
       const fav = state.songFavorites.includes(h.title);
-      const row = d.createElement("div"); row.className = "mpRow";
+      const isCurrent = h.title === curTrack;
+      const row = d.createElement("div"); row.className = "mpRow" + (isCurrent ? " cur" : "");
       const tt = d.createElement("span"); tt.className = "t"; tt.textContent = h.title; tt.title = h.title;
       tt.onclick = () => copyText(h.title, row);
       const b = d.createElement("button"); b.className = fav ? "on" : ""; b.innerHTML = STAR_SVG(fav);
@@ -6010,9 +6019,10 @@ playBtn.onclick = () => {
   }
 };
 
-// Довге натискання на Play/Pause перемикає режим розробника. Спрацьовує в момент системного
-// «довгого тапу» (подія contextmenu, тоді ж вібрує сам телефон — власної вібрації немає, щоб не
-// було подвійної), а таймер лишається запасним варіантом. Наступний «клік» гасимо.
+// Довге натискання на Play/Pause — показати/сховати бокові кнопки "улюблені" та "історія".
+// Спрацьовує в момент системного «довгого тапу» (подія contextmenu, тоді ж вібрує сам телефон —
+// власної вібрації немає, щоб не було подвійної), а таймер лишається запасним варіантом.
+// Наступний «клік» гасимо, щоб пауза/плей не спрацьовувала.
 {
   const LONG_PRESS_MS = 700;
   const playClick = playBtn.onclick;
@@ -6023,10 +6033,9 @@ playBtn.onclick = () => {
     if (longFired) return;
     longFired = true;
     cancel();
-    const cb = document.getElementById("devMode");
-    cb.checked = !cb.checked;
-    cb.onchange({ target: cb });
-    showToast(t(cb.checked ? "devModeOnToast" : "devModeOffToast"));
+    state.settings.showSideButtons = state.settings.showSideButtons === false;
+    saveState();
+    applySideButtonsVisibility();
   };
   const release = () => { cancel(); setTimeout(() => { longFired = false; }, 400); };
   playBtn.addEventListener("pointerdown", (e) => {
@@ -6040,6 +6049,16 @@ playBtn.onclick = () => {
   playBtn.addEventListener("contextmenu", (e) => {
     e.preventDefault();
     if (downType !== "mouse" && Date.now() - downTs < 1500) fire();
+  });
+}
+
+// Застосовує поточний стан видимості бокових кнопок (улюблені / історія).
+// За замовчуванням кнопки видимі (showSideButtons !== false).
+function applySideButtonsVisibility() {
+  const show = state.settings.showSideButtons !== false;
+  ["favSideBtn", "histSideBtn"].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.style.display = show ? "flex" : "none";
   });
 }
 
@@ -6647,6 +6666,51 @@ document.getElementById("prevBtn").onclick = () => goToAdjacentStation(-1);
 document.getElementById("nextBtn").onclick = () => goToAdjacentStation(1);
 document.getElementById("menuBtnTop").onclick = openModal;
 applyPrevNextButtonsMode();
+
+// Кнопка «історія» — відкриває вкладку «Статистика» (там історія пісень).
+document.getElementById("histSideBtn").onclick = () => { openModal(); switchTab("stats"); };
+
+// Кнопка-зірочка: поводиться так само, як клік по назві пісні (копіює + додає в улюблені
+// + затухання), а якщо пісня вже в улюблених — прибирає зірочку.
+document.getElementById("favSideBtn").onclick = () => {
+  const txt = (trackInfo.textContent || "").trim();
+  if (!txt) return;
+  const skip = [t("chooseStation"), t("playPrompt"), t("buffering"), t("stopped"), t("loading"), t("cantPlay"), t("appName")];
+  if (skip.includes(txt)) return;
+  if (state.songFavorites.includes(txt)) {
+    toggleFavorite(txt);
+  } else {
+    copyTrackName(txt, true);
+    // Ефект затухання назви пісні — як у міні-плеєрі.
+    trackInfo.style.transition = "opacity 0.2s";
+    trackInfo.style.opacity = "0.35";
+    setTimeout(() => {
+      trackInfo.style.opacity = "";
+      setTimeout(() => { trackInfo.style.transition = ""; }, 250);
+    }, 300);
+  }
+  updateFullFavBtnState();
+};
+
+// Актуалізує стан зірочки (заповнена/порожня/недоступна) для поточної назви.
+function updateFullFavBtnState() {
+  const btn = document.getElementById("favSideBtn");
+  if (!btn) return;
+  const txt = (trackInfo.textContent || "").trim();
+  const skip = [t("chooseStation"), t("playPrompt"), t("buffering"), t("stopped"), t("loading"), t("cantPlay"), t("appName")];
+  const isStationName = state.stations.some(s =>
+    (s.fullName && s.fullName.toLowerCase() === txt.toLowerCase()) ||
+    (s.name && s.name.toLowerCase() === txt.toLowerCase())
+  );
+  const isRealTrack = !!txt && !skip.includes(txt) && !isStationName;
+  const isFav = isRealTrack && state.songFavorites.includes(txt);
+  btn.classList.toggle("favorited", isFav);
+  const poly = btn.querySelector("polygon");
+  if (poly) poly.setAttribute("fill", isFav ? "currentColor" : "none");
+  btn.disabled = !isRealTrack;
+}
+new MutationObserver(updateFullFavBtnState).observe(trackInfo, { childList: true, characterData: true, subtree: true });
+updateFullFavBtnState();
 
 let touchStartX = null, touchStartY = null;
 // Свайп працює над центральною зоною (лого/пульс/візуалізатор) і над нижнім блоком кнопок
@@ -11540,6 +11604,7 @@ document.getElementById("scaleValue").onclick = () => {
   setupAutoSync();
   renderStations();
   fillSettingsUI();
+  applySideButtonsVisibility();
   updateSearchButtonsState();
   populateSearchFilters();
   
