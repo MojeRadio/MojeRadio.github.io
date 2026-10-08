@@ -3,7 +3,7 @@
 
 A lightweight, offline-capable **Progressive Web App** for listening to internet radio streams. Built as a single self-contained HTML file with zero build step — just open it and it works.
 
-**Live demo:** https://mojeradio.netlify.app/
+**Live demo:** https://mojeradio.pages.dev/
 
 ---
 
@@ -142,7 +142,7 @@ Attribution to the original author is appreciated but not required for personal 
 
 **Можливості:** підтримка MP3/AAC/OGG/HLS, автовідновлення потоку, ICY-метадані, керування зі шторки (Media Session), Wake Lock, сон-таймер, пошук станцій через radio-browser.info, drag-and-drop сортування, синхронізація списку з віддаленого файлу, імпорт/експорт JSON, 16 кольорових тем (включно з неоморфними), 3 мови, 5-смуговий еквалайзер, реальний і симульований аудіовізуалізатор, вирівнювання гучності, компактний горизонтальний вигляд, масштаб інтерфейсу 50–150%, без трекінгу й реклами.
 
-**Демо:** https://mojeradio.netlify.app/
+**Демо:** https://mojeradio.pages.dev/
 
 **Ліцензія:** лише для власного (некомерційного) використання. Для комерційних цілей потрібен попередній письмовий дозвіл автора — пишіть на **tsuand@gmail.com**.
 
@@ -150,6 +150,3 @@ Attribution to the original author is appreciated but not required for personal 
 ```
 pwa  radio  radio-player  internet-radio  vanilla-javascript  no-dependencies  single-file  audio-player  hls  equalizer  web-audio  cloudflare-worker  netlify  offline-first  ukrainian  polish
 ```
-
-
-Бейдж `license-personal use only-orange` добре сигналізує користувачам, що це не MIT, а `commercial-contact author-red` — що для комерції треба писати лист.
