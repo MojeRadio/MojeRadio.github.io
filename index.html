@@ -4684,10 +4684,12 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       #mpFav, #mpHistBtn { display:none; }
     }
   `;
-  // Запам'ятовуємо місце й розмір міні-вікна (screenX/Y + внутрішній розмір) і відновлюємо при наступному відкритті.
   function trackRect() {
+    if (restoringRect) return;
     try {
-      const r = { x: Math.round(pipWin.screenX), y: Math.round(pipWin.screenY), w: Math.round(pipWin.innerWidth), h: Math.round(pipWin.innerHeight) };
+      // Зберігаємо ЛИШЕ розмір. Позицію (x, y) не чіпаємо, бо Chrome однаково
+      // не дає її відновити через moveTo() — це заборонено специфікацією.
+      const r = { w: Math.round(pipWin.innerWidth), h: Math.round(pipWin.innerHeight) };
       if (!(r.w >= 120 && r.h >= 40)) return;
       const j = JSON.stringify(r);
       if (j === lastRectJson) return;
@@ -4801,19 +4803,33 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   }
   async function toggleMini() {
     if (pipWin && !pipWin.closed) { pipWin.close(); cleanup(); return; }
+    restoringRect = true;
     try {
       let rc = state.settings.pipRect;
       if (!rc) { try { rc = JSON.parse(localStorage.getItem("radio_pipRect") || "null"); } catch (e) { rc = null; } }
       const okRc = rc && rc.w >= 120 && rc.h >= 40 && rc.w <= 1600 && rc.h <= 1200;
-      pipWin = await window.documentPictureInPicture.requestWindow({ width: okRc ? rc.w : 360, height: okRc ? rc.h : 170 });
-      if (okRc && Number.isFinite(rc.x) && Number.isFinite(rc.y)) {
-        const place = () => { try { pipWin.moveTo(rc.x, rc.y); } catch (e) {} };
+
+      // ВАЖЛИВО: не передаємо width/height у requestWindow().
+      // Якщо їх передати, Chrome завжди відкриває вікно в дефолтній позиції
+      // (внизу справа) і не використовує збережену позицію, навіть якщо
+      // preferInitialWindowPlacement = false. Без width/height Chrome бере
+      // збережену позицію з попереднього разу сам.
+      pipWin = await window.documentPictureInPicture.requestWindow({ preferInitialWindowPlacement: false });
+
+      if (okRc) {
+        // Розмір ставимо вже після відкриття. moveTo() НЕ викликаємо взагалі —
+        // він заборонений специфікацією Document PiP і все одно не спрацює.
+        const place = () => {
+          try { if (rc.w && rc.h) pipWin.resizeTo(rc.w, rc.h); } catch (e) {}
+        };
         place();
         setTimeout(place, 120);
         setTimeout(place, 500);
+        setTimeout(place, 1000);
       }
       lastRectJson = okRc ? JSON.stringify(rc) : "";
-    } catch (e) { try { devLog("Міні-плеєр: " + (e && e.message ? e.message : e)); } catch (e2) {} pipWin = null; return; }
+      setTimeout(() => { restoringRect = false; }, 1200);
+    } catch (e) { try { devLog("Міні-плеєр: " + (e && e.message ? e.message : e)); } catch (e2) {} pipWin = null; restoringRect = false; return; }
     const d = pipWin.document;
     d.title = document.title;
     const st = d.createElement("style"); st.textContent = PIP_CSS; d.head.appendChild(st);
