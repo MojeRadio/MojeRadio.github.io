@@ -2832,12 +2832,12 @@ let fadeK = 1, fadeTimer = null, fadeGen = 0, pauseFadeCb = null; // множн�
 const VIZ_REF_VOLUME = 0.1;
 // Лише для телефонів/планшетів: частка звітованої браузером outputLatency, на яку
 // зсуваємо показ спектру, щоб він збігався зі звуком у динаміку.
-// Раніше було 0.75 з обмеженням 400 мс — це давало перекомпенсацію (спектр
-// «спішив» попереду звуку). Тепер 0.5 з обмеженням 250 мс — баланс ближче
-// до реальності, але без ризику знову отримати помітне відставання.
+// 0.75/400 давало відставання, 0.5/250 — «спішило». Середина між ними.
+// Підкручено під Chrome на Android, де outputLatency часто завищена (типово
+// 300–600 мс), а реальний звук виходить із динаміка раніше.
 // На ПК не використовується (там затримка береться повністю, як і раніше).
-const VIZ_LAT_SCALE_TOUCH = 0.5;
-const VIZ_LAT_MAX_TOUCH = 250;
+const VIZ_LAT_SCALE_TOUCH = 0.6;
+const VIZ_LAT_MAX_TOUCH = 340;
 let eqNodes = [];
 let normGainNode = null, normLimiter = null, normAnalyser = null, normAgcBuf = null;
 let normMeasureTimer = null;
