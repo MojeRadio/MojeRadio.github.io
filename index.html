@@ -992,6 +992,25 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .history-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(128,128,128,0.12); }
   .history-item .h-title { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
   .history-item .h-title:hover { opacity: 0.8; }
+  /* Стан очікування підтвердження видалення (як у кошика збережених станцій):
+     на 3,5 с у рядку замість назви показується червоне питання. Повторний
+     клік на назву — підтверджує видалення, клік будь-де інде / таймаут — ні. */
+  .history-item .h-title.confirming {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    color: #ff8a8a !important;
+    font-weight: 700 !important;
+    line-height: 1.3;
+  }
+  .stats-item .stat-name.confirming {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    color: #ff8a8a !important;
+    font-weight: 700 !important;
+    line-height: 1.3;
+  }
   .history-item .h-actions { display: flex; gap: 4px; flex-shrink: 0; }
   .history-item .h-actions button { background: none; border: none; color: var(--modaltext); opacity: 0.5; cursor: pointer; padding: 2px 4px; transition: opacity 0.2s; }
   .history-item .h-actions button:hover { opacity: 1; }
@@ -1751,7 +1770,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 2.97</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.0</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2015,7 +2034,7 @@ const I18N = {
     searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", clearHistory:"Очистити історію", exportHistory:"Експортувати", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewLabel:"Вигляд станцій:", viewTitle:"Вигляд станцій",
     loadMore:"Завантажити ще...",
     iconFetch:"Взяти з пошуку", country:"Країна", notDefined:"не визначено", addBtnWord:"+",
-    eqTitle:"Еквалайзер", eqEnable:"Увімкнути еквалайзер", loudnessTitle:"Вирівнювання гучності", loudnessEnable:"Однакова гучність на всіх станціях", eqSystemLink:"Системний еквалайзер", eqPresetsBtn:"Пресети", eqPresetsTitle:"Пресети еквалайзера", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати до обраних", lastExportLabel:"Останній експорт: ", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
+    eqTitle:"Еквалайзер", eqEnable:"Увімкнути еквалайзер", loudnessTitle:"Вирівнювання гучності", loudnessEnable:"Однакова гучність на всіх станціях", eqSystemLink:"Системний еквалайзер", eqPresetsBtn:"Пресети", eqPresetsTitle:"Пресети еквалайзера", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
   pl: { appName:"moje radio", pipWord:"Mini odtwarzacz nad oknami", colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry w pliku (nieużywane przez aplikację)", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", stationsFileLoadedToast:"Plik stacji wczytany", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", exportHistoryQ:"Co wyeksportować?", exportFavOnlyOpt:"Tylko ulubione (z gwiazdką)", exportAllOpt:"Całą historię", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw spróbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
     tabOptions:"Opcje", tabStations:"Stacje", tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statyst.", tabAdvanced:"Więcej", powerSaveTitle:"Oszczędzanie energii", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji na ekranie głównym — edycja.", longPressHintReorder:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", gridLongPressEditLabel:"Edycja stacji długim przytrzymaniem",
     syncEnableLabel:"Synchronizuj stacje i parametry z pliku", syncFileDesc:"Link do pliku, z którego pobierane są stacje i poniższe ustawienia.", notSynced:"jeszcze nie zsynchronizowano",
@@ -2032,7 +2051,7 @@ const I18N = {
     searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", clearHistory:"Wyczyść historię", exportHistory:"Eksportuj", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewLabel:"Widok stacji:", viewTitle:"Widok stacji",
     loadMore:"Załaduj więcej...",
     iconFetch:"Pobierz z wyszukiwania", country:"Kraj", notDefined:"nie określono", addBtnWord:"+",
-    eqTitle:"Equalizer", eqEnable:"Włącz equalizer", loudnessTitle:"Wyrównanie głośności", loudnessEnable:"Jednakowa głośność na wszystkich stacjach", eqSystemLink:"Systemowy equalizer", eqPresetsBtn:"Presety", eqPresetsTitle:"Presety equalizera", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj do ulubionych", lastExportLabel:"Ostatni eksport: ", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
+    eqTitle:"Equalizer", eqEnable:"Włącz equalizer", loudnessTitle:"Wyrównanie głośności", loudnessEnable:"Jednakowa głośność na wszystkich stacjach", eqSystemLink:"Systemowy equalizer", eqPresetsBtn:"Presety", eqPresetsTitle:"Presety equalizera", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
   en: { appName:"my radio", pipWord:"Always-on-top mini player", colorAutoBtn:"Auto from icon", colorAutoFailToast:"Couldn't detect a color from the icon", chooseStation:"Choose a station below", buffering:"Buffering...", playPrompt:"Press play to continue", noUrl:"No link yet — add it in the menu", copied:"Copied", linkCopiedToast:"Link copied", stopped:"Choose a station below", cantPlay:"Could not play the stream", streamUrlPlaceholder:"Stream link", stationIconAlt:"station icon", resetAllConfirmText:"Really reset everything?", resetStatsConfirmText:"Really reset statistics?", historyExportedToast:"History exported", resetDoneToast:"Reset to factory settings — reloading...", versionLabel:"Version", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"success ", syncStatusFail:"error ", syncLoadFailToast:"Couldn't load the file — even via backup proxies. Still retrying in the background.", syncNoStationsToast:"File loaded, but no stations found — check the format", syncUpdatedToast:"Station list updated", syncParseErrorToast:"Error processing the file", addedStationsSummary:"Saved stations", otherParamsSummary:"Other parameters in the file (not used by the app)", cancelWord:"Cancel", iconChangedToast:"Icon changed", clearHistoryConfirm:"Clear the entire song history?", clearFavoritesConfirm:"Clear all liked songs?", favoritesCleared:"Favorites cleared", deleteStationConfirm:"Delete station «{name}»?", messageUnderTitleLabel:"Text under the song title", manualTrackTitleLabel:"Manual track title", stopWordsLabel:"Stop-words in the song title", manualWord:"manually", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Backup search", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Choose an icon for the station:", copyFailedToast:"Couldn't copy", historyCleared:"History cleared", statsResetToast:"Listening stats reset", connOffline:"No internet connection", connRetrying:"Station connection lost · attempt {n}/{max}", connSlow:"Station not responding · attempt {n}/{max}", connFailed:"Couldn't restore the stream — press ⟳ to try again", streamLostRetrying:"Stream lost — attempting to reconnect ", offlineToast:"No network — I will resume the stream as soon as it is back", onlineToast:"Network is back — reconnecting", devErrLogTitle:"Saved errors", recoverFailedToast:"Couldn't recover the stream", storageFullToast:"Can't save settings — browser storage is full", sleepTimerStoppedToast:"Sleep timer: stopped", openSystemSoundSettingsToast:"Open your system sound settings manually", deletedToast:"Deleted", enterNameUrlToast:"Enter a name and link", simDropSentToast:"Dropout simulation sent", stationsFileLoadedToast:"Stations file loaded", noStationsInFileToast:"No stations found in the file", addedToast:"Added: ", cantReadFileToast:"Couldn't read the file — check the format", searchingIconToast:"Searching for icon...", iconUploadedToast:"Icon uploaded", iconRemovedToast:"Icon removed", noSuccessfulSyncToast:"No successful sync yet to restore from", stationNotInSyncToast:"Station not found in the last sync", restoredFromSyncToast:"Restored from the last successful sync", noSourceToast:"No source to detect from", titleNotFoundToast:"Couldn't find the song title", savedToast:"Saved: ", sessionUsageResetToast:"Session usage reset", updatingToast:"Updating...", updatedWord:"updated", stationExistsToast:"This station is already in the list", chooseThemeTitle:"Choose a color theme", confirmWord:"Done", exportHistoryQ:"What to export?", exportFavOnlyOpt:"Favorites only (starred)", exportAllOpt:"Entire history", searchingSongTitleToast:"Searching for the song title...", messagePlaceholder:"message text", manualTrackPlaceholder:"manual track title", lastSuccessLabel:"last succeeded", iconNotFoundToast:"Couldn't find an icon", iconWord:"Icon", chooseOptionToast:"Choose an option", iconUrlPromptLabel:"Icon address:", iconFetchShort:"find", iconUrlApply:"Paste icon URL", httpsFirstLabel:"Try http → https directly first, instead of the proxy", prevNextLabel:"Show station switch buttons", refreshWord:"refresh", menuWord:"menu", shareWord:"share", muteWord:"sound", prevStationWord:"previous station", playWord:"play", nextStationWord:"next station", stopWord:"stop", resetWord:"reset", prevPageWord:"Previous page", nextPageWord:"Next page", uploadWord:"Upload", removeWord:"Remove", tooltipReload:"Restart the stream", tooltipMenu:"Menu: stations and settings", tooltipStop:"Stop and reset", tooltipPrevStation:"Previous station", tooltipNextStation:"Next station", tooltipShare:"Share the station", tooltipMute:"Turn sound on / off", iconManualSearchPlaceholder:"or type a station name manually",
     tabOptions:"Options", tabStations:"Stations", tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsShort:"Stats", tabAdvanced:"Advanced", powerSaveTitle:"Power saving", stationListExportSummary:"Export/Import stations", search:"Search", longPressHint:"Long-press a station on the main screen to edit it.", longPressHintReorder:"Long-press a station and drag to reorder.", gridLongPressEditLabel:"Edit station on long press",
     syncEnableLabel:"Sync stations and parameters from file", syncFileDesc:"Link to the file that stations and the settings below are pulled from.", notSynced:"not synced yet",
@@ -2049,7 +2068,7 @@ const I18N = {
     searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", clearHistory:"Clear history", exportHistory:"Export", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewLabel:"Station view:", viewTitle:"Station view",
     loadMore:"Load more...",
     iconFetch:"Get from search", country:"Country", notDefined:"not defined", addBtnWord:"+",
-    eqTitle:"Equalizer", eqEnable:"Enable equalizer", loudnessTitle:"Loudness equalization", loudnessEnable:"Same volume on all stations", eqSystemLink:"System equalizer", eqPresetsBtn:"Presets", eqPresetsTitle:"Equalizer presets", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add to favorites", lastExportLabel:"Last export: ", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
+    eqTitle:"Equalizer", eqEnable:"Enable equalizer", loudnessTitle:"Loudness equalization", loudnessEnable:"Same volume on all stations", eqSystemLink:"System equalizer", eqPresetsBtn:"Presets", eqPresetsTitle:"Equalizer presets", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
 };
 function t(key) { const lang = state.settings.language || "uk"; return (I18N[lang] && I18N[lang][key]) || I18N.uk[key] || key; }
 function applyI18nDom() {
@@ -2311,7 +2330,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "2.97";
+const APP_VERSION = "3.0";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3561,6 +3580,21 @@ function escapeHtml(v) {
 document.addEventListener("click", (e) => {
   const el = e.target.closest && e.target.closest("[data-song-act]");
   if (!el) return;
+  // Якщо елемент зараз у стані підтвердження видалення (показано після довгого
+  // утримання / ПКМ) — цей клік підтверджує видалення. Це стосується тільки
+  // назви (data-song-act="copy"); клік по зірочці (data-song-act="fav")
+  // продовжує працювати як завжди.
+  if (el.dataset.confirming === "1" && el.dataset.songAct === "copy") {
+    e.preventDefault();
+    e.stopPropagation();
+    const kind = el.dataset.confirmKind;
+    const title = el.dataset.confirmTitle || el.dataset.title || "";
+    if (kind && title) {
+      if (kind === "favorites") removeSongFromFavorites(title);
+      else removeSongFromHistory(title);
+    }
+    return;
+  }
   // Якщо щойно спрацювало довге утримання — цей клік не має копіювати чи
   // перемикати зірочку (він є частиною того самого жесту).
   if (el.dataset.lp === "1") return;
@@ -3593,21 +3627,35 @@ function attachSongLongPressHandlers(container, kind) {
   container.querySelectorAll(".h-title").forEach(el => {
     const title = el.dataset.title || "";
     if (!title) return;
-    let timer = null, sx = 0, sy = 0, lastHandled = 0;
+    let timer = null, sx = 0, sy = 0, lastHandled = 0, confirmTimer = null;
     const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
-    const doDelete = () => {
+    const restore = () => {
+      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+      if (!el.dataset.confirming) return;
+      el.textContent = el.dataset.origText || title;
+      el.classList.remove("confirming");
+      delete el.dataset.confirming;
+      delete el.dataset.confirmKind;
+      delete el.dataset.confirmTitle;
+      delete el.dataset.origText;
+    };
+    const showConfirm = () => {
       // Захист: на мобільних браузер може згенерувати і власний таймер
       // довгого утримання (pointerdown), і потім contextmenu від системи —
-      // без цієї перевірки було б два confirm() поспіль.
+      // без цієї перевірки було б дві пропозиції поспіль.
       const now = Date.now();
       if (now - lastHandled < 1000) return;
       lastHandled = now;
       try { if (navigator.vibrate) navigator.vibrate(15); } catch (err) {}
+      if (el.dataset.confirming) return;
+      el.dataset.origText = el.textContent || title;
+      el.dataset.confirming = "1";
+      el.dataset.confirmKind = kind;
+      el.dataset.confirmTitle = title;
       const msg = (kind === "favorites") ? t("confirmDeleteSongFavorite") : t("confirmDeleteSongHistory");
-      if (window.confirm(msg)) {
-        if (kind === "favorites") removeSongFromFavorites(title);
-        else removeSongFromHistory(title);
-      }
+      el.textContent = msg;
+      el.classList.add("confirming");
+      confirmTimer = setTimeout(restore, 3500);
     };
     el.addEventListener("pointerdown", (e) => {
       // ПК: мишка не запускає таймер, там працює права кнопка (contextmenu).
@@ -3618,7 +3666,7 @@ function attachSongLongPressHandlers(container, kind) {
         timer = null;
         el.dataset.lp = "1";
         setTimeout(() => { try { delete el.dataset.lp; } catch (err) { el.dataset.lp = ""; } }, 600);
-        doDelete();
+        showConfirm();
       }, 600);
     });
     ["pointerup", "pointerleave", "pointercancel"].forEach(ev => el.addEventListener(ev, cancel));
@@ -3626,13 +3674,13 @@ function attachSongLongPressHandlers(container, kind) {
       if (!timer) return;
       if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) cancel();
     });
-    // ПК: права кнопка мишки на назві → наше підтвердження замість
+    // ПК: права кнопка мишки на назві → підтвердження замість
     // стандартного меню браузера.
     el.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       el.dataset.lp = "1";
       setTimeout(() => { try { delete el.dataset.lp; } catch (err) { el.dataset.lp = ""; } }, 600);
-      doDelete();
+      showConfirm();
     });
   });
 }
@@ -4887,9 +4935,13 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        решта інтерфейсу), але ніколи не стає меншим за 13px — max() тримає
        нижню межу, а верхню нічим не обмежуємо, тож у великому вікні
        назви виглядають так само пропорційно, як і заголовок станції. */
-    .mpRow { display:flex; align-items:center; gap:0.35rem; padding:0.18rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(11px, 0.5rem); }
-    .mpRow .favicon { width:max(15px, 0.8rem); height:max(15px, 0.8rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
+    .mpRow { display:flex; align-items:center; gap:0.35rem; padding:0.18rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(12.5px, 0.55rem); }
+    .mpRow .favicon { width:max(16px, 0.85rem); height:max(16px, 0.85rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
+    .mpRow .t.confirming { white-space:normal; overflow:visible; text-overflow:clip; color:#ff8a8a; font-weight:700; line-height:1.3; }
+    /* Зірочка в рядку списку — трохи менша, ніж у панелі керування. */
+    .mpRow button { width:1.1rem !important; height:1.1rem !important; }
+    .mpRow button svg { width:0.75rem !important; height:0.75rem !important; }
     .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
     .mpRow.cur::before { content:""; width:0.4rem; height:0.4rem; border-radius:50%; background:currentColor; flex:none; }
@@ -4940,24 +4992,45 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       const isCurrent = h.title === curTrack;
       const row = d.createElement("div"); row.className = "mpRow" + (isCurrent ? " cur" : "");
       const tt = d.createElement("span"); tt.className = "t"; tt.textContent = h.title; tt.title = h.title;
-      tt.onclick = () => { if (tt.dataset.lp === "1") return; copyText(h.title, row); };
-      // Видалення пісні з історії: на тачі — довге утримання (600 мс),
-      // на ПК — права кнопка мишки. confirm() викликається з головного
-      // вікна, бо PiP системних діалогів не показує.
-      let lpTimer = null, lpx = 0, lpy = 0, lpLastHandled = 0;
+      // Inline-підтвердження видалення: після довгого утримання (тач) або ПКМ
+      // назва замінюється на червоне питання. Повторний клік по назві — видаляє,
+      // клік будь-де інше / таймаут 3,5 с — скасовує. Жодних системних
+      // confirm() — вони з PiP-вікна не працюють надійно.
+      let lpTimer = null, lpx = 0, lpy = 0, lpLastHandled = 0, lpConfirmTimer = null;
       const lpCancel = () => { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } };
-      const lpDelete = () => {
+      const lpRestore = () => {
+        if (lpConfirmTimer) { clearTimeout(lpConfirmTimer); lpConfirmTimer = null; }
+        if (!tt.dataset.confirming) return;
+        tt.textContent = tt.dataset.origText || h.title;
+        tt.classList.remove("confirming");
+        delete tt.dataset.confirming;
+        delete tt.dataset.confirmTitle;
+        delete tt.dataset.origText;
+      };
+      const lpShowConfirm = () => {
         const now = Date.now();
         if (now - lpLastHandled < 1000) return;
         lpLastHandled = now;
         try { if (navigator.vibrate) navigator.vibrate(15); } catch (err) {}
-        // Діалог викликаємо З САМОГО ВІКНА PiP, а не з головного:
-        // Chrome блокує confirm() з нефокусованого (фонового) вікна, тож
-        // ПКМ у PiP-вікні раніше не приводив до видалення.
-        if (pipWin && !pipWin.closed && pipWin.confirm(t("confirmDeleteSongHistory"))) {
-          try { removeSongFromHistory(h.title); } catch (e) {}
-          renderHist(true);
+        if (tt.dataset.confirming) return;
+        tt.dataset.origText = tt.textContent || h.title;
+        tt.dataset.confirming = "1";
+        tt.dataset.confirmTitle = h.title;
+        tt.textContent = t("confirmDeleteSongHistory");
+        tt.classList.add("confirming");
+        lpConfirmTimer = setTimeout(lpRestore, 3500);
+      };
+      tt.onclick = () => {
+        if (tt.dataset.confirming === "1") {
+          const t2 = tt.dataset.confirmTitle;
+          if (t2) {
+            try { removeSongFromHistory(t2); } catch (e) {}
+            renderHist(true);
+          }
+          return;
         }
+        if (tt.dataset.lp === "1") return;
+        copyText(h.title, row);
       };
       tt.addEventListener("pointerdown", (e) => {
         if (e.pointerType === "mouse") return;
@@ -4967,7 +5040,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
           lpTimer = null;
           tt.dataset.lp = "1";
           setTimeout(() => { try { delete tt.dataset.lp; } catch (err) { tt.dataset.lp = ""; } }, 600);
-          lpDelete();
+          lpShowConfirm();
         }, 600);
       });
       ["pointerup", "pointerleave", "pointercancel"].forEach(ev => tt.addEventListener(ev, lpCancel));
@@ -4979,7 +5052,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         e.preventDefault();
         tt.dataset.lp = "1";
         setTimeout(() => { try { delete tt.dataset.lp; } catch (err) { tt.dataset.lp = ""; } }, 600);
-        lpDelete();
+        lpShowConfirm();
       });
       const b = d.createElement("button"); b.className = fav ? "on" : ""; b.innerHTML = STAR_SVG(fav);
       b.onclick = () => { try { toggleFavorite(h.title); } catch (e) {} renderHist(true); };
@@ -5187,7 +5260,7 @@ function renderStats() {
     return `<div class="stats-item${isCurrent ? ' current' : ''}" data-station="${escapeHtml(name)}" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(128,128,128,0.12); font-size:13.5px; gap:6px;">
       <span style="display:flex; align-items:center; gap:7px; overflow:hidden;">
         <img src="${escapeHtml(proxifyIconUrl(icon))}" alt="" style="width:20px; height:20px; border-radius:5px; flex-shrink:0; object-fit:cover;" onerror="this.src='${DEFAULT_STATION_ICON}'">
-        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(name)}</span>
+        <span class="stat-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(name)}</span>
       </span>
       <span style="text-align:right; white-space:nowrap; opacity:0.9; flex-shrink:0; display:inline-flex; align-items:center; gap:6px;">▶ ${formatHoursMinutes(st.session)} ${clockTime(st.total)}</span>
     </div>`;
@@ -5203,33 +5276,57 @@ function renderStats() {
   }
   el.innerHTML = rowsHtml + `<div style="margin-top:8px; padding-top:8px; font-weight:700; font-size:14px; display:flex; justify-content:space-between; align-items:center;"><span>${t("totalAllStations")}</span>${clockTime(totalAll)}</div>`;
   // Видалення станції зі статистики: на тачі — довге утримання (600 мс),
-  // на ПК — права кнопка мишки.
+  // на ПК — права кнопка мишки. Підтвердження — inline: замість назви у рядку
+  // на 3,5 с показується червоне питання. Повторний клік по цьому рядку
+  // підтверджує; будь-який інший клік або таймаут — скасовує.
   el.querySelectorAll(".stats-item").forEach(row => {
     const name = row.dataset.station || "";
     if (!name) return;
-    let timer = null, sx = 0, sy = 0, lastHandled = 0;
+    const nameEl = row.querySelector(".stat-name");
+    if (!nameEl) return;
+    let timer = null, sx = 0, sy = 0, lastHandled = 0, confirmTimer = null;
     const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
-    const doDelete = () => {
+    const restore = () => {
+      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+      if (!row.dataset.confirming) return;
+      nameEl.textContent = row.dataset.origText || name;
+      nameEl.classList.remove("confirming");
+      delete row.dataset.confirming;
+      delete row.dataset.confirmName;
+      delete row.dataset.origText;
+    };
+    const showConfirm = () => {
       const now = Date.now();
       if (now - lastHandled < 1000) return;
       lastHandled = now;
       try { if (navigator.vibrate) navigator.vibrate(15); } catch (err) {}
-      if (window.confirm(t("confirmDeleteStationStats").replace("{name}", name))) {
-        removeStationFromStats(name);
-      }
+      if (row.dataset.confirming) return;
+      row.dataset.origText = nameEl.textContent || name;
+      row.dataset.confirming = "1";
+      row.dataset.confirmName = name;
+      nameEl.textContent = t("confirmDeleteStationStats").replace("{name}", name);
+      nameEl.classList.add("confirming");
+      confirmTimer = setTimeout(restore, 3500);
     };
     row.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse") return;
       sx = e.clientX; sy = e.clientY;
       cancel();
-      timer = setTimeout(() => { timer = null; doDelete(); }, 600);
+      timer = setTimeout(() => { timer = null; showConfirm(); }, 600);
     });
     ["pointerup", "pointerleave", "pointercancel"].forEach(ev => row.addEventListener(ev, cancel));
     row.addEventListener("pointermove", (e) => {
       if (!timer) return;
       if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) cancel();
     });
-    row.addEventListener("contextmenu", (e) => { e.preventDefault(); doDelete(); });
+    row.addEventListener("contextmenu", (e) => { e.preventDefault(); showConfirm(); });
+    row.addEventListener("click", (e) => {
+      if (!row.dataset.confirming) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const n = row.dataset.confirmName;
+      if (n) removeStationFromStats(n);
+    }, true);
   });
 }
 document.getElementById("resetStatsBtn").onclick = () => {
