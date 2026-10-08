@@ -112,7 +112,7 @@
   #app.neumorphic #playBtn { border-radius: 50%; background: var(--neuSurface, var(--g2)); border: none; color: var(--fg); transition: box-shadow 0.2s; }
   #app.neumorphic #playBtn.paused-attn { box-shadow: 6px 6px 14px var(--neuDark), -6px -6px 14px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); background: var(--neuSurface, var(--g2)); animation: none; }
   #app.neumorphic #playBtn:not(.paused-attn) { box-shadow: inset 5px 5px 11px var(--neuDark), inset -5px -5px 11px var(--neuLight); }
-  #app.neumorphic #pulse.playing .ring { box-shadow: 0 0 0 3px var(--fg); opacity: 0.3; }
+  #app.neumorphic #pulse.playing .ring { box-shadow: 0 0 0 var(--rw, 6px) var(--fg); opacity: 0.3; }
   #app.neumorphic .primaryBtn, #app.neumorphic .ghostBtn { box-shadow: 5px 5px 11px var(--neuDark), -5px -5px 11px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.05); border: none; background: var(--modalbg); color: var(--modaltext); border-radius: 12px; }
   #app.neumorphic #stations.altStyle { --stGap: 14px; --stPadH: 20px; background: none; backdrop-filter: none; margin: 0 10px 12px; padding: 22px 0 16px; }
   #app.neumorphic #stations.altStyle .stationsPage { background: none; }
@@ -297,12 +297,12 @@
   inset: 0;
   margin: auto;
   border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(var(--ring), 0.35);
+  box-shadow: 0 0 0 var(--rw, 6px) rgba(var(--ring), 0.35);
   will-change: opacity;
 }
-.ring.r1 { width: 40%; height: 40%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.55); }
-.ring.r2 { width: 70%; height: 70%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.35); }
-.ring.r3 { width: 100%; height: 100%; box-shadow: 0 0 0 3px rgba(var(--ring), 0.22); }
+.ring.r1 { --rw: 3px; width: 40%; height: 40%; box-shadow: 0 0 0 var(--rw) rgba(var(--ring), 0.55); }
+.ring.r2 { --rw: 4.5px; width: 70%; height: 70%; box-shadow: 0 0 0 var(--rw) rgba(var(--ring), 0.35); }
+.ring.r3 { --rw: 6px; width: 100%; height: 100%; box-shadow: 0 0 0 var(--rw) rgba(var(--ring), 0.22); }
 #pulse.playing .ring { animation: pulse 1.8s ease-out infinite; }
 #pulse.playing .r2 { animation-delay: 1.0s; }
 #pulse.playing .r3 { animation-delay: 0.5s; }
@@ -2757,6 +2757,7 @@ let eqUnsupportedWarned = false;
 let audioCtx, sourceNode, analyser, dataArray;
 let vizPadNode = null;
 let gainNode = null;
+let fadeK = 1, fadeTimer = null, fadeGen = 0, pauseFadeCb = null; // множник гучності для плавних вмикання/вимикання (1 = повна)
 // Аналізатор (analyser) підключений ДО gainNode, тому на нього впливає audioEl.volume, а не
 // гучність слухача.
 const VIZ_REF_VOLUME = 0.1;
@@ -2847,6 +2848,17 @@ function startGridReorderDrag(i, btn, startX, startY) {
   const clone = btn.cloneNode(true);
   clone.removeAttribute("id");
   clone.classList.remove("drag-over");
+  // Копія живе в #app, а частина правил кнопки — під #stations (напр. скруглення в альтернативному вигляді),
+  // тож без цього копія була б квадратною. Переносимо фактичні стилі оригіналу.
+  const cs = getComputedStyle(btn);
+  ["borderTopLeftRadius", "borderTopRightRadius", "borderBottomRightRadius", "borderBottomLeftRadius",
+   "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth",
+   "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle",
+   "borderTopColor", "borderRightColor", "borderBottomColor", "borderLeftColor",
+   "boxSizing", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+   "backgroundColor", "backgroundImage", "color", "fontSize", "fontWeight", "fontFamily", "letterSpacing", "lineHeight",
+   "textAlign", "display", "alignItems", "justifyContent", "overflow"
+  ].forEach(p => { try { clone.style[p] = cs[p]; } catch (e) {} });
   Object.assign(clone.style, { position: "fixed", left: rect.left + "px", top: rect.top + "px", width: rect.width + "px", height: rect.height + "px",
     margin: "0", zIndex: "9999", pointerEvents: "none", transform: "scale(1.06)", opacity: "0.95", boxShadow: "0 12px 28px rgba(0,0,0,0.4)", transition: "none" });
   appEl.appendChild(clone);
@@ -4519,6 +4531,10 @@ function attachElasticStretch(el, getAxis, opts) {
 
   el.addEventListener("touchmove", (e) => {
     if (!dragging || e.touches.length !== 1) return;
+    if (opts.skip && opts.skip()) {
+      if (activeEdge) { activeEdge = null; tgt.style.transition = ""; tgt.style.transform = ""; }
+      return;
+    }
     const cur = axis === "y" ? e.touches[0].clientY : e.touches[0].clientX;
     const delta = cur - startPos;
     const scrollPos = axis === "y" ? el.scrollTop : el.scrollLeft;
@@ -4569,6 +4585,7 @@ function attachElasticStretch(el, getAxis, opts) {
   el.addEventListener("touchcancel", release, { passive: true });
 }
 attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x", {
+  skip: () => stationsEl.classList.contains("dragging-stations"),   // під час перетягування станції сітка не розтягується
   onStart: () => { clearTimeout(longPressTimer); longPressFired = false; }
 });
 // Панель налаштувань (і бічна, і компактна): розтягуємо активну вкладку на початку й наприкінці.
@@ -5076,48 +5093,79 @@ function canResumePausedStream(url) {
   return true;
 }
 
-// Короткий fade-in при поверненні, щоб не було клацання на різкому старті.
-// Гучність гарантовано відновлюється (подія playing або страхувальний таймер).
-function prepareResumeFadeIn() {
-  const FADE = 0.15;
-  let restore = null;
-  if (gainNode && audioCtx) {
-    const target = gainNode.gain.value;
-    try {
-      gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
-      gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-    } catch (e) {}
-    restore = () => {
-      try {
-        const n = audioCtx.currentTime;
-        gainNode.gain.cancelScheduledValues(n);
-        gainNode.gain.setValueAtTime(0.0001, n);
-        gainNode.gain.linearRampToValueAtTime(target, n + FADE);
-      } catch (e) { try { gainNode.gain.value = target; } catch (_) {} }
-    };
-  } else {
-    const target = audioEl.volume;
-    if (target <= 0.001) return;
-    try { audioEl.volume = 0; } catch (e) { return; }
-    restore = () => {
-      const t0 = performance.now();
-      (function step(now) {
-        const k = Math.min(1, (now - t0) / (FADE * 1000));
-        try { audioEl.volume = target * k; } catch (e) {}
-        if (k < 1) requestAnimationFrame(step);
-        else { try { audioEl.volume = target; } catch (e) {} }
-      })(t0);
-    };
-  }
-  let done = false;
+// ---- Плавна зміна гучності (fade) ----
+// Ефективна гучність = повзунок × fadeK. Працює і через gainNode (коли є аудіограф), і через
+// audioEl.volume. На iOS audioEl.volume лише для читання, тож без аудіографа fade там пропускається.
+const FADE_OUT_MS = 450;   // притишення перед паузою
+const FADE_IN_MS = 900;    // наростання після паузи / перепідключення
+function fadeUserVolume() { return state.settings.volume != null ? state.settings.volume : 0.8; }
+function fadeApply() {
+  const lvl = Math.max(0, Math.min(1, fadeUserVolume() * fadeK));
+  try { if (gainNode) gainNode.gain.value = lvl; else audioEl.volume = lvl; } catch (e) {}
+}
+function fadeStop() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
+function fadeSet(k) { fadeStop(); fadeGen++; fadeK = k; fadeApply(); }
+function fadeRestoreSoon() {
+  // Повну гучність повертаємо з невеликою затримкою після pause(), щоб хвіст буфера не «стрельнув».
+  if (fadeK === 1) return;
+  const g = ++fadeGen;
+  setTimeout(() => { if (fadeGen === g) fadeSet(1); }, 150);
+}
+function fadeRun(up, ms, done) {
+  fadeStop();
+  fadeGen++;
+  const k0 = fadeK, t0 = performance.now();
+  fadeTimer = setInterval(() => {
+    const p = Math.min(1, (performance.now() - t0) / ms);
+    // Квадратична крива: на слух плавніше, ніж лінійна.
+    fadeK = up ? k0 + (1 - k0) * p * p : k0 * (1 - p) * (1 - p);
+    fadeApply();
+    if (p >= 1) { fadeStop(); if (done) done(); }
+  }, 16);
+}
+function canFadeVolume() {
+  if (document.hidden) return false;                 // у фоні таймери пригальмовуються — fade вийшов би рваним
+  if (isIOSDevice && !gainNode) return false;
+  return fadeUserVolume() > 0.001;
+}
+// Готує наростання: тиша до події playing, далі плавний підйом до гучності повзунка.
+function armFadeIn() {
+  if (!canFadeVolume()) { if (fadeK !== 1) fadeSet(1); return; }
+  fadeSet(0);
+  const gen = fadeGen;
+  let done = false, safety = null;
   const go = () => {
     if (done) return; done = true;
+    clearTimeout(safety);
     audioEl.removeEventListener("playing", go);
-    restore();
+    if (fadeGen !== gen) return;
+    fadeRun(true, FADE_IN_MS);
   };
   audioEl.addEventListener("playing", go);
-  setTimeout(go, 3000);
+  safety = setTimeout(go, 20000);
 }
+// Пауза з плавним притишенням. Якщо fade неможливий — пауза миттєва.
+function fadeOutThenPause(afterPause) {
+  if (audioEl.paused || fadeK < 0.02 || !canFadeVolume()) {
+    try { audioEl.pause(); } catch (e) {}
+    if (afterPause) afterPause();
+    fadeRestoreSoon();
+    return;
+  }
+  const finish = (doPause) => {
+    if (pauseFadeCb !== finish) return;
+    pauseFadeCb = null;
+    fadeStop();
+    if (doPause) { try { audioEl.pause(); } catch (e) {} }
+    if (afterPause) afterPause();
+    if (doPause) fadeRestoreSoon(); else fadeSet(1);
+  };
+  pauseFadeCb = finish;
+  fadeRun(false, FADE_OUT_MS, () => finish(true));
+}
+// Незавершену паузу (притишення ще триває) завершуємо одразу — або з pause(), або без нього,
+// якщо одразу стартує інший потік.
+function flushPauseFade(doPause) { if (pauseFadeCb) pauseFadeCb(doPause); }
 
 function resumePausedStream(url) {
   clearPauseGrace();
@@ -5135,7 +5183,7 @@ function resumePausedStream(url) {
     startPlaybackAttempt(url);
   };
   setAudioState(AUDIO_STATE.CONNECTING);
-  prepareResumeFadeIn();
+  armFadeIn();
   const pr = audioEl.play();
   if (pr !== undefined) {
     pr.catch((err) => freshStart("play(): " + (err && err.message || err)));
@@ -5150,6 +5198,8 @@ function resumePausedStream(url) {
 
 async function startPlaybackAttempt(url, isRetry) {
   if (!url) return;
+  flushPauseFade(false);
+  if (isRetry && hasPlayedOnceForCurrent) armFadeIn();   // перепідключення після обриву — плавне наростання
   intentionalDisconnect = false;
   clearPauseGrace(); pausedStreamAlive = false;
   lastProgressAt = Date.now(); lastProgressTime = -1; stableSince = 0;
@@ -5869,11 +5919,6 @@ function onAudioError(e) {
 }
 
 // ---- Кнопки ----
-function fadeOutThenPause(afterPause) {
-  // Без затухання: пауза миттєва. Ім'я функції лишилось, щоб не чіпати виклики.
-  audioEl.pause();
-  if (afterPause) afterPause();
-}
 
 // Пауза за командою користувача (кнопка, lock-screen, навушники): справжній розрив з'єднання,
 // а не просто mute — інакше браузер тихо тягне потік у фоні. Заодно скасовує заплановані
@@ -5917,7 +5962,7 @@ function doUserPause() {
     } else {
       stopFakeVisualizer();
     }
-    // Плавне притишення за ~0.12с і pause() — і все. Ніяких removeAttribute/load.
+    // Плавне притишення (FADE_OUT_MS) і pause() — і все. Ніяких removeAttribute/load.
     // За рахунок цього звук зникає рівно тоді, коли гучність уже на нулі (без
     // клацання), і MediaSession залишається живою.
     fadeOutThenPause(() => {
@@ -5934,6 +5979,7 @@ function doUserPause() {
 }
 
 playBtn.onclick = () => {
+  flushPauseFade(true);
   if (activeIndex === -1 && !isSearchPlayback) {
     const idx = state.stations.findIndex(s => /paradise/i.test(s.name) && !/rock/i.test(s.name));
     selectStation(idx !== -1 ? idx : 0);
@@ -5952,6 +5998,7 @@ playBtn.onclick = () => {
     recoverAttempts = 0;
     if (url) {
       currentStationToken++;
+      armFadeIn();
       startPlaybackAttempt(url);
       scrollToActiveStation(true);
       if (!isSearchPlayback) {
@@ -6649,10 +6696,10 @@ function setVolume(v) {
     // регулюємо ВИКЛЮЧНО через gainNode. Аналізатор під'єднаний через окремий
     // фіксований vizPadNode, тому він НЕ залежить від повзунка.
     if (audioEl.volume !== 1.0) audioEl.volume = 1.0;
-    gainNode.gain.value = val;
+    gainNode.gain.value = val * fadeK;
   } else {
     // Графа нема — регулюємо гучність напряму на елементі.
-    audioEl.volume = val;
+    audioEl.volume = val * fadeK;
   }
   saveState();
   updateVolUI(val);
@@ -7015,7 +7062,7 @@ function setupEqualizer() {
   if (!gainNode) {
     gainNode = audioCtx.createGain();
     const initVol = state.settings.volume != null ? state.settings.volume : 0.8;
-    gainNode.gain.value = initVol;
+    gainNode.gain.value = initVol * fadeK;
     audioEl.volume = 1.0;
   }
   if (realVizWanted() && !analyser) {
