@@ -2831,10 +2831,13 @@ let fadeK = 1, fadeTimer = null, fadeGen = 0, pauseFadeCb = null; // множн�
 // гучність слухача.
 const VIZ_REF_VOLUME = 0.1;
 // Лише для телефонів/планшетів: частка звітованої браузером outputLatency, на яку
-// зсуваємо спектр. На Android outputLatency часто завищена, через що візуалізатор відстає.
+// зсуваємо показ спектру, щоб він збігався зі звуком у динаміку.
+// Раніше було 0.75 з обмеженням 400 мс — це давало перекомпенсацію (спектр
+// «спішив» попереду звуку). Тепер 0.5 з обмеженням 250 мс — баланс ближче
+// до реальності, але без ризику знову отримати помітне відставання.
 // На ПК не використовується (там затримка береться повністю, як і раніше).
-const VIZ_LAT_SCALE_TOUCH = 0.75;
-const VIZ_LAT_MAX_TOUCH = 400;
+const VIZ_LAT_SCALE_TOUCH = 0.5;
+const VIZ_LAT_MAX_TOUCH = 250;
 let eqNodes = [];
 let normGainNode = null, normLimiter = null, normAnalyser = null, normAgcBuf = null;
 let normMeasureTimer = null;
