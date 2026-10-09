@@ -1208,7 +1208,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.drawer-active > #stationsWrap,
   #app.drawer-active > #volRow,
   #app.drawer-active > #controls {
-    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), translate 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
   #app.drawer-active.drawer-dragging > #headerBand,
   #app.drawer-active.drawer-dragging > #trackInfo,
@@ -1238,6 +1238,30 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   }
   #app.panel-side #modalBg.open .modal { transform: translateX(0); clip-path: inset(0 0 0 0); }
   #app.panel-side #modalBg .modal::after { display: none !important; }
+  /* Затемнення панелі — окремим шаром (opacity), а не filter: brightness() по всій панелі, яке на кожному кадрі жесту перемальовувало весь вміст панелі й давало «гальмування». */
+  #app.panel-side #modalBg .modal { filter: none; }
+  #app.panel-side #modalBg .modal::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000;
+    opacity: calc(1 - var(--panel-brightness, 0.55)); pointer-events: none; z-index: 100;
+    transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #app.panel-side #modalBg .modal.drawer-dragging::before { transition: none; }
+  #app.panel-side #modalBg .modal.drawer-dragging { will-change: transform, clip-path; }
+  #app.drawer-dragging > #headerBand,
+  #app.drawer-dragging > #trackInfo,
+  #app.drawer-dragging > #messageLine,
+  #app.drawer-dragging > #connStatus,
+  #app.drawer-dragging > #sleepMainWarning,
+  #app.drawer-dragging > #stageWrap,
+  #app.drawer-dragging > #stationsWrap,
+  #app.drawer-dragging > #volRow,
+  #app.drawer-dragging > #controls,
+  #app.drawer-dragging > #mainEdgeShadow { will-change: transform, translate; }
+  /* Поки палець тягне панель: вимикаємо blur (backdrop-filter перераховується на кожному кадрі) і ставимо на паузу CSS-анімації. */
+  #app.drawer-nofx *, #app.drawer-nofx *::before, #app.drawer-nofx *::after {
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    animation-play-state: paused !important;
+  }
   #mainEdgeShadow {
     display: none; position: absolute; top: 0; bottom: 0; left: -24px; width: 24px; z-index: 10; pointer-events: none;
     background: linear-gradient(to left, rgba(0,0,0,0.5), rgba(0,0,0,0));
@@ -2330,7 +2354,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "3.0";
+const APP_VERSION = "3.06";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -2838,6 +2862,7 @@ const VIZ_REF_VOLUME = 0.1;
 const VIZ_LAT_SCALE_TOUCH = 0.9;
 const VIZ_LAT_MAX_TOUCH = 550;
 let eqNodes = [];
+let eqPreNode = null;
 let normGainNode = null, normLimiter = null, normAnalyser = null, normAgcBuf = null;
 let normMeasureTimer = null;
 function needsAudioGraph() {
@@ -2853,7 +2878,9 @@ let longPressFired = false;
 let longPressMoveHandler = null;
 let reorderState = null;
 
+let reorderDragActive = false;
 function startReorderDrag(i, btn, startY) {
+  reorderDragActive = true;
   reorderState = { fromIndex: i, btn, currentIndex: i, startY };
   btn.classList.add("reordering");
   const onMove = (e) => {
@@ -2886,6 +2913,7 @@ function startReorderDrag(i, btn, startY) {
     }
   };
   const onEnd = () => {
+    reorderDragActive = false;
     document.removeEventListener("touchmove", onMove);
     document.removeEventListener("touchend", onEnd);
     document.removeEventListener("touchcancel", onEnd);
@@ -2914,6 +2942,7 @@ function startReorderDrag(i, btn, startY) {
 // Перетягування станцій у СІТЦІ на дотикових пристроях (після довгого утримання): за пальцем їде копія кнопки,
 // ціль підсвічується, біля краю екрана сторінки перегортаються, на відпусканні станція ставиться на місце цілі.
 function startGridReorderDrag(i, btn, startX, startY) {
+  reorderDragActive = true;
   const appEl = document.getElementById("app");
   const rect = btn.getBoundingClientRect();
   const clone = btn.cloneNode(true);
@@ -2978,6 +3007,7 @@ function startGridReorderDrag(i, btn, startX, startY) {
   const finish = (apply) => {
     if (done) return;
     done = true;
+    reorderDragActive = false;
     clearInterval(timer);
     document.removeEventListener("touchmove", onMove);
     document.removeEventListener("touchend", onEnd);
@@ -5067,13 +5097,16 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     if (flashEl) { flashEl.style.opacity = ".4"; setTimeout(() => { try { flashEl.style.opacity = ""; } catch (e) {} }, 250); }
   }
   // Клік по назві пісні і по зірочці — одна дія: копіювати + додати в улюблені (як клік по назві в основному вікні).
-  function trackAction() {
+  function trackAction(favOnly) {
     try {
       const el = pipWin.document.getElementById("mpTrack");
       const txt = (el.textContent || "").trim();
       if (!txt) return;
-      try { pipWin.navigator.clipboard.writeText(txt); } catch (e) {}
-      copyTrackName(txt, true);
+      if (favOnly === true) copyTrackName(txt, "fav");
+      else {
+        try { pipWin.navigator.clipboard.writeText(txt); } catch (e) {}
+        copyTrackName(txt, "popupOnly");
+      }
       el.style.opacity = ".35"; setTimeout(() => { try { el.style.opacity = ""; } catch (e) {} }, 300);
       setTimeout(sync, 50);
     } catch (e) {}
@@ -5205,13 +5238,13 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       if (tr && state.songFavorites.includes(tr)) {
         try { toggleFavorite(tr); } catch (e) {}
         sync();
-      } else trackAction();
+      } else trackAction(true);
     };
     d.getElementById("mpHistBtn").onclick = () => setHist(true);
     d.getElementById("mpHistClose").onclick = () => setHist(false);
     d.getElementById("mpStClose").onclick = () => setSt(false);
     d.getElementById("mpStation").onclick = () => setSt(!stOpen);
-    d.getElementById("mpTrack").onclick = trackAction;
+    d.getElementById("mpTrack").onclick = () => trackAction(false);
     d.addEventListener("keydown", (e) => { if (e.key === "Escape") { setHist(false); setSt(false); } });
     pipWin.addEventListener("resize", trackRect);
     pipWin.addEventListener("pagehide", cleanup);
@@ -5477,8 +5510,9 @@ function teardownHls() {
 // Пауза не рве з'єднання одразу: <audio> зберігає src і те, що встиг набуферизувати,
 // тож Play у межах вікна — це миттєвий audioEl.play() з того самого місця (без нового
 // підключення). Якщо вікно минуло (або потік за цей час помер) — звичайний свіжий старт.
-const PAUSE_GRACE_MS = 60000;
-let pauseGraceTimer = null;
+const PAUSE_GRACE_MS = 60000;      // скільки Play ще може продовжити той самий потік
+const PAUSE_NOTIF_MS = 5 * 60000;  // скільки після паузи тримаємо елемент (а з ним сповіщення в шторці), потім закриваємо
+let pauseGraceTimer = null, pauseNotifTimer = null;
 let pausedStreamAlive = false;
 let pausedAtTs = 0;
 let pausedUrl = null;
@@ -5486,6 +5520,7 @@ let resumeWatchdogTimer = null;
 
 function clearPauseGrace() {
   if (pauseGraceTimer) { clearTimeout(pauseGraceTimer); pauseGraceTimer = null; }
+  if (pauseNotifTimer) { clearTimeout(pauseNotifTimer); pauseNotifTimer = null; }
   if (resumeWatchdogTimer) { clearTimeout(resumeWatchdogTimer); resumeWatchdogTimer = null; }
 }
 
@@ -5497,7 +5532,18 @@ function armPauseGraceTimer() {
     // Користувач уже повернувся до відтворення — нічого не рвемо.
     if (isPlaying || audioState === AUDIO_STATE.PLAYING ||
         audioState === AUDIO_STATE.CONNECTING || audioState === AUDIO_STATE.RECOVERING) return;
-    releasePausedStream();
+    // Продовжити старий буфер уже не можна (Play почне потік заново), але елемент не закриваємо:
+    // інакше сповіщення в шторці зникає. Остаточно закриємо через PAUSE_NOTIF_MS після паузи.
+    pausedStreamAlive = false;
+    devLog("Пауза: буфер застарів, сповіщення лишається ще кілька хвилин");
+    const rest = Math.max(0, PAUSE_NOTIF_MS - (Date.now() - pausedAtTs));
+    if (pauseNotifTimer) clearTimeout(pauseNotifTimer);
+    pauseNotifTimer = setTimeout(() => {
+      pauseNotifTimer = null;
+      if (isPlaying || audioState === AUDIO_STATE.PLAYING ||
+          audioState === AUDIO_STATE.CONNECTING || audioState === AUDIO_STATE.RECOVERING) return;
+      releasePausedStream();
+    }, rest);
   }, left);
 }
 
@@ -5553,6 +5599,7 @@ function fadeRun(up, ms, done) {
   }, 16);
 }
 function canFadeVolume() {
+  return false;   // плавні наростання/затухання вимкнено (давали клацання)
   if (document.hidden) return false;                 // у фоні таймери пригальмовуються — fade вийшов би рваним
   if (isIOSDevice && !gainNode) return false;
   return fadeUserVolume() > 0.001;
@@ -6041,7 +6088,7 @@ function selectStation(i, revealPage) {
   trackInfo.textContent = t("buffering");
   // Оновлюємо медіа-сповіщення одразу, ще до старту нового потоку — інакше воно встигає
   // зникнути через audioEl.pause() старої станції і з'являється знову аж коли нова стане grać.
-  updateMediaSession(null, s.fullName || s.name, s.favicon);
+  updateMediaSession(null, s.fullName || s.name, s.favicon, true);
   httpsFallbackTried = {};
   hasPlayedOnceForCurrent = false;
   isPlaybackError = false;
@@ -6078,7 +6125,7 @@ function playFromSearch(url, name, meta) {
   eqUnsupportedWarned = false;
   trackInfo.textContent = name || t("buffering");
   stationTitle.textContent = t("appName");
-  updateMediaSession(name, t("appName"));
+  updateMediaSession(name, t("appName"), undefined, true);
   setAudioState(AUDIO_STATE.CONNECTING);
   currentStationToken++;
   startPlaybackAttempt(url);
@@ -6207,6 +6254,7 @@ function onAudioPlaying() {
   if ("mediaSession" in navigator) {
     try { navigator.mediaSession.playbackState = "playing"; } catch (e) {}
   }
+  refreshMediaSessionNow();
   playStartTs = Date.now();
   if (stallRecoveryTimer) { clearTimeout(stallRecoveryTimer); stallRecoveryTimer = null; }
   armSleepTimerIfNeeded();
@@ -6860,7 +6908,9 @@ function parseStopWords(str) {
     .map(s => s.trim().toLowerCase())
     .filter(Boolean);
 }
-function copyTrackName(txtOverride, skipCopy) {
+function copyTrackName(txtOverride, mode) {
+  // mode: undefined = тільки копіювати (без додавання до вибраних); "popupOnly" = текст уже скопійовано, лише повідомлення;
+  // "fav" = тільки додати до вибраних (без копіювання).
   // Захист від випадкового кліку під час перемикання Сітка/Список
   if (viewSwitchingGuard) return;
   const txt = (typeof txtOverride === "string" && txtOverride) ? txtOverride : trackInfo.textContent;
@@ -6884,16 +6934,20 @@ function copyTrackName(txtOverride, skipCopy) {
   // підрядок, регістронезалежно.
   const stopWords = Array.isArray(state.settings.stopWords) ? state.settings.stopWords : [];
   if (stopWords.some(w => w && txtLower.includes(w))) return;
-  if (skipCopy) showPopup(t("copied") + ": " + txt);
-  else copyTextToClipboard(txt).then(() => showPopup(t("copied") + ": " + txt)).catch(() => showPopup(t("copyFailedToast")));
-  addSongToHistory(txt);
-  showHeartBurst();
-  bumpTrackTitle();
-  if (!state.songFavorites.includes(txt)) {
-    state.songFavorites.push(txt);
-    saveState();
-    renderSongHistory();
-    renderSongFavorites();
+  if (mode === "fav") {
+    addSongToHistory(txt);
+    showHeartBurst();
+    bumpTrackTitle();
+    if (!state.songFavorites.includes(txt)) {
+      state.songFavorites.push(txt);
+      saveState();
+      renderSongHistory();
+      renderSongFavorites();
+    }
+  } else {
+    if (mode === "popupOnly") showPopup(t("copied") + ": " + txt);
+    else copyTextToClipboard(txt).then(() => showPopup(t("copied") + ": " + txt)).catch(() => showPopup(t("copyFailedToast")));
+    bumpTrackTitle();
   }
   // Миттєво підсвічуємо зірочку на головному екрані. MutationObserver на
   // #trackInfo не спрацює, бо текст не змінився — а без цього виклику кнопка
@@ -7144,7 +7198,7 @@ document.getElementById("favSideBtn").onclick = () => {
   if (state.songFavorites.includes(txt)) {
     toggleFavorite(txt);
   } else {
-    copyTrackName(txt, true);
+    copyTrackName(txt, "fav");
     // Ефект затухання назви пісні — як у міні-плеєрі.
     trackInfo.style.transition = "opacity 0.2s";
     trackInfo.style.opacity = "0.35";
@@ -7394,6 +7448,7 @@ function startFakeVisualizer() {
       return;
     }
         vizWrap.classList.remove("hidden");
+    if (drawerNoFx) { fakeVizInterval = requestAnimationFrame(step); return; }
     if (isTouchDevice && now - vizLastDraw < 32) { fakeVizInterval = requestAnimationFrame(step); return; }
     vizLastDraw = now;
     const delta = (now - lastTime) / 1000;
@@ -7618,6 +7673,7 @@ function setupEqualizer() {
   }
   eqNodes.forEach(f => f.disconnect());
   eqNodes = [];
+  if (eqPreNode) { try { eqPreNode.disconnect(); } catch (e) {} eqPreNode = null; }
   try { sourceNode.disconnect(); } catch(e) {}
   try { gainNode.disconnect(); } catch(e) {}
   if (vizPadNode) { try { vizPadNode.disconnect(); } catch(e) {} }
@@ -7630,6 +7686,10 @@ function setupEqualizer() {
   if (state.settings.eqEnabled) {
     const freqs = [60, 230, 910, 3600, 14000];
     const gains = state.settings.eqGains || [0,0,0,0,0];
+    // Попередній підсилювач (знижує рівень на величину підйому смуг), щоб сума підйомів не давала перевантаження.
+    eqPreNode = audioCtx.createGain();
+    lastNode.connect(eqPreNode);
+    lastNode = eqPreNode;
     freqs.forEach((freq, i) => {
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'peaking';
@@ -7640,6 +7700,7 @@ function setupEqualizer() {
       lastNode = filter;
       eqNodes.push(filter);
     });
+    eqUpdatePreamp(true);
   }
   if (state.settings.volumeNormalization) {
     lastNode.connect(normAnalyser);
@@ -7748,6 +7809,7 @@ document.querySelectorAll('#eqControls input[type=range]').forEach((input, idx) 
       saveState();
       if (state.settings.eqEnabled && eqNodes[idx]) {
         eqNodes[idx].gain.value = val;
+        eqUpdatePreamp();
       }
     }
   };
@@ -7771,22 +7833,52 @@ function restoreEqUI() {
   });
 }
 
+// Запас по гучності для еквалайзера: рахуємо реальну сумарну АЧХ усіх смуг і опускаємо рівень на максимальний підйом.
+const EQ_RESP_FREQS = (() => { const a = new Float32Array(96); for (let i = 0; i < a.length; i++) a[i] = 20 * Math.pow(1000, i / (a.length - 1)); return a; })();
+function eqUpdatePreamp(immediate) {
+  if (!eqPreNode || !eqNodes.length || !audioCtx) return;
+  let maxLin = 1;
+  try {
+    const tot = new Float32Array(EQ_RESP_FREQS.length).fill(1);
+    const mag = new Float32Array(EQ_RESP_FREQS.length), ph = new Float32Array(EQ_RESP_FREQS.length);
+    eqNodes.forEach(f => { f.getFrequencyResponse(EQ_RESP_FREQS, mag, ph); for (let i = 0; i < tot.length; i++) tot[i] *= mag[i]; });
+    for (let i = 0; i < tot.length; i++) if (tot[i] > maxLin) maxLin = tot[i];
+  } catch (e) {}
+  const g = 1 / maxLin;
+  try {
+    if (immediate) eqPreNode.gain.value = g;
+    else eqPreNode.gain.setTargetAtTime(g, audioCtx.currentTime, 0.03);
+  } catch (e) {}
+}
+
 // ===================== пресети еквалайзера =====================
 // Смуги: 60 Гц, 230 Гц, 910 Гц, 3.6 кГц, 14 кГц; значення в дБ (діапазон повзунків −12…+12).
+const EQ_PRESETS_OLD = {
+  flat: [0,0,0,0,0], bass: [6,4,0,0,0], treble: [0,0,0,3,6], vocal: [-2,-1,3,4,1], speech: [-4,-1,3,4,0], pop: [-1,2,4,2,-1],
+  rock: [4,2,-2,2,4], jazz: [3,1,-2,2,3], classical: [4,3,0,2,3], electronic: [5,3,0,2,5], hiphop: [6,4,0,1,2], soft: [2,1,0,-2,-4]
+};
 const EQ_PRESETS = [
   { id: "flat",       key: "eqPresetFlat",       gains: [0, 0, 0, 0, 0] },
-  { id: "bass",       key: "eqPresetBass",       gains: [6, 4, 0, 0, 0] },
-  { id: "treble",     key: "eqPresetTreble",     gains: [0, 0, 0, 3, 6] },
-  { id: "vocal",      key: "eqPresetVocal",      gains: [-2, -1, 3, 4, 1] },
-  { id: "speech",     key: "eqPresetSpeech",     gains: [-4, -1, 3, 4, 0] },
-  { id: "pop",        key: "eqPresetPop",        gains: [-1, 2, 4, 2, -1] },
-  { id: "rock",       key: "eqPresetRock",       gains: [4, 2, -2, 2, 4] },
-  { id: "jazz",       key: "eqPresetJazz",       gains: [3, 1, -2, 2, 3] },
-  { id: "classical",  key: "eqPresetClassical",  gains: [4, 3, 0, 2, 3] },
-  { id: "electronic", key: "eqPresetElectronic", gains: [5, 3, 0, 2, 5] },
-  { id: "hiphop",     key: "eqPresetHiphop",     gains: [6, 4, 0, 1, 2] },
-  { id: "soft",       key: "eqPresetSoft",       gains: [2, 1, 0, -2, -4] }
+  { id: "bass",       key: "eqPresetBass",       gains: [10, 7, 1, -1, -2] },
+  { id: "treble",     key: "eqPresetTreble",     gains: [-2, -1, 0, 6, 10] },
+  { id: "vocal",      key: "eqPresetVocal",      gains: [-5, -3, 4, 7, 2] },
+  { id: "speech",     key: "eqPresetSpeech",     gains: [-10, -5, 3, 7, -2] },
+  { id: "pop",        key: "eqPresetPop",        gains: [-2, 3, 6, 4, 1] },
+  { id: "rock",       key: "eqPresetRock",       gains: [8, 3, -4, 3, 8] },
+  { id: "jazz",       key: "eqPresetJazz",       gains: [4, 3, 1, -2, 3] },
+  { id: "classical",  key: "eqPresetClassical",  gains: [3, 0, -1, 2, 6] },
+  { id: "electronic", key: "eqPresetElectronic", gains: [9, 5, -3, 3, 8] },
+  { id: "hiphop",     key: "eqPresetHiphop",     gains: [11, 6, 0, 1, 3] },
+  { id: "soft",       key: "eqPresetSoft",       gains: [3, 2, 0, -5, -9] }
 ];
+// Одноразова міграція: якщо збережений пресет має старі (слабші) значення — підтягуємо нові.
+function migrateEqPresets() {
+  const st = state.settings;
+  if (st.eqPresetsV === 2) return;
+  st.eqPresetsV = 2;
+  const id = st.eqPreset, old = EQ_PRESETS_OLD[id], np = EQ_PRESETS.find(p => p.id === id);
+  if (old && np && Array.isArray(st.eqGains) && old.every((g, i) => g === (st.eqGains[i] || 0))) st.eqGains = np.gains.slice();
+}
 
 function eqCurrentPresetId() {
   const cur = state.settings.eqGains || [0, 0, 0, 0, 0];
@@ -7812,7 +7904,7 @@ function applyEqPreset(preset) {
   saveState();
   eqEnsureOn();
   restoreEqUI();
-  if (eqNodes.length) eqNodes.forEach((f, i) => { try { f.gain.value = preset.gains[i] || 0; } catch (e) {} });
+  if (eqNodes.length) { eqNodes.forEach((f, i) => { try { f.gain.value = preset.gains[i] || 0; } catch (e) {} }); eqUpdatePreamp(); }
   showToast(t("eqTitle") + ": " + t(preset.key));
 }
 
@@ -8008,8 +8100,10 @@ async function performSearch() {
   let stationsFound = null;
   if (searchDiscover) stationsFound = discoverPool.slice(searchOffset, searchOffset + SEARCH_LIMIT);
   const _lang = state.settings.language || "uk";
-  const cacheKey = q + "_tag" + searchTag + "_cc" + searchCountryCode + "_offset" + searchOffset + "_l" + _lang;
-  if (!searchDiscover && state.settings.searchCache && state.searchCache[cacheKey]) {
+  // Поетапний режим: спершу ВСІ станції пріоритетної країни (PL або UA), потім другої, потім решта світу.
+  const _staged = !searchDiscover && !searchCountryCode && searchPriorityCodes().length > 0;
+  const cacheKey = q + "_tag" + searchTag + "_cc" + searchCountryCode + "_offset" + searchOffset + "_l" + _lang + "_v2";
+  if (!searchDiscover && !_staged && state.settings.searchCache && state.searchCache[cacheKey]) {
     const cached = state.searchCache[cacheKey];
     if (Date.now() - cached.timestamp < SEARCH_CACHE_TTL) {
       stationsFound = cached.data;
@@ -8020,7 +8114,7 @@ async function performSearch() {
     const fetchRb = async (cc, offset) => {
       for (const server of RB_SERVERS) {
         try {
-          let url = server + "/json/stations/search?limit=" + SEARCH_LIMIT + "&offset=" + offset + "&hidebroken=true";
+          let url = server + "/json/stations/search?limit=" + SEARCH_LIMIT + "&offset=" + offset + "&hidebroken=true&order=clickcount&reverse=true";
           if (q) url += "&name=" + encodeURIComponent(q);
           if (searchTag) url += "&tag=" + encodeURIComponent(searchTag);
           if (cc) url += "&countrycode=" + encodeURIComponent(cc);
@@ -8032,20 +8126,31 @@ async function performSearch() {
     };
     // Укр. інтерфейс: спершу UA, потім PL; пол.: спершу PL, потім UA; англ.: без пріоритету.
     const priCodes = searchPriorityCodes();
-    if (searchOffset === 0 && !searchCountryCode && priCodes.length) {
-      const lists = await Promise.all([...priCodes.map(cc => fetchRb(cc, 0)), fetchRb("", 0)]);
-      if (lists.some(l => l)) {
-        const seen = new Set(), merged = [];
-        lists.forEach(l => (l || []).forEach(st => {
+    // Шукаємо ВСЮДИ, але порядок такий: усі станції першої країни, потім другої, потім решта світу.
+    if (_staged) {
+      if (searchOffset === 0) { searchStage = 0; searchStageOffset = 0; searchShownKeys = new Set(); }
+      const sources = [...priCodes, ""];
+      const out = [], local = new Set();
+      let failed = false;
+      while (searchStage < sources.length && out.length < SEARCH_LIMIT) {
+        const list = await fetchRb(sources[searchStage], searchStageOffset);
+        if (!list) { failed = true; break; }
+        list.forEach(st => {
           const k = st.stationuuid || (st.url_resolved || st.url);
-          if (!seen.has(k)) { seen.add(k); merged.push(st); }
-        }));
-        stationsFound = merged;
+          if (local.has(k) || searchShownKeys.has(k)) return;
+          const ln = (st.name || "").toLowerCase();
+          if ((st.countrycode || "").toLowerCase() === "ru" || RUSSIAN_WORDS.some(w => ln.includes(w))) return;
+          local.add(k); out.push(st);
+        });
+        searchStageOffset += SEARCH_LIMIT;
+        if (list.length < SEARCH_LIMIT) { searchStage++; searchStageOffset = 0; }
       }
+      searchHasMore = !failed && searchStage < sources.length;
+      stationsFound = (out.length || !failed) ? out : null;
     } else {
       stationsFound = await fetchRb(searchCountryCode, searchOffset);
     }
-    if (stationsFound && !searchDiscover && state.settings.searchCache) {
+    if (stationsFound && !searchDiscover && !_staged && state.settings.searchCache) {
       state.searchCache[cacheKey] = { data: stationsFound, timestamp: Date.now() };
       const cacheKeys = Object.keys(state.searchCache);
       if (cacheKeys.length > 30) {
@@ -8193,7 +8298,7 @@ async function performSearch() {
     };
     resultsEl.appendChild(row);
   });
-  if (stationsFound.length >= SEARCH_LIMIT) {
+  if (_staged ? searchHasMore : stationsFound.length >= SEARCH_LIMIT) {
     const sentinel = document.createElement("div");
     sentinel.className = "loading-more";
     sentinel.id = "searchLoadSentinel";
@@ -8356,6 +8461,7 @@ function flagEmoji(cc) {
 }
 const COUNTRY_PRIORITY = ["PL", "UA", "US"];
 let searchShownKeys = new Set();
+let searchStage = 0, searchStageOffset = 0, searchHasMore = false;
 function searchPriorityCodes() {
   const l = state.settings.language || "uk";
   return l === "pl" ? ["PL", "UA"] : l === "uk" ? ["UA", "PL"] : [];
@@ -8482,7 +8588,7 @@ function bindMediaSessionActions() {
     mediaSessionActionsBound = true;
   } catch (e) {}
 }
-function updateMediaSession(songTitle, stName, favicon) {
+function updateMediaSession(songTitle, stName, favicon, loading) {
   bindMediaSessionActions();
   if ("mediaSession" in navigator) {
     try {
@@ -8494,7 +8600,7 @@ function updateMediaSession(songTitle, stName, favicon) {
       const hasCustomIcon = favicon && favicon !== DEFAULT_STATION_ICON;
       navigator.mediaSession.metadata = new MediaMetadata({
         title: hasSong ? songClean : (stClean || t("appName")),
-        artist: hasSong ? (stClean || t("appName")) : t("appName"),
+        artist: loading ? t("buffering") : (hasSong ? (stClean || t("appName")) : t("appName")),
         album: t("appName"),
         artwork: hasCustomIcon
           ? [
@@ -8511,9 +8617,22 @@ function updateMediaSession(songTitle, stName, favicon) {
             ]
       });
       // Синхронізуємо стан Media Session з реальністю. Тепер стан відображає фактичне isPlaying.
-      navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+      navigator.mediaSession.playbackState = (isPlaying || loading) ? "playing" : "paused";
     } catch (e) {}
   }
+}
+// Повертає сповіщення до звичайного вигляду (пісня/станція) за поточним станом інтерфейсу.
+function refreshMediaSessionNow() {
+  try {
+    if (activeIndex !== -1 && state.stations[activeIndex]) {
+      const s = state.stations[activeIndex];
+      const txt = (trackInfo.textContent || "").trim();
+      const skip = [t("chooseStation"), t("playPrompt"), t("buffering"), t("stopped"), t("loading"), t("cantPlay"), t("appName")];
+      updateMediaSession(skip.includes(txt) ? null : txt, s.fullName || s.name, s.favicon);
+    } else if (isSearchPlayback) {
+      updateMediaSession(searchPlaybackName, t("appName"));
+    }
+  } catch (e) {}
 }
 
 // Підказка біля кнопки: на ПК — після затримки курсору над кнопкою, на телефоні — після притримання пальця.
@@ -8736,6 +8855,7 @@ function openModal() {
     // вигляд» на тач-пристрої) воно відкривається й закривається кнопками, а не свайпом.
     if (!isTouchDevice || !isPanelSideMode()) return;
     gesture = null;
+    if (reorderDragActive) return;
     if (e.touches.length !== 1) return;
 
     const x = e.touches[0].clientX;
@@ -8782,6 +8902,7 @@ function openModal() {
 
   function activateGesture() {
     gesture.activated = true;
+    setDrawerNoFx(true);
     panelEl.classList.add("drawer-dragging");
     bgEl.classList.add("drawer-dragging");
     const appEl = document.getElementById("app");
@@ -8803,6 +8924,8 @@ function openModal() {
 
   function onMove(e) {
     if (!gesture) return;
+    // Перетягування кнопки станції (довге утримання) — жести панелі повністю заблоковані.
+    if (reorderDragActive && !gesture.activated) { gesture = null; return; }
     if (e.touches.length !== 1) { gesture = null; return; }
     const x = e.touches[0].clientX;
     const y = e.touches[0].clientY;
@@ -8827,18 +8950,33 @@ function openModal() {
     } else {
       percent = Math.max(-100, Math.min(0, (dx / pw) * 100));
     }
+    // Оновлюємо DOM не частіше одного разу за кадр (touchmove може приходити частіше).
+    pendingPercent = percent;
+    if (!moveRaf) moveRaf = requestAnimationFrame(flushMove);
+  }
+  let pendingPercent = null, moveRaf = 0;
+  function flushMove() {
+    moveRaf = 0;
+    if (!gesture || !gesture.activated || pendingPercent === null) return;
+    const percent = pendingPercent;
+    pendingPercent = null;
     setPanelProgress(panelEl, percent);
     // progress: 0 = панель повністю закрита, 1 = повністю відкрита.
     const progress = (100 + percent) / 100;
-    applyDimming(progress);
-    if (drawerShiftActive) applyMainShift(progress * pw);
+    if (drawerShiftActive) applyMainShift(progress * gesture.panelWidth);
     // Яскравість панелі: 0.4 (темна, ніби під контентом) → 1.0 (ясна).
     panelEl.style.setProperty("--panel-brightness", (0.4 + progress * 0.6).toFixed(3));
   }
+  function cancelPendingMove() {
+    if (moveRaf) { cancelAnimationFrame(moveRaf); moveRaf = 0; }
+    pendingPercent = null;
+  }
     function onEnd(e) {
+    if (drawerNoFx) setDrawerNoFx(false);
     if (!gesture) return;
     const g = gesture;
     gesture = null;
+    cancelPendingMove();
     if (!g.activated) return;
     const dx = e.changedTouches[0].clientX - g.startX;
     const dt = Math.max(1, performance.now() - g.startTs);
@@ -8889,6 +9027,14 @@ const previewAudio = document.getElementById("previewAudio");
 // ніби виповзає з-під неї. Працює лише під час drawer-жесту на тач-пристроях.
 const DRAWER_SHIFT_IDS = ["headerBand", "trackInfo", "messageLine", "connStatus", "stageWrap", "stationsWrap", "volRow", "controls"];
 let drawerShiftActive = false;
+let drawerNoFx = false, drawerNoFxTimer = 0;
+function setDrawerNoFx(on) {
+  clearTimeout(drawerNoFxTimer);
+  const appEl = document.getElementById("app");
+  if (on) { drawerNoFx = true; appEl.classList.add("drawer-nofx"); return; }
+  // Знімаємо із запасом, поки відпрацює анімація доїзду панелі (0.28с).
+  drawerNoFxTimer = setTimeout(() => { drawerNoFx = false; appEl.classList.remove("drawer-nofx"); }, 360);
+}
 // Паралакс панелі під головним екраном (0 = без руху, 1 = рухається разом).
 const DRAWER_PANEL_PARALLAX = 0.3;
 document.documentElement.style.setProperty("--drawer-parallax", DRAWER_PANEL_PARALLAX);
@@ -8920,18 +9066,19 @@ function applyMainShift(px) {
     }
     _app.style.setProperty("--hdrBtnDx", _dx.toFixed(1) + "px");
   }
-  document.getElementById("app").style.setProperty("--drawerP", Math.max(0, Math.min(1, px / drawerPanelW)).toFixed(3));
-  document.getElementById("app").style.setProperty("--mainShiftX", px > 0.5 ? px.toFixed(1) + "px" : "0px");
-  const v = px > 0.5 ? "translateX(" + px.toFixed(1) + "px)" : "";
-  getDrawerShiftEls().forEach(el => {
-    // #stageWrap має власний transform для центрування пульсу (--stageY), який задає
-    // updateStagePulseOffset().
-    if (el.id === "stageWrap") {
-      el.style.setProperty("--drawerX", px > 0.5 ? px.toFixed(1) + "px" : "0px");
-    } else {
-      el.style.transform = v;
-    }
-  });
+  // Змінні ставимо точково на потрібні елементи, а не на #app: зміна успадкованої змінної на корені
+  // змушує браузер перераховувати стилі всього дерева на кожному кадрі жесту.
+  if (!applyMainShift._tl) {
+    applyMainShift._tl = document.getElementById("topbarLeft");
+    applyMainShift._es = document.getElementById("mainEdgeShadow");
+  }
+  const _drawerP = Math.max(0, Math.min(1, px / drawerPanelW)).toFixed(3);
+  if (applyMainShift._tl) applyMainShift._tl.style.setProperty("--drawerP", _drawerP);
+  if (applyMainShift._es) applyMainShift._es.style.setProperty("--mainShiftX", px > 0.5 ? px.toFixed(1) + "px" : "0px");
+  // Використовуємо окрему властивість `translate`, а не transform: #stageWrap має власний transform
+  // (--stageY), а зміна CSS-змінної на ньому перераховувала б стилі всього піддерева щокадру.
+  const v = px > 0.5 ? px.toFixed(1) + "px 0" : "";
+  getDrawerShiftEls().forEach(el => { el.style.translate = v; });
 }
 function applyDimming(v) {
   // Затемнення контенту при витягуванні панелі вимкнено: контент не повинен
@@ -9981,6 +10128,7 @@ document.getElementById("importFileInput").onchange = (e) => {
         try { updateEqVisibility(); } catch (e) {}
         if (state.settings.eqEnabled && eqNodes.length) {
           eqNodes.forEach((f, i) => { try { f.gain.value = state.settings.eqGains[i] || 0; } catch (e) {} });
+          eqUpdatePreamp();
         }
       }
       saveState(); renderModalList(); renderStations(); renderSongHistory(); renderSongFavorites();
@@ -12095,6 +12243,7 @@ document.getElementById("scaleValue").onclick = () => {
   firstRunLangPending = isFirstRun || forceLangPick;
 
   loadState();
+  try { migrateEqPresets(); } catch (e) {}
   applyWorkerBase(resolveWorkerBase());
   applyTouchMode();
   setVolume(state.settings.volume);
