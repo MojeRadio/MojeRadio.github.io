@@ -5323,11 +5323,20 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   btn.onclick = toggleMini;
   window.addEventListener("pagehide", () => { try { if (pipWin) pipWin.close(); } catch (e) {} });
 
-  // Один раз підказуємо про кнопку міні-плеєра в шапці (після ~4 с відтворення).
+  // Підказка про міні-плеєр: іконка в шапці м'яко пульсує, доки користувач
+  // хоч раз не натисне її. Тост-підказку прибрано. Прапорець у localStorage
+  // ставиться саме в момент кліку, а не в момент появи анімації — тому
+  // після першого натискання більше ніколи не показуємо.
   {
     let seen = false;
     try { seen = localStorage.getItem("radio_pipHintSeen") === "1"; } catch (e) {}
     if (!seen) {
+      let hintAnim = null;
+      const stopHint = () => {
+        try { if (hintAnim) { hintAnim.cancel(); hintAnim = null; } } catch (e) {}
+        try { btn.style.transform = ""; } catch (e) {}
+        try { localStorage.setItem("radio_pipHintSeen", "1"); } catch (e) {}
+      };
       let waited = 0;
       const iv = setInterval(() => {
         waited += 2;
@@ -5335,18 +5344,18 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         if (!(typeof isPlaying !== "undefined" && isPlaying && audioState === AUDIO_STATE.PLAYING)) return;
         clearInterval(iv);
         setTimeout(() => {
-          try { localStorage.setItem("radio_pipHintSeen", "1"); } catch (e) {}
-          try { showToast(t("pipHintToast"), false, 7000); } catch (e) {}
+          if (document.documentElement.classList.contains("ps-anim-off") || !btn.animate) return;
           try {
-            if (!document.documentElement.classList.contains("ps-anim-off") && btn.animate) {
-              btn.animate([{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }], { duration: 700, iterations: 5, easing: "ease-in-out" });
-            }
+            hintAnim = btn.animate(
+              [{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }],
+              { duration: 700, iterations: Infinity, easing: "ease-in-out" }
+            );
           } catch (e) {}
         }, 4000);
       }, 2000);
+      btn.addEventListener("click", stopHint, { once: true });
     }
   }
-})();
 
 function updatePlayAttention() {
   // Візуальний стан кнопки Play залежить ВИКЛЮЧНО від audioState — не від isPlaying.
