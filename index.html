@@ -1819,7 +1819,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
             <div class="checkLine" id="forceDesktopModeRow" style="display:none;"><input type="checkbox" id="forceDesktopModeToggle"><label for="forceDesktopModeToggle" data-i18n="forceDesktopModeLabel">Десктопний вигляд</label></div>
             <div class="checkLine"><input type="checkbox" id="realVizToggle"><label for="realVizToggle" data-i18n="realVizLabel">Вимкнути псевдо-візуалізатор</label></div>
             <div class="checkLine" id="showVolIOSRow" style="display:none;"><input type="checkbox" id="showVolIOSToggle"><label for="showVolIOSToggle" data-i18n="showVolIOSLabel">Показувати слайдер гучності на iOS</label></div>
-            <div class="checkLine"><input type="checkbox" id="hideCapsToggle"><label for="hideCapsToggle" data-i18n="hideCapsLabel">Спрощений аудіовізуалізатор</label></div>
+            <div class="checkLine"><input type="checkbox" id="hideCapsToggle"><label for="hideCapsToggle" data-i18n="hideCapsLabel">Вимкнути додаткові ефекти візуалізатора</label></div>
             <div class="alt-style-container" id="altStyleContainer">
               <div class="checkLine"><input type="checkbox" id="altStationStyleToggle"><label for="altStationStyleToggle" data-i18n="altStationStyleLabel">Альтернативний вигляд станцій</label></div>
             </div>
@@ -2048,7 +2048,7 @@ const I18N = {
     langTitle:"Мова", themeTitle:"Тема", centerElementTitle:"Елемент по центру", vizShowLabel:"Аудіовізуалізатор", pulseShowLabel:"Пульсуючий круг", logoShowLabel:"Лого станції", streamTitle:"Потік",
     wakeLockLabel:"Не вимикати екран під час гри", orientationTitle:"Орієнтація", landscapeLabel:"Компактний горизонтальний вигляд", landscapeLabelTouch:"Ввімкнути автоповорот екрану", devForceLandscapeLabel:"Примусовий горизонтальний вид", devForcePortraitLabel:"Примусовий вертикальний вид", forceTouchModeLabel:"Бокова панель налаштувань", forceDesktopModeLabel:"Компактне вікно налаштувань", swipeLabel:"Перемикати станції свайпом",
     timerTitle:"Сон-таймер", sleepLabel:"Зупинити відтворення через",
-    visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові станції", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Спрощений аудіовізуалізатор", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Альтернативний вигляд станцій", powerSaveLabel:"Енергозбереження (спрощення ефектів)", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
+    visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові станції", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Вимкнути додаткові ефекти візуалізатора", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Альтернативний вигляд станцій", powerSaveLabel:"Енергозбереження (спрощення ефектів)", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
     contactLabel:"Контакт з розробником", usedThisSession:"Використано за сесію", maintenanceTitle:"Обслуговування", resetDefaultsLabel:"Скинути до заводських налаштувань", minutesWord:"хв", visitorsToday:"Візити сьогодні", visitorsTotal:"всього", visitorsUnavailable:"Візити: недоступно", appDataSize:"Дані додатку", loading:"...", exportBtn:"Експортувати станції", importBtn:"Імпортувати станції", restoreDefault:"Скинути до версії з файлу", manualStationsQ:"Зберегти станції та улюблені пісні?", keepManual:"Так, зберегти", removeManual:"Ні, повне скидання", searchNewStations:"Пошук нових станцій", editTitle:"Редагувати станцію", filterAnyGenre:"Будь-який жанр", filterAnyCountry:"Будь-яка країна", editSectionBasic:"Основне", editSectionIcon:"Іконка та інфо", editSectionTrack:"Назва треку, що грає",
     etOff:"Вимкнено (назва станції)", etAdmin:"Брати з адмін файлу (якщо є)", etManual:"Вручну за посиланням", etIcy:"Автоматично з потоку (ICY)", etIcyHint:"Назва визначатиметься з метаданих самого аудіопотоку станції — окреме посилання не потрібне.",
     save:"Зберегти", deleteStation:"Видалити", phUrl:"Пряме посилання на потік (https://...)", phSearch:"Пошук у базі radio-browser.info",
@@ -2065,7 +2065,7 @@ const I18N = {
     langTitle:"Język", themeTitle:"Motyw", centerElementTitle:"Element na środku", vizShowLabel:"Wizualizator", pulseShowLabel:"Pulsujące koło", logoShowLabel:"Logo stacji", streamTitle:"Strumień",
     wakeLockLabel:"Nie wygaszaj ekranu podczas odtwarzania", orientationTitle:"Orientacja", landscapeLabel:"Kompaktowy widok poziomy", landscapeLabelTouch:"Włącz autoobrót ekranu", devForceLandscapeLabel:"Wymuszony widok poziomy", devForcePortraitLabel:"Wymuszony widok pionowy", forceTouchModeLabel:"Boczny panel ustawień", forceDesktopModeLabel:"Kompaktowe okno ustawień", swipeLabel:"Zmiana stacji przesunięciem",
     timerTitle:"Wyłącznik czasowy", sleepLabel:"Zatrzymaj odtwarzanie po",
-    visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Licz odwiedziny (licznik)", visitorLegacyCounterLabel:"Użyj starego licznika (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe stacje", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Uproszczony wizualizator audio", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Alternatywny wygląd stacji", powerSaveLabel:"Oszczędzanie energii (uproszczone efekty)", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
+    visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Licz odwiedziny (licznik)", visitorLegacyCounterLabel:"Użyj starego licznika (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe stacje", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Wyłącz dodatkowe efekty wizualizatora", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Alternatywny wygląd stacji", powerSaveLabel:"Oszczędzanie energii (uproszczone efekty)", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
     contactLabel:"Kontakt z twórcą", usedThisSession:"Zużyto w tej sesji", maintenanceTitle:"Konserwacja", resetDefaultsLabel:"Przywróć ustawienia fabryczne", minutesWord:"min", visitorsToday:"Wizyty dzisiaj", visitorsTotal:"razem", visitorsUnavailable:"Wizyty: niedostępne", appDataSize:"Dane aplikacji", loading:"...", exportBtn:"Eksportuj stacje", importBtn:"Importuj stacje", restoreDefault:"Zresetuj do wersji z pliku", manualStationsQ:"Zachować stacje i ulubione utwory?", keepManual:"Tak, zachowaj", removeManual:"Nie, pełny reset", searchNewStations:"Szukaj nowych stacji", editTitle:"Edytuj stację", filterAnyGenre:"Dowolny gatunek", filterAnyCountry:"Dowolny kraj", editSectionBasic:"Podstawowe", editSectionIcon:"Ikona i info", editSectionTrack:"Nazwa utworu",
     etOff:"Wyłączone (nazwa stacji)", etAdmin:"Z pliku administratora (jeśli jest)", etManual:"Ręcznie, wg linku", etIcy:"Automatycznie ze strumienia (ICY)", etIcyHint:"Tytuł będzie pobierany z metadanych samego strumienia audio stacji — osobny link nie jest potrzebny.",
     save:"Zapisz", deleteStation:"Usuń", phUrl:"Bezpośredni link do strumienia (https://...)", phSearch:"Szukaj w bazie radio-browser.info",
@@ -2082,7 +2082,7 @@ const I18N = {
     langTitle:"Language", themeTitle:"Theme", centerElementTitle:"Center element", vizShowLabel:"Audio visualizer", pulseShowLabel:"Pulsing circle", logoShowLabel:"Station logo", streamTitle:"Stream",
     wakeLockLabel:"Keep screen on while playing", orientationTitle:"Orientation", landscapeLabel:"Compact landscape layout", landscapeLabelTouch:"Enable screen auto-rotate", devForceLandscapeLabel:"Force landscape layout", devForcePortraitLabel:"Force portrait layout", forceTouchModeLabel:"Side settings panel", scaleTitle:"Interface scale", scaleHint:"Size of buttons and fonts on the main screen", forceDesktopModeLabel:"Compact settings window", swipeLabel:"Swipe to change stations",
     timerTitle:"Sleep timer", sleepLabel:"Stop playback after",
-    visualsTitle:"Visuals & appearance", devTitle:"Developer", devLogsTitle:"Recent logs", devLogsCopy:"Copy", devLogsClear:"Clear", devLogsEmpty:"Nothing yet", devLogsCopied:"Logs copied", devModeLabel:"Developer mode", devModeOnToast:"Developer mode enabled", devModeOffToast:"Developer mode disabled", visitorCounterLabel:"Count visits (counter)", visitorLegacyCounterLabel:"Use legacy counter (countapi)", realVizLabel:"Turn off pseudo-visualizer", blackWhiteLabel:"Colored stations", devToastsLabel:"Show event log popups", hideCapsLabel:"Simplified audio visualizer", showVolIOSLabel:"Show volume slider on iOS", forceProxyLabel:"Always use CORS proxy", altStationStyleLabel:"Alternative station style", powerSaveLabel:"Power saving (simplified effects)", simDropLabel:"Simulate stream drop", autoThemeLabel:"Automatic theme switching ☀️/🌙", autoThemeDevice:"By device theme", autoThemeTime:"By time of day (Warsaw)", statsSpoiler:"Listening statistics", resetStatsLabel:"Reset statistics", session:"session", totalAllStations:"All stations combined", showMoreStats:"Show {n} more", newVersionAvailable:"A new app version is available", updateNowBtn:"Update", updateHideBtn:"Hide", reserveSearchHint:"If a station could not be found automatically: go to {site}, find the station, and paste its name and link below.", findStationOn:"Find a station on: {site} ↗",
+    visualsTitle:"Visuals & appearance", devTitle:"Developer", devLogsTitle:"Recent logs", devLogsCopy:"Copy", devLogsClear:"Clear", devLogsEmpty:"Nothing yet", devLogsCopied:"Logs copied", devModeLabel:"Developer mode", devModeOnToast:"Developer mode enabled", devModeOffToast:"Developer mode disabled", visitorCounterLabel:"Count visits (counter)", visitorLegacyCounterLabel:"Use legacy counter (countapi)", realVizLabel:"Turn off pseudo-visualizer", blackWhiteLabel:"Colored stations", devToastsLabel:"Show event log popups", hideCapsLabel:"Turn off extra visualizer effects", showVolIOSLabel:"Show volume slider on iOS", forceProxyLabel:"Always use CORS proxy", altStationStyleLabel:"Alternative station style", powerSaveLabel:"Power saving (simplified effects)", simDropLabel:"Simulate stream drop", autoThemeLabel:"Automatic theme switching ☀️/🌙", autoThemeDevice:"By device theme", autoThemeTime:"By time of day (Warsaw)", statsSpoiler:"Listening statistics", resetStatsLabel:"Reset statistics", session:"session", totalAllStations:"All stations combined", showMoreStats:"Show {n} more", newVersionAvailable:"A new app version is available", updateNowBtn:"Update", updateHideBtn:"Hide", reserveSearchHint:"If a station could not be found automatically: go to {site}, find the station, and paste its name and link below.", findStationOn:"Find a station on: {site} ↗",
     contactLabel:"Contact the developer", usedThisSession:"Used this session", maintenanceTitle:"Maintenance", resetDefaultsLabel:"Reset to factory settings", minutesWord:"min", visitorsToday:"Visits today", visitorsTotal:"total", visitorsUnavailable:"Visits: unavailable", appDataSize:"App data", loading:"...", exportBtn:"Export stations", importBtn:"Import stations", restoreDefault:"Reset to file version", manualStationsQ:"Keep stations and liked songs?", keepManual:"Yes, keep them", removeManual:"No, full reset", searchNewStations:"Search for new stations", editTitle:"Edit station", filterAnyGenre:"Any genre", filterAnyCountry:"Any country", editSectionBasic:"Basic info", editSectionIcon:"Icon & info", editSectionTrack:"Now-playing title",
     etOff:"Off (station name)", etAdmin:"From admin file (if available)", etManual:"Manually, by link", etIcy:"Automatically from the stream (ICY)", etIcyHint:"The title will be read from the station's own audio stream metadata — no separate link needed.",
     save:"Save", deleteStation:"Delete", phUrl:"Direct stream link (https://...)", phSearch:"Search radio-browser.info",
@@ -2354,7 +2354,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "3.06";
+const APP_VERSION = "3.07";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3158,7 +3158,7 @@ function updateForceViewRows() {
   applyIOSVolRow();
 }
 
-// «Спрощений аудіовізуалізатор» не потрібен, коли візуалізатор не показується (список) або
+// «Вимкнути додаткові ефекти візуалізатора» не потрібен, коли візуалізатор не показується (список) або
 // його малює неоморфна тема; на iOS цей рядок — лише в режимі розробника.
 function updateHideCapsRow() {
   try {
@@ -7432,6 +7432,12 @@ function startFakeVisualizer() {
   // Періодичні "удари" — різко піднімають низькі стовпчики, потім швидко затухають.
   let nextBeatTime = 0;
   let beatValue = 0;
+  // Адаптивне масштабування реального спектру: vizRef — недавній максимум рівня (автогейн, щоб
+  // станції з різною гучністю виглядали однаково «живо»), barAvg — повільне середнє кожного
+  // стовпчика (щоб рухи вимірювались відносно нього, а не від постійного нахилу спектру).
+  let vizRef = 0.5;
+  const barAvg = new Array(bars.length).fill(0.3);
+  const lvlSm = new Array(bars.length).fill(0.3);
   const step = (now) => {
     // Радіус заокруглення всередині самого clip-path: у неоморфних темах
     // смужки м'якші, тож верхній край теж має бути заокруглений. clip-path
@@ -7497,7 +7503,9 @@ function startFakeVisualizer() {
       while (vizSpecQueue.length > 1 && vizSpecQueue[1].t <= now - latMs) vizSpecQueue.shift();
       if (vizSpecQueue.length > 40) vizSpecQueue.splice(0, vizSpecQueue.length - 40);
       const specData = vizSpecQueue[0].d;
-      bars.forEach((bar, i) => {
+      const lvl = new Array(bars.length);
+      let frameMax = 0;
+      for (let i = 0; i < bars.length; i++) {
         const t0 = i / bars.length, t1 = (i + 1) / bars.length;
         // Мінімум 2 біни на бар — інакше найнижчий стовпчик (лише 1 бін) різко
         // тремтить від самого лише кіка. Для верхніх барів природно виходить більше.
@@ -7506,12 +7514,23 @@ function startFakeVisualizer() {
         if (end - start < 2) end = Math.min(totalBins, start + 2);
         let sum = 0, peak = 0;
         for (let j = start; j < end; j++) { const v = specData[j] || 0; sum += v; if (v > peak) peak = v; }
-        const avg = sum / (end - start);
-        const level = avg * 0.5 + peak * 0.5;
-        const target = 4 + Math.sqrt(level / 255) * 50;
+        lvlSm[i] += ((sum / (end - start) * 0.5 + peak * 0.5) / 255 - lvlSm[i]) * 0.55;
+        lvl[i] = lvlSm[i];
+        if (lvl[i] > frameMax) frameMax = lvl[i];
+      }
+      vizRef = frameMax > vizRef ? vizRef + (frameMax - vizRef) * 0.1 : Math.max(0.2, vizRef - delta * 0.08);
+      const avgK = 1 - Math.exp(-delta / 1.5);
+      bars.forEach((bar, i) => {
+        const v = lvl[i];
+        barAvg[i] += (v - barAvg[i]) * avgK;
+        const refI = vizRef * (1 - 0.5 * i / bars.length);
+        const norm = Math.min(1, v / refI);
+        const dev = (v - barAvg[i]) / refI;
+        const swing = Math.max(0, Math.min(1, 0.55 + dev * 1.3));
+        const target = 4 + (0.4 * norm + 0.6 * swing) * 50;
         // Атака швидша за спад: стовпчик миттєво реагує на удар, але плавно осідає.
         const prevBar = barCurrent[i];
-        const coef = target > barCurrent[i] ? 0.62 : 0.32;
+        const coef = target > barCurrent[i] ? 0.6 : 0.28;
         barCurrent[i] += (target - barCurrent[i]) * coef;
         const cp = "inset(" + Math.round(52 - barCurrent[i]) + "px 0 0 0" + clipRound + ")";
         if (cp !== lastClip[i]) { lastClip[i] = cp; bar.style.clipPath = cp; }
@@ -7650,7 +7669,7 @@ function setupEqualizer() {
   if (realVizWanted() && !analyser) {
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 512;
-    analyser.smoothingTimeConstant = isTouchDevice ? 0.35 : 0.55;
+    analyser.smoothingTimeConstant = isTouchDevice ? 0.3 : 0.45;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
   }
   if (realVizWanted() && !vizPadNode) {
