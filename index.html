@@ -1602,7 +1602,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
     <button id="playBtn" aria-label="грати" data-i18n-aria="playWord"><svg id="playIcon" width="46" height="46" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
     <button class="ctrlBtn" id="nextBtn" aria-label="наступна станція" style="display:none;" data-i18n-aria="nextStationWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
     <button class="ctrlBtn" id="stopBtn" aria-label="стоп" data-i18n-aria="stopWord"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></button>
-    <button class="sideBtn" id="histSideBtn" aria-label="history" title="Історія пісень" data-i18n-title="songHistoryTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+    <button class="sideBtn" id="histSideBtn" aria-label="history" title="Останні пісні" data-i18n-title="recentSongsTitle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -1922,7 +1922,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
     <div class="modal">
       <div class="modalHead">
         <button class="modalCloseX" id="fullHistClose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <h3 class="modalHeaderTitle" id="fullHistTitle" data-i18n="songHistoryTitle">Історія пісень</h3>
+        <h3 class="modalHeaderTitle" id="fullHistTitle" data-i18n="recentSongsTitle">Останні пісні</h3>
       </div>
       <div class="modalScroll">
         <div id="fullHistList"></div>
@@ -2055,7 +2055,7 @@ const I18N = {
     phFullName:"Назва", editWord:"Ред.", deleteWord:"Видалити", manualAddTitle:"Резервний пошук / додати вручну",
     enabledWord:"увімк.", fromFile:"з файлу", trackOptionsTitle:"Виберіть опцію", trackOptionsHint:"Знайдено кілька варіантів. Оберіть правильний:", trackOptionsSkip:"Пропустити", autoDetectBtn:"Спробувати визначити зараз",
     intervalParamLabel:"Інтервал оновлення назви треку (мс)", syncIntervalLabel:"Інтервал синхронізації (хвилин)", addStation:"Додати", saveStationPrompt:"Зберегти станцію «{name}»?", saveWord:"Зберегти", noThanksWord:"Ні", workerUrlLabel:"Адреса воркера", workerTestBtn:"Перевірити воркер", workerTesting:"перевіряю…", workerOkText:"працює", workerFailText:"не працює", workerTimeout:"немає відповіді за 8 с", workerNoConn:"немає з'єднання", workerBadUrl:"Некоректна адреса воркера (потрібен https://)", msUnit:"мс", viewGrid:"Сітка", viewList:"Список", discoverHint:"Популярні станції з різних країн", luckyTitle:"Мені пощастить",
-    searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", clearHistory:"Очистити історію", exportHistory:"Експортувати", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewLabel:"Вигляд станцій:", viewTitle:"Вигляд станцій",
+    searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", recentSongsTitle:"Останні пісні", clearHistory:"Очистити історію", exportHistory:"Експортувати", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewLabel:"Вигляд станцій:", viewTitle:"Вигляд станцій",
     loadMore:"Завантажити ще...",
     iconFetch:"Взяти з пошуку", country:"Країна", notDefined:"не визначено", addBtnWord:"+",
     eqTitle:"Еквалайзер", eqEnable:"Увімкнути еквалайзер", loudnessTitle:"Вирівнювання гучності", loudnessEnable:"Однакова гучність на всіх станціях", eqSystemLink:"Системний еквалайзер", eqPresetsBtn:"Пресети", eqPresetsTitle:"Пресети еквалайзера", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
@@ -2072,7 +2072,7 @@ const I18N = {
     phFullName:"Nazwa", editWord:"Edytuj", deleteWord:"Usuń", manualAddTitle:"Wyszukiwanie zapasowe / dodaj ręcznie",
     enabledWord:"wł.", fromFile:"z pliku", trackOptionsTitle:"Wybierz opcję", trackOptionsHint:"Znaleziono kilka wariantów. Wybierz właściwy:", trackOptionsSkip:"Pomiń", autoDetectBtn:"Spróbuj wykryć teraz",
     intervalParamLabel:"Interwał aktualizacji nazwy utworu (ms)", syncIntervalLabel:"Interwał synchronizacji (minuty)", addStation:"Dodaj", saveStationPrompt:"Zapisać stację «{name}»?", saveWord:"Zapisz", noThanksWord:"Nie", workerUrlLabel:"Adres workera", workerTestBtn:"Sprawdź workera", workerTesting:"sprawdzam…", workerOkText:"działa", workerFailText:"nie działa", workerTimeout:"brak odpowiedzi w 8 s", workerNoConn:"brak połączenia", workerBadUrl:"Nieprawidłowy adres workera (wymagane https://)", msUnit:"ms", viewGrid:"Siatka", viewList:"Lista", discoverHint:"Popularne stacje z różnych krajów", luckyTitle:"Szczęśliwy traf",
-    searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", clearHistory:"Wyczyść historię", exportHistory:"Eksportuj", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewLabel:"Widok stacji:", viewTitle:"Widok stacji",
+    searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", recentSongsTitle:"Ostatnie utwory", clearHistory:"Wyczyść historię", exportHistory:"Eksportuj", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewLabel:"Widok stacji:", viewTitle:"Widok stacji",
     loadMore:"Załaduj więcej...",
     iconFetch:"Pobierz z wyszukiwania", country:"Kraj", notDefined:"nie określono", addBtnWord:"+",
     eqTitle:"Equalizer", eqEnable:"Włącz equalizer", loudnessTitle:"Wyrównanie głośności", loudnessEnable:"Jednakowa głośność na wszystkich stacjach", eqSystemLink:"Systemowy equalizer", eqPresetsBtn:"Presety", eqPresetsTitle:"Presety equalizera", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
@@ -2089,7 +2089,7 @@ const I18N = {
     phFullName:"Name", editWord:"Edit", deleteWord:"Delete", manualAddTitle:"Backup search / add manually",
     enabledWord:"on", fromFile:"from file", trackOptionsTitle:"Choose option", trackOptionsHint:"Several variants found. Choose the correct one:", trackOptionsSkip:"Skip", autoDetectBtn:"Try to detect now",
     intervalParamLabel:"Track title update interval (ms)", syncIntervalLabel:"Sync interval (minutes)", addStation:"Add", saveStationPrompt:"Save station «{name}»?", saveWord:"Save", noThanksWord:"No", workerUrlLabel:"Worker address", workerTestBtn:"Test worker", workerTesting:"testing…", workerOkText:"works", workerFailText:"not working", workerTimeout:"no response in 8 s", workerNoConn:"no connection", workerBadUrl:"Invalid worker address (https:// required)", msUnit:"ms", viewGrid:"Grid", viewList:"List", discoverHint:"Popular stations from different countries", luckyTitle:"I'm feeling lucky",
-    searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", clearHistory:"Clear history", exportHistory:"Export", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewLabel:"Station view:", viewTitle:"Station view",
+    searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", recentSongsTitle:"Recent songs", clearHistory:"Clear history", exportHistory:"Export", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewLabel:"Station view:", viewTitle:"Station view",
     loadMore:"Load more...",
     iconFetch:"Get from search", country:"Country", notDefined:"not defined", addBtnWord:"+",
     eqTitle:"Equalizer", eqEnable:"Enable equalizer", loudnessTitle:"Loudness equalization", loudnessEnable:"Same volume on all stations", eqSystemLink:"System equalizer", eqPresetsBtn:"Presets", eqPresetsTitle:"Equalizer presets", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
@@ -3182,6 +3182,11 @@ function applyIOSVolRow() {
 }
 
 const audioEl = document.getElementById("audioEl");
+["pause", "emptied"].forEach(ev => audioEl.addEventListener(ev, () => { if (!songPausedAt) songPausedAt = Date.now(); }));
+audioEl.addEventListener("playing", () => {
+  if (songPausedAt && Date.now() - songPausedAt > SONG_SESSION_GAP_MS) songSessionStart = Date.now();
+  songPausedAt = 0;
+});
 const anthemAudio = document.getElementById("anthemAudio");
 const anthemBanner = document.getElementById("anthemBanner");
 const stationTitle = document.getElementById("stationTitle");
@@ -3531,6 +3536,15 @@ function hideAnthemBanner() {
 }
 document.getElementById("anthemCloseBtn").onclick = hideAnthemBanner;
 
+// Сесія прослуховування: «Останні пісні» (міні-плеєр і кнопка історії на головному екрані)
+// показують лише пісні з поточної сесії. Нова сесія починається при запуску додатку і після
+// довгої паузи/зупинки (SONG_SESSION_GAP_MS). Повна історія лишається в налаштуваннях.
+const SONG_SESSION_GAP_MS = 3 * 60 * 60 * 1000;
+let songSessionStart = Date.now(), songPausedAt = 0;
+function sessionSongs(limit) {
+  const cur = ((document.getElementById("trackInfo") || {}).textContent || "").trim();
+  return state.songHistory.filter(h => (h.timestamp || 0) >= songSessionStart || (cur && h.title === cur)).slice(0, limit);
+}
 function addSongToHistory(title) {
   if (!title) return;
   const skip = [t("chooseStation"), t("playPrompt"), t("buffering"), t("loading"), t("stopped"), t("cantPlay"), t("appName")];
@@ -4855,7 +4869,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        завеликий розмір). clamp тримає баланс: у маленькому вікні — компактно,
        у широкому — пропорційно більше, без «стрибка» у 28px, як було раніше. */
     #mpStation { font-size:clamp(14px, 7vw, 26px); font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #mpTrack { font-size:clamp(11px, 5vw, 18px); opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
+    #mpTrack { font-size:clamp(10px, 4.2vw, 15px); opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
     #mpCtrls { display:flex; align-items:center; gap:1rem; margin-top:0.25rem; }
     button { border:0.09rem solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
       border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
@@ -4967,8 +4981,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        решта інтерфейсу), але ніколи не стає меншим за 13px — max() тримає
        нижню межу, а верхню нічим не обмежуємо, тож у великому вікні
        назви виглядають так само пропорційно, як і заголовок станції. */
-    .mpRow { display:flex; align-items:center; gap:0.35rem; padding:0.18rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(12.5px, 0.55rem); }
-    .mpRow .favicon { width:max(16px, 0.85rem); height:max(16px, 0.85rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
+    .mpRow { display:flex; align-items:center; gap:0.35rem; padding:0.18rem 0.15rem; border-bottom:1px solid rgba(255,255,255,.12); font-size:max(14px, 0.63rem); }
+    .mpRow .favicon { width:max(18px, 0.95rem); height:max(18px, 0.95rem); border-radius:0.2rem; flex-shrink:0; object-fit:contain; background:rgba(255,255,255,0.12); }
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
     .mpRow .t.confirming { white-space:normal; overflow:visible; text-overflow:clip; color:#ff8a8a; font-weight:700; line-height:1.3; }
     /* Зірочка в рядку списку — трохи менша, ніж у панелі керування. */
@@ -5012,7 +5026,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   const STAR_SVG = (on) => '<svg viewBox="0 0 24 24" fill="' + (on ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   function renderHist(force) {
     const d = pipWin.document, list = d.getElementById("mpHistList");
-    const items = state.songHistory.slice(0, 30);
+    const items = sessionSongs(30);
     const curTrack = (document.getElementById("trackInfo") || {}).textContent || "";
     const sig = curTrack + "@@" + items.map(h => h.title + (state.songFavorites.includes(h.title) ? "*" : "")).join("|");
     if (!force && sig === lastHistSig) return;
@@ -5228,7 +5242,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       '</div>' +
       '<div id="mpHist" class="mpOv"><div class="mpOvHead"><span id="mpHistTitle"></span><button id="mpHistClose" class="mpX" aria-label="back">' + BACK_SVG + '</button></div><div id="mpHistList" class="mpList"></div></div>' +
       '<div id="mpSt" class="mpOv"><div class="mpOvHead"><span id="mpStTitle"></span><button id="mpStClose" class="mpX" aria-label="back">' + BACK_SVG + '</button></div><div id="mpStList" class="mpList"></div></div>';
-    d.getElementById("mpHistTitle").textContent = t("songHistoryTitle");
+    d.getElementById("mpHistTitle").textContent = t("recentSongsTitle");
     d.getElementById("mpStTitle").textContent = t("tabStations");
     d.getElementById("mpPrev").onclick = () => { try { goToAdjacentStation(-1); } catch (e) {} };
     d.getElementById("mpNext").onclick = () => { try { goToAdjacentStation(1); } catch (e) {} };
@@ -7162,7 +7176,7 @@ document.getElementById("fullHistBg").addEventListener("click", (e) => {
 function renderFullHistory() {
   const container = document.getElementById("fullHistList");
   if (!container) return;
-  const items = state.songHistory.slice(0, 50);
+  const items = sessionSongs(50);
   const curTrack = (trackInfo.textContent || "").trim();
   if (!items.length) {
     container.innerHTML = '<div class="history-empty">—</div>';
