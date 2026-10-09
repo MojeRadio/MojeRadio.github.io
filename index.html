@@ -5035,11 +5035,23 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpRow .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; }
     .mpRow .t.confirming { white-space:normal; overflow:visible; text-overflow:clip; color:#ff8a8a; font-weight:700; line-height:1.3; }
     /* Зірочка в рядку списку — трохи менша, ніж у панелі керування. */
-    .mpRow button { width:1.1rem !important; height:1.1rem !important; }
-    .mpRow button svg { width:0.75rem !important; height:0.75rem !important; }
+    .mpRow button { width:20px !important; height:20px !important; }
+    .mpRow button svg { width:13px !important; height:13px !important; }
     .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
-    .mpRow.cur::before { content:""; flex:0 0 auto; width:6px; height:6px; min-width:6px; max-width:6px; min-height:6px; max-height:6px; aspect-ratio:1 / 1; border-radius:50%; background:currentColor; box-sizing:border-box; }
+    .mpRow.cur::before {
+      content: "";
+      flex: 0 0 6px;
+      width: 6px; min-width: 6px; max-width: 6px;
+      height: 6px; min-height: 6px; max-height: 6px;
+      align-self: center;
+      padding: 0; margin: 0;
+      background-image: radial-gradient(circle at center, currentColor 0, currentColor 3px, transparent 3.5px);
+      background-size: 6px 6px;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 50%;
+    }
     body > * { transition: opacity .35s ease; }
     /* компактні режими: коли вікно зовсім низьке, ховаємо зайве */
     @media (max-height:135px) {
@@ -5060,7 +5072,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpRow.cur.state-error::before     { background: #e0433a; animation: mpBlink 0.5s ease-in-out infinite; }
     @keyframes mpBlink { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
     #mpNarrowTop, #mpNarrowBottom { display: none; }
-    body.mp-narrow { padding: 0.6rem 0.5rem; gap: 0.3rem; }
+    body.mp-narrow { padding: 0.6rem 0.5rem; gap: 0; }
     body.mp-narrow #mpFav, body.mp-narrow #mpHistBtn { display: none; }
     /* Порядок зверху вниз: список станцій → плеєр → історія. */
     body.mp-narrow #mpNarrowTop    { order: 0; }
@@ -5116,9 +5128,37 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       opacity: 0.6; padding: 0 0.15rem; flex-shrink: 0;
     }
     #mpNarrowStList, #mpNarrowHistList {
-      flex: 1 1 0; min-height: 0; padding: 0.1rem 0.2rem;
+      flex: 1 1 0; min-height: 0; padding: 0.15rem 0;
       background: rgba(255,255,255,0.06); border-radius: 0.3rem;
       overflow-y: auto; overflow-x: hidden;
+    }
+    body.mp-narrow #mpNarrowStList .mpRow,
+    body.mp-narrow #mpNarrowHistList .mpRow,
+    body.mp-narrow #mpNarrowStList .mpRow.cur,
+    body.mp-narrow #mpNarrowHistList .mpRow.cur {
+      padding-left: 0.55rem;
+      padding-right: 0.55rem;
+    }
+    body.mp-narrow #mpNarrowStList .mpRow.cur,
+    body.mp-narrow #mpNarrowHistList .mpRow.cur {
+      border-radius: 0;
+    }
+    /* Вибраний рядок першим/останнім у списку: підтягуємо контейнер впритул,
+       а самому рядку даємо заокруглення з відповідного боку — тоді заливка
+       закриває порожню смужку й не стирчить за межами контейнера. */
+    #mpNarrowStList:has(> .mpRow:first-child.cur),
+    #mpNarrowHistList:has(> .mpRow:first-child.cur) { padding-top: 0; }
+    #mpNarrowStList:has(> .mpRow:last-child.cur),
+    #mpNarrowHistList:has(> .mpRow:last-child.cur) { padding-bottom: 0; }
+    #mpNarrowStList > .mpRow:first-child.cur,
+    #mpNarrowHistList > .mpRow:first-child.cur {
+      border-top-left-radius: 0.3rem;
+      border-top-right-radius: 0.3rem;
+    }
+    #mpNarrowStList > .mpRow:last-child.cur,
+    #mpNarrowHistList > .mpRow:last-child.cur {
+      border-bottom-left-radius: 0.3rem;
+      border-bottom-right-radius: 0.3rem;
     }
     .mpNarrowScroll { display: flex; gap: 0.25rem; flex-shrink: 0; }
     .mpNarrowScroll button {
@@ -5283,8 +5323,16 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     const tt = d.createElement("span"); tt.className = "t"; tt.textContent = st.name || st.fullName || ""; tt.title = tt.textContent;
     row.onclick = () => {
       try {
-        if (isSearchPlayback) { audioEl.pause(); isSearchPlayback = false; searchPlaybackUrl = null; searchPlaybackName = null; isPlaying = false; updatePlayUI(); }
-        selectStation(i, true);
+        const isCurrent = (i === activeIndex && !isSearchPlayback);
+        if (isCurrent) {
+          // Клік по станції, яка вже активна, — перемикач play/pause.
+          // playBtn.onclick сам вирішує: пауза, якщо зараз грає,
+          // або продовження/перезапуск, якщо стоїть на паузі.
+          playBtn.click();
+        } else {
+          if (isSearchPlayback) { audioEl.pause(); isSearchPlayback = false; searchPlaybackUrl = null; searchPlaybackName = null; isPlaying = false; updatePlayUI(); }
+          selectStation(i, true);
+        }
       } catch (e) {}
       renderStations(false);
     };
