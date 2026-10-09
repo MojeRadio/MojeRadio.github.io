@@ -2357,7 +2357,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "3.14";
+const APP_VERSION = "3.16";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -2521,7 +2521,7 @@ let defaultStations = [
 let state = {
   stations: defaultStations.map(s => ({ ...s })),
   settings: {
-    vizEnabled: false, pulseEnabled: false, volume: 0.8, syncEnabled: true, stationsFileUrl: DEFAULT_STATIONS_FILE_URL,
+    vizEnabled: true, pulseEnabled: false, volume: 0.8, syncEnabled: true, stationsFileUrl: DEFAULT_STATIONS_FILE_URL,
     language: "en", theme: "classic", autoThemeEnabled: false, autoThemeMode: "device",
     devMode: false, devToasts: false, showVolIOS: false, hideCaps: false, landscapeCompact: false, landscapeUserSet: false, forceLandscape: false, forcePortrait: false, forceProxy: false, showRaw: false, altStationStyle: true, wakeLock: false, visitorCounterEnabled: true, visitorCounterUseLegacy: false, realVizEnabled: !(/iPad|iPhone|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)), blackWhiteStations: true,
     swipeEnabled: false, gridLongPressEdit: false, sleepEnabled: false, sleepMinutes: 30, showPrevNextButtons: true,
@@ -2765,6 +2765,20 @@ function loadState() {
   migrateRealVizOff();
   try { migrateRealVizDefaultOn(); } catch (e) {}
   migrateCenterMode(hadRaw);
+  syncCenterModeFlags();
+}
+// centerMode — єдине джерело істини; vizEnabled/pulseEnabled з нього похідні. Нормалізуємо
+// при кожному завантаженні, щоб лишити лише відповідний прапорець (виправляє й уже
+// збережений неузгоджений стан: centerMode "viz" при vizEnabled=false → порожнє поле).
+function syncCenterModeFlags() {
+  const m = state.settings.centerMode;
+  if (m !== "viz" && m !== "pulse" && m !== "logo") { state.settings.centerMode = m = "viz"; }
+  const viz = (m === "viz"), pulse = (m === "pulse");
+  if (state.settings.vizEnabled !== viz || state.settings.pulseEnabled !== pulse) {
+    state.settings.vizEnabled = viz;
+    state.settings.pulseEnabled = pulse;
+    try { saveStateImmediate(); } catch (e) {}
+  }
 }
 let saveStateDebounceTimer = null;
 let storageErrorShown = false;
@@ -3431,7 +3445,7 @@ stationsEl.addEventListener("drop", (e) => {
   renderStations();
   renderModalList();
 });
-function showToast(msg, ok) {
+function showToast(msg, ok, ms) {
   toastEl.classList.remove("ok");
   if (ok) {
     toastEl.classList.remove("show");
@@ -3442,7 +3456,7 @@ function showToast(msg, ok) {
   } else toastEl.textContent = msg;
   toastEl.classList.add("show");
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toastEl.classList.remove("show"), ok ? 3200 : 2600);
+  showToast._t = setTimeout(() => toastEl.classList.remove("show"), ms || (ok ? 3200 : 2600));
 }
 function showPopup(msg) { showToast(msg); }
 // Останні логи зберігаємо в пам'яті (до 200 записів) — їх видно у спойлері "Останні логи" в меню розробника.
@@ -5184,7 +5198,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
           if (isSearchPlayback) { audioEl.pause(); isSearchPlayback = false; searchPlaybackUrl = null; searchPlaybackName = null; isPlaying = false; updatePlayUI(); }
           selectStation(i, true);
         } catch (e) {}
-        setSt(false);
+        renderStations(false);
       };
       row.style.cursor = "pointer";
       row.appendChild(tt); list.appendChild(row);
@@ -5309,20 +5323,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   btn.onclick = toggleMini;
   window.addEventListener("pagehide", () => { try { if (pipWin) pipWin.close(); } catch (e) {} });
 
-  // Автоматичний PiP (Chrome/Edge 134+): коли музика грає і користувач перемикається на іншу
-  // вкладку, браузер сам викликає цей обробник — відкриваємо міні-плеєр замість «зникнення» додатка.
-  // Потрібен дозвіл «Автоматичний режим «картинка в картинці»» у налаштуваннях сайту (за замовчуванням дозволено/запитує браузер).
-  let autoPipSupported = false;
-  try {
-    navigator.mediaSession.setActionHandler("enterpictureinpicture", () => {
-      if (pipWin && !pipWin.closed) return;
-      toggleMini().catch(() => {});
-    });
-    autoPipSupported = true;
-  } catch (e) { autoPipSupported = false; }
-
-  // Якщо браузер автоматичного PiP не вміє — один раз ненав'язливо підказуємо про кнопку в шапці.
-  if (!autoPipSupported) {
+  // Один раз підказуємо про кнопку міні-плеєра в шапці (після ~4 с відтворення).
+  {
     let seen = false;
     try { seen = localStorage.getItem("radio_pipHintSeen") === "1"; } catch (e) {}
     if (!seen) {
@@ -5334,10 +5336,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         clearInterval(iv);
         setTimeout(() => {
           try { localStorage.setItem("radio_pipHintSeen", "1"); } catch (e) {}
-          try { showToast(t("pipHintToast")); } catch (e) {}
+          try { showToast(t("pipHintToast"), false, 7000); } catch (e) {}
           try {
             if (!document.documentElement.classList.contains("ps-anim-off") && btn.animate) {
-              btn.animate([{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }], { duration: 700, iterations: 3, easing: "ease-in-out" });
+              btn.animate([{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }], { duration: 700, iterations: 5, easing: "ease-in-out" });
             }
           } catch (e) {}
         }, 4000);
