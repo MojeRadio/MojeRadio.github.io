@@ -5130,7 +5130,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     #mpHistList .mpRow:has(.mpStarBtn.on) .t {
       /* right(0) + width(18) + 2px зазору між «…» і зірочкою = 20px.
          Менше вже не буде — інакше ellipsis наїде на зірочку. */
-      padding-right: 20px;
+      padding-right: calc(18px - 0.4rem);
     }
     .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
     .mpRow.cur .t { font-weight:700; }
@@ -5238,8 +5238,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     body.mp-narrow #mpNarrowHistList .mpRow,
     body.mp-narrow #mpNarrowStList .mpRow.cur,
     body.mp-narrow #mpNarrowHistList .mpRow.cur {
-      padding-left: 0.55rem;
-      padding-right: 0.55rem;
+      padding-left: 0.4rem;
+      padding-right: 0.4rem;
     }
     /* У списку історії прибираємо padding-right рядка: зірочка там
        абсолютна (right: 0), і саме цей padding створював між текстом і
@@ -5248,7 +5248,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        padding-right самого .t. */
     body.mp-narrow #mpNarrowHistList .mpRow,
     body.mp-narrow #mpNarrowHistList .mpRow.cur {
-      padding-right: 0;
+	  padding-left: 0.3rem;
+      padding-right: 0.3rem;
     }
     body.mp-narrow #mpNarrowStList .mpRow.cur,
     body.mp-narrow #mpNarrowHistList .mpRow.cur {
