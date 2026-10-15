@@ -845,6 +845,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #folderToolbar .folderNewRow { display: none; gap: 6px; margin-top: 6px; }
   #folderToolbar .folderNewRow.open { display: flex; }
   .stationRow { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.2); }
+  .stationRow.current { background: rgba(128,128,128,0.16); border-radius: 8px; margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-bottom-color: transparent; }
   .stationRow .stationRowIcon { width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0; object-fit: contain; background: rgba(128,128,128,0.18); }
   .stationRow .dragHandle { flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: grab; color: var(--fg); padding: 2px; }
   .stationRow .dragHandle:active { cursor: grabbing; }
@@ -5032,8 +5033,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        font-size (який залежить від vmin і у вузькому високому вікні давав
        завеликий розмір). clamp тримає баланс: у маленькому вікні — компактно,
        у широкому — пропорційно більше, без «стрибка» у 28px, як було раніше. */
-    #mpStation { font-size:clamp(14px, 7vw, 26px); font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #mpTrack { font-size:clamp(12px, 5vw, 18px); opacity:.85; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
+    #mpStation { background:none; font-size:clamp(14px, 7vw, 26px); font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #mpTrack { font-size:clamp(12px, 5vw, 18px); color: color-mix(in srgb, var(--fg, #fff) 85%, transparent); background:none; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
     #mpCtrls { display:flex; align-items:center; gap:1rem; margin-top:0.25rem; }
     button { border:0.09rem solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
       border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
@@ -5660,10 +5661,17 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       // Коли пісні немає, головний екран показує назву станції на місці пісні. У міні-плеєрі
       // назва станції лишається на своєму місці, а на місці пісні — назва додатку.
       const trLow0 = tr.trim().toLowerCase();
-      const trIsStation = !!trLow0 && (state.stations.some(x => (x.name && x.name.toLowerCase() === trLow0) || (x.fullName && x.fullName.toLowerCase() === trLow0))
+      // Назву станції беремо напряму зі стану (а не із шапки): шапка на мить показує «моє радіо»,
+      // поки на головному екрані йде завантаження назви пісні.
+      const actSt = activeIndex !== -1 ? state.stations[activeIndex] : null;
+      const actName = actSt ? String(actSt.fullName || actSt.name || "").toLowerCase()
+        : ((isSearchPlayback && typeof searchPlaybackName === "string" && searchPlaybackName) ? searchPlaybackName.toLowerCase() : "");
+      const trIsStation = !!trLow0 && ((actName && trLow0 === actName) || (actSt && String(actSt.name || "").toLowerCase() === trLow0)
+        || state.stations.some(x => (x.name && x.name.toLowerCase() === trLow0) || (x.fullName && x.fullName.toLowerCase() === trLow0))
         || (typeof searchPlaybackName === "string" && searchPlaybackName && searchPlaybackName.toLowerCase() === trLow0));
-      const stShow = trIsStation ? tr.trim().toLowerCase() : st; // назва станції завжди з малої, як у шапці
-      const trShow = trIsStation ? t("appName") : tr;
+      const trIsLoading = !trLow0 || trLow0 === String(t("loading")).toLowerCase() || trLow0 === "..." || trLow0 === "…";
+      const stShow = actName || (trIsStation ? tr.trim().toLowerCase() : st); // назва станції завжди зверху, з малої
+      const trShow = (trIsStation || trIsLoading) ? t("appName") : tr; // немає пісні -> «моє радіо»
       if (a.textContent !== stShow) a.textContent = stShow;
       if (b.textContent !== trShow) b.textContent = trShow;
       const trl = tr.trim().toLowerCase();
@@ -6644,7 +6652,13 @@ function stopHeartbeat() {
 }
 
 // ---- Оновлені функції відтворення ----
+function refreshModalActiveRow() {
+  try {
+    document.querySelectorAll("#stationList .stationRow").forEach(r => r.classList.toggle("current", Number(r.dataset.index) === activeIndex && !isSearchPlayback));
+  } catch (e) {}
+}
 function selectStation(i, revealPage) {
+  setTimeout(refreshModalActiveRow, 0);
   let s = state.stations[i];
   if (!s.url) { showToast(t("noUrl")); openModal(); return; }
   if (isRussianStation(s.name, s.url)) {
@@ -10059,7 +10073,7 @@ function renderModalList() {
   }
   const makeRow = (s, i) => {
     const row = document.createElement("div");
-    row.className = "stationRow";
+    row.className = "stationRow" + ((i === activeIndex && !isSearchPlayback) ? " current" : "");
     row.dataset.index = i;
     const isDefault = defaultStations.some(d => d.name === s.name);
     const isEdited = !!s.manuallyEdited;
