@@ -439,6 +439,11 @@
      (margin, а не padding — щоб не зсунути вміст блоку всередині). */
   #stationsDots:not(.hidden) { margin-top: 5px; }
   #stationsDotsInner { display: flex; align-items: center; gap: 6px; }
+  /* Така сама відстань між центрами крапок, як на ПК (де крапки 7.2px + gap 11.3px): на дотикових екранах крапки менші, тож gap більший */
+  #app:not(.landscape) #stationsDotsInner { gap: 12.5px; }
+  #app:not(.landscape).neumorphic #stationsDotsInner { gap: 13.6px; }
+  #app.landscape #stationsDotsInner { gap: calc(0.84px * var(--app-scale, 1) + 7.8px); }
+  #app.landscape.neumorphic #stationsDotsInner { gap: calc(1.68px * var(--app-scale, 1) + 7.8px); }
   #stationsDots .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--fg); opacity: 0.3; border: none; padding: 0; cursor: pointer; transition: opacity 0.2s, transform 0.2s; }
   #stationsDots .dot.active { opacity: 0.85; transform: scale(1.25); }
   .stPageArrow { display: none; position: absolute; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; border: none; background: none; color: var(--fg); opacity: 0.5; cursor: pointer; align-items: center; justify-content: center; transition: opacity 0.2s, background 0.2s; }
