@@ -10452,6 +10452,31 @@ function moveStationToFolder(fromIndex, folderId, beforeIndex) {
   if (activeSt) activeIndex = state.stations.indexOf(activeSt);
   saveState(); renderStations();
 }
+// Автопрокрутка контейнера під час перетягування: біля верхнього/нижнього краю він їде в той бік,
+// швидше що ближче до краю. getY — поточна позиція вказівника; onScrolled — після кожного зсуву.
+function dragAutoScroll(sc, getY, onScrolled) {
+  let raf = 0, lastT = 0, acc = 0;
+  const tick = (t) => {
+    raf = requestAnimationFrame(tick);
+    const dt = lastT ? Math.min(t - lastT, 50) : 16; lastT = t;
+    if (!sc) return;
+    const y = getY(), b = sc.getBoundingClientRect();
+    const zone = Math.min(90, b.height * 0.25);
+    let v = 0;
+    if (y < b.top + zone) v = -Math.min(1, (b.top + zone - y) / zone);
+    else if (y > b.bottom - zone) v = Math.min(1, (y - (b.bottom - zone)) / zone);
+    if (!v) { acc = 0; return; }
+    acc += v * Math.abs(v) * 1100 * dt / 1000;
+    const step = Math.trunc(acc);
+    if (!step) return;
+    acc -= step;
+    const before = sc.scrollTop;
+    sc.scrollTop = before + step;
+    if (sc.scrollTop !== before) onScrolled();
+  };
+  raf = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(raf);
+}
 function setupFolderDragDrop() {
   const list = document.getElementById("stationList");
   list.querySelectorAll(".stationRow").forEach((row) => {
@@ -10498,29 +10523,9 @@ function setupFolderDragDrop() {
         }
       };
       const onMove = (ev) => { lastY = ev.clientY; update(); };
-      // Автопрокрутка: біля верхнього/нижнього краю списку він сам їде в той бік, швидше що ближче до краю
-      let raf = 0, lastT = 0, acc = 0;
-      const tick = (t) => {
-        raf = requestAnimationFrame(tick);
-        const dt = lastT ? Math.min(t - lastT, 50) : 16; lastT = t;
-        if (!sc) return;
-        const b = sc.getBoundingClientRect();
-        const zone = Math.min(90, b.height * 0.25);
-        let v = 0;
-        if (lastY < b.top + zone) v = -Math.min(1, (b.top + zone - lastY) / zone);
-        else if (lastY > b.bottom - zone) v = Math.min(1, (lastY - (b.bottom - zone)) / zone);
-        if (!v) { acc = 0; return; }
-        acc += v * Math.abs(v) * 1100 * dt / 1000;
-        const step = Math.trunc(acc);
-        if (!step) return;
-        acc -= step;
-        const before = sc.scrollTop;
-        sc.scrollTop = before + step;
-        if (sc.scrollTop !== before) update();
-      };
-      raf = requestAnimationFrame(tick);
+      const stopAuto = dragAutoScroll(sc, () => lastY, update);
       const onUp = () => {
-        cancelAnimationFrame(raf);
+        stopAuto();
         document.removeEventListener("pointermove", onMove);
         document.removeEventListener("pointerup", onUp);
         document.removeEventListener("pointercancel", onUp);
@@ -10561,13 +10566,17 @@ function setupModalDragDrop() {
       row.style.boxShadow = "0 6px 16px rgba(0,0,0,0.35)";
       try { handle.setPointerCapture(e.pointerId); } catch (err) {}
 
-      const baseTops = allRows.map(r => r.getBoundingClientRect().top);
+      const sc = row.closest(".modalScroll");
+      const startScroll = sc ? sc.scrollTop : 0;
+      // Позиції в координатах прокручуваного вмісту — автопрокрутка їх не збиває
+      const baseTops = allRows.map(r => r.getBoundingClientRect().top + startScroll);
       let targetIndex = fromIndex;
+      let lastY = startY;
 
-      const onMove = (ev) => {
-        const dy = ev.clientY - startY;
+      const update = () => {
+        const dy = lastY - startY + (sc ? sc.scrollTop : 0) - startScroll;
         row.style.transform = `translateY(${dy}px)`;
-        const draggedCenter = rowRect.top + rowRect.height / 2 + dy;
+        const draggedCenter = rowRect.top + startScroll + rowRect.height / 2 + dy;
 
         let newTarget = fromIndex;
         for (let i = 0; i < allRows.length; i++) {
@@ -10585,9 +10594,13 @@ function setupModalDragDrop() {
           r.style.transform = shift ? `translateY(${shift}px)` : "";
         });
       };
+      const onMove = (ev) => { lastY = ev.clientY; update(); };
+      const stopAuto = dragAutoScroll(sc, () => lastY, update);
       const onUp = () => {
+        stopAuto();
         document.removeEventListener("pointermove", onMove);
         document.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointercancel", onUp);
         row.classList.remove("dragging");
         row.style.position = ""; row.style.zIndex = ""; row.style.boxShadow = ""; row.style.transform = "";
         allRows.forEach(r => { r.style.transition = ""; r.style.transform = ""; });
@@ -10604,6 +10617,7 @@ function setupModalDragDrop() {
       };
       document.addEventListener("pointermove", onMove);
       document.addEventListener("pointerup", onUp);
+      document.addEventListener("pointercancel", onUp);
     });
   });
 }
