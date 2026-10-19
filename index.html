@@ -10490,7 +10490,13 @@ function setupFolderDragDrop() {
       const fromIndex = parseInt(row.dataset.index, 10);
       const startY = e.clientY;
       const sc = row.closest(".modalScroll");
+      // На час перетягування згортаємо відкриті папки (крім тієї, де лежить сама станція), щоб усе не було купою.
+      // Стан f.open не чіпаємо; після відпускання список перемальовується. Зсув рядка від згортання компенсуємо.
+      const top0 = row.getBoundingClientRect().top;
+      const ownBlock = row.closest(".folderBlock");
+      list.querySelectorAll(".folderBlock:not(.collapsed)").forEach(b => { if (b !== ownBlock) b.classList.add("collapsed"); });
       const startScroll = sc ? sc.scrollTop : 0;
+      const baseShift = top0 - row.getBoundingClientRect().top;
       const targets = [...list.querySelectorAll(".folderHead, .stationRow")].filter(el => el !== row && el.offsetParent !== null);
       // Координати в системі прокручуваного вмісту, щоб автопрокрутка не збивала цілі
       const rects = targets.map(el => { const r = el.getBoundingClientRect(); return { top: r.top + startScroll, bottom: r.bottom + startScroll, height: r.height }; });
@@ -10503,7 +10509,7 @@ function setupFolderDragDrop() {
       let lastY = startY;
       const update = () => {
         const sy = sc ? sc.scrollTop : 0;
-        row.style.transform = `translateY(${lastY - startY + sy - startScroll}px)`;
+        row.style.transform = `translateY(${lastY - startY + sy - startScroll + baseShift}px)`;
         const y = lastY + sy;
         let best = -1, bestD = Infinity;
         rects.forEach((r, k) => {
@@ -10555,9 +10561,14 @@ function setupModalDragDrop() {
       e.preventDefault();
       // Тільки видимі рядки беруть участь у перерахунку — інакше приховані
       // (усередині закритого <details>) мають rect з top:0 і ламають target-індекс.
+      // Закритий спойлер відкриваємо одразу, щоб було куди перетягнути; зсув рядка від цього компенсуємо.
+      const top0 = row.getBoundingClientRect().top;
+      const moreEl = document.getElementById("stationListMore");
+      if (moreEl && !moreEl.open) { moreEl.open = true; updateStationFilterUI(); }
       const allRows = [...list.querySelectorAll(".stationRow")].filter(r => r.offsetParent !== null);
       const fromIndex = allRows.indexOf(row);
       const rowRect = row.getBoundingClientRect();
+      const baseShift = top0 - rowRect.top;
       const rowHeight = rowRect.height;
       const startY = e.clientY;
       row.classList.add("dragging");
@@ -10576,7 +10587,7 @@ function setupModalDragDrop() {
       let lastY = startY;
 
       const update = () => {
-        const dy = lastY - startY + (sc ? sc.scrollTop : 0) - startScroll;
+        const dy = lastY - startY + (sc ? sc.scrollTop : 0) - startScroll + baseShift;
         row.style.transform = `translateY(${dy}px)`;
         const draggedCenter = rowRect.top + startScroll + rowRect.height / 2 + dy;
 
