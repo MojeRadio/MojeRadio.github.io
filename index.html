@@ -293,12 +293,6 @@
   /* Змішаний режим: візуалізатор + невелике лого зверху (якщо є місце; розмір рахує refitVizLogo) */
   #app #logoWrap.vizLogo { scale: 1 !important; }
   #app.list-mode #logoWrap.vizLogo { display: none !important; }
-  /* Горизонтальний режим: невелике лого зверху над візуалізатором (він по центру сцени), якщо над смужкою вистачає висоти */
-  #app.landscape #logoWrap.vizLogo { display: flex !important; position: absolute !important; top: var(--vlTop, 2px); left: 0; right: 0; scale: 1 !important;
-    width: var(--vlSize, 48px) !important; height: var(--vlSize, 48px) !important; max-width: none !important; max-height: none !important;
-    margin: 0 auto !important; }
-  /* Візуалізатор не стискається, а лише опускається нижче, коли над ним стоїть лого (padding-top P зсуває центр на P/2) */
-  #app.landscape.viz-logo-on #vizOuter { padding-top: var(--vlShift, 0px); box-sizing: border-box; }
   #vizLogoLine { margin-top: 8px; }
   #centerLogo { width: 100%; height: 100%; object-fit: contain; border-radius: 22px; }
   #pulse { position: relative; width: 100%; height: 100%; aspect-ratio: 1 / 1; transition: opacity 0.4s; display: flex; align-items: center; justify-content: center; }
@@ -4184,7 +4178,7 @@ function fitStage() {
   let raf = 0;
   const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => {
     // Розмір пульсу/лого раніше рахувався лише при перемальовуванні станцій і лишався застарілим після зміни розміру вікна.
-    try { if (!document.getElementById("app").classList.contains("landscape")) refitStageCenter(); else refitVizLogo(); } catch (e) {}
+    try { if (!document.getElementById("app").classList.contains("landscape")) refitStageCenter(); } catch (e) {}
     fitStage();
   }); };
   const sw = document.getElementById("stageWrap");
@@ -4295,6 +4289,7 @@ function applyLandscape() {
   if (appEl.classList.contains("landscape") === land) return;
   appEl.classList.toggle("landscape", land);
   try { if (typeof applyAppScale === "function") applyAppScale(getAppScaleCur()); } catch (e) {}
+  try { updateVizLogoLine(); if (state.settings.centerMode === "viz") renderStations(); } catch (e) {}
   // Висота #stageWrap щойно змінилась (перемикання портрет↔ландшафт) —
   // кеш зсуву пульсу/лого/візуалізатора більше не актуальний.
   stageShiftCache = null;
@@ -4353,7 +4348,8 @@ function renderStations() {
     (state.settings.centerMode === "viz" && psNoVizOn)
   );
   const logoWrap = document.getElementById("logoWrap");
-  const vizLogoOn = !!canUseViz && state.settings.vizShowLogo !== false && !showLogo;
+  const isLandNow = document.getElementById("app").classList.contains("landscape");
+  const vizLogoOn = !!canUseViz && !isLandNow && state.settings.vizShowLogo !== false && !showLogo;
   logoWrap.classList.toggle("vizLogo", vizLogoOn);
   if (!vizLogoOn) logoWrap.style.visibility = "";
   logoWrap.classList.toggle("hidden", !showLogo && !vizLogoOn);
@@ -8176,30 +8172,8 @@ function armSleepTimerIfNeeded() {
 function refitVizLogo() {
   const lw = document.getElementById("logoWrap");
   const stage = document.getElementById("stageWrap");
-  const appEl0 = document.getElementById("app");
   if (!lw || !stage) return;
-  if (!lw.classList.contains("vizLogo")) { appEl0.classList.remove("viz-logo-on"); return; }
-  if (appEl0.classList.contains("landscape")) {
-    const neuL = appEl0.classList.contains("neumorphic");
-    // Візуалізатор по центру сцени (--vizScale * 0.8 по вертикалі). Лого ставимо над ним, а візуалізатор опускаємо
-    // на (розмір лого + проміжок) / 2 — так «лого + смужка» стоять разом по центру, без стискання смужки.
-    const vwL = document.getElementById("vizWrap");
-    const vhL = (vwL && parseFloat(getComputedStyle(vwL).height)) || 56;
-    const vsL = parseFloat(appEl0.style.getPropertyValue("--vizScale")) || 1;
-    const barH = vhL * vsL * 0.8;
-    const gapL = neuL ? 18 : 8;
-    const H = stage.clientHeight;
-    const sizeL = Math.min(H - barH - gapL - 6, neuL ? 56 : 64);
-    if (!(sizeL >= 32)) { lw.style.visibility = "hidden"; appEl0.classList.remove("viz-logo-on"); return; }
-    const sz = Math.floor(sizeL);
-    lw.style.visibility = "";
-    lw.style.setProperty("--vlSize", sz + "px");
-    lw.style.setProperty("--vlTop", Math.max(2, Math.round((H - (sz + gapL + barH)) / 2)) + "px");
-    appEl0.style.setProperty("--vlShift", (sz + gapL) + "px");
-    appEl0.classList.add("viz-logo-on");
-    return;
-  }
-  appEl0.classList.remove("viz-logo-on");
+  if (!lw.classList.contains("vizLogo")) return;
   const vw = document.getElementById("vizWrap");
   const vh = (vw && parseFloat(getComputedStyle(vw).height)) || 56;
   const padTop = parseFloat(getComputedStyle(stage).paddingTop) || 0;
@@ -11160,7 +11134,8 @@ document.getElementById("syncIntervalInput").onchange = (e) => {
 
 function updateVizLogoLine() {
   const line = document.getElementById("vizLogoLine");
-  if (line) line.style.display = state.settings.centerMode === "viz" ? "" : "none";
+  const land = document.getElementById("app").classList.contains("landscape");
+  if (line) line.style.display = (state.settings.centerMode === "viz" && !land) ? "" : "none";
   const cb = document.getElementById("vizLogoToggle");
   if (cb) cb.checked = state.settings.vizShowLogo !== false;
 }
