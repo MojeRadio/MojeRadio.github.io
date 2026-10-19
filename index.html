@@ -892,17 +892,17 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .folderHead .fcount { opacity: 0.6; font-weight: 400; font-size: 12px; flex-shrink: 0; }
   .folderHead .iconBtn { background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: inherit; font-size: 12px; }
   .folderHead .iconBtn:active { opacity: 0.6; background: rgba(128,128,128,0.15); }
-  .folderHead.noFolder { cursor: default; font-weight: 500; opacity: 0.8; background: transparent; border-bottom: 1px dashed rgba(128,128,128,0.35); border-radius: 0; }
+  .folderHead.noFolder { font-weight: 500; opacity: 0.8; background: transparent; border-bottom: 1px dashed rgba(128,128,128,0.35); border-radius: 0; }
   .folderHead.drop-into { box-shadow: 0 0 0 2px var(--accent); }
   .folderHead .folderRenameInput { flex: 1; min-width: 0; padding: 3px 8px !important; font-size: 14px !important; }
   .folderBody { padding-left: 10px; }
+  .noFolderBlock > .folderBody { padding-left: 0; }
   .stationRow.drop-before { box-shadow: inset 0 2px 0 var(--accent); }
   .stationRow.drop-after { box-shadow: inset 0 -2px 0 var(--accent); }
   #stationList.filtering .folderBody { display: block !important; }
   #stationList.dragActive #stationListMore > summary { visibility: hidden; }
-  #folderToolbar { margin: 2px 0 6px; }
-  #folderToolbar .folderNewRow { display: none; gap: 6px; margin-top: 6px; }
-  #folderToolbar .folderNewRow.open { display: flex; }
+  #folderNewRow { display: none; gap: 6px; margin: 0 0 6px; }
+  #folderNewRow.open { display: flex; }
   .stationRow { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.2); }
   .stationRow.current { background: rgba(128,128,128,0.16); border-radius: 8px; margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-bottom-color: transparent; }
   .stationRow .stationRowIcon { width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0; object-fit: contain; background: rgba(128,128,128,0.18); }
@@ -1734,20 +1734,22 @@ html.lc .tabs button {
         <div id="tabStations" class="tabPane">
           <div style="margin-bottom:6px;">
   <div style="font-weight:600; opacity:0.9; padding:4px 0;" data-i18n="addedStationsSummary">Збережені станції</div>
-  <div id="folderToolbar" style="display:none;">
-    <button type="button" class="ghostBtn" id="folderNewBtn" style="padding:5px 10px; font-size:13px;"><span data-i18n="newFolderBtn">Нова папка</span></button>
-    <div class="folderNewRow" id="folderNewRow">
-      <input type="text" id="folderNewInput" data-i18n-ph="folderNamePh" placeholder="Назва папки" autocomplete="off" maxlength="40" enterkeyhint="done">
-      <button type="button" class="primaryBtn" id="folderNewOk" style="padding:5px 12px;">OK</button>
-    </div>
-  </div>
-  <div id="stationFilterWrap" style="display:none; margin:2px 0 6px;">
+  <div id="stationTopRow" style="display:flex; gap:6px; align-items:flex-start;">
+  <div id="stationFilterWrap" style="display:none; margin:2px 0 6px; flex:1 1 0; min-width:0;">
     <div style="position:relative;">
       <input type="text" id="stationFilterInput" data-i18n-ph="stationFilterPh" placeholder="Пошук серед моїх станцій" autocomplete="off" enterkeyhint="search" style="width:100%; box-sizing:border-box; padding:5px 28px 5px 10px; font-size:13px; line-height:1.2; height:30px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext);">
       <button type="button" id="stationFilterClear" aria-label="×" style="display:none; position:absolute; right:2px; top:0; height:30px; width:26px; border:none; background:none; color:inherit; opacity:0.6; font-size:18px; line-height:1; cursor:pointer;">×</button>
     </div>
     <div class="hint" id="stationFilterEmpty" data-i18n="stationFilterEmpty" style="display:none; margin-top:6px;">Нічого не знайдено</div>
   </div>
+  <div id="folderToolbar" style="display:none; flex:0 0 25%; margin:2px 0 6px 0; margin-left:auto;">
+    <button type="button" class="ghostBtn" id="folderNewBtn" style="width:100%; height:30px; box-sizing:border-box; margin-top:0; padding:0 4px; font-size:13px; white-space:nowrap;"><span data-i18n="newFolderBtn" style="display:block; overflow:hidden; text-overflow:ellipsis;">Нова папка</span></button>
+  </div>
+  </div>
+    <div class="folderNewRow" id="folderNewRow">
+      <input type="text" id="folderNewInput" data-i18n-ph="folderNamePh" placeholder="Назва папки" autocomplete="off" maxlength="40" enterkeyhint="done">
+      <button type="button" class="primaryBtn" id="folderNewOk" style="padding:5px 12px;">OK</button>
+    </div>
   <div id="stationList"></div>
   <details style="margin-top:10px;">
     <summary class="exportSummary" style="cursor:pointer; font-size:15px; opacity:0.85; padding:6px 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 6px 2px 2px;" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 14 12 11 15 14"/><line x1="12" y1="11" x2="12" y2="18"/></svg><span data-i18n="stationListExportSummary" style="vertical-align:middle;">Експорт/Імпорт станцій</span></summary>
@@ -1922,7 +1924,7 @@ html.lc .tabs button {
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.30</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.31</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2508,7 +2510,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "3.30";
+const APP_VERSION = "3.31";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -2706,7 +2708,7 @@ let state = {
     eqGains: [0,0,0,0,0],
     hidePulseThreshold: 12,
     dragDrop: true,
-    foldersEnabled: false, stationFolders: [],
+    foldersEnabled: false, stationFolders: [], noFolderOpen: true,
     appScale: 100,
     pipRect: null
   },
@@ -10358,6 +10360,8 @@ function stationFolderId(st) {
 function updateFolderToolbar() {
   const tb = document.getElementById("folderToolbar");
   if (tb) tb.style.display = state.settings.foldersEnabled ? "" : "none";
+  const nr = document.getElementById("folderNewRow");
+  if (nr && !state.settings.foldersEnabled) nr.classList.remove("open");
 }
 function createFolder(name) {
   const nm = (name || "").trim().slice(0, 40) || t("folderDefaultName");
@@ -10431,13 +10435,24 @@ function renderFolderGroups(list, makeRow, trashIcon, makeEditIcon) {
     list.appendChild(block);
   });
   if (folders.length) {
+    // «Без папки» — теж згортається (спойлер); стан зберігається в settings.noFolderOpen
+    const nfBlock = document.createElement("div");
+    nfBlock.className = "folderBlock noFolderBlock" + (state.settings.noFolderOpen === false ? " collapsed" : "");
     const nf = document.createElement("div");
     nf.className = "folderHead noFolder";
     nf.dataset.folder = "";
-    nf.innerHTML = `<span class="fname">${escapeHtml(t("noFolderWord"))}</span><span class="fcount">${loose.length}</span>`;
-    list.appendChild(nf);
-  }
-  loose.forEach(i => list.appendChild(makeRow(state.stations[i], i)));
+    nf.innerHTML = `<span class="chev">${chevron}</span><span class="fname">${escapeHtml(t("noFolderWord"))}</span><span class="fcount">${loose.length}</span>`;
+    nf.addEventListener("click", () => {
+      state.settings.noFolderOpen = nfBlock.classList.contains("collapsed");
+      nfBlock.classList.toggle("collapsed", !state.settings.noFolderOpen);
+      saveState();
+    });
+    const nfBody = document.createElement("div");
+    nfBody.className = "folderBody";
+    loose.forEach(i => nfBody.appendChild(makeRow(state.stations[i], i)));
+    nfBlock.appendChild(nf); nfBlock.appendChild(nfBody);
+    list.appendChild(nfBlock);
+  } else loose.forEach(i => list.appendChild(makeRow(state.stations[i], i)));
 }
 // Перенесення станції: folderId — нова папка ("" = без папки); beforeIndex — куди вставити в state.stations
 // (null = порядок не міняємо). Активна станція відстежується за об'єктом.
@@ -10494,7 +10509,7 @@ function setupFolderDragDrop() {
       // Стан f.open не чіпаємо; після відпускання список перемальовується. Зсув рядка від згортання компенсуємо.
       const top0 = row.getBoundingClientRect().top;
       const ownBlock = row.closest(".folderBlock");
-      list.querySelectorAll(".folderBlock:not(.collapsed)").forEach(b => { if (b !== ownBlock) b.classList.add("collapsed"); });
+      list.querySelectorAll(".folderBlock:not(.collapsed):not(.noFolderBlock)").forEach(b => { if (b !== ownBlock) b.classList.add("collapsed"); });
       const startScroll = sc ? sc.scrollTop : 0;
       const baseShift = top0 - row.getBoundingClientRect().top;
       const targets = [...list.querySelectorAll(".folderHead, .stationRow")].filter(el => el !== row && el.offsetParent !== null);
