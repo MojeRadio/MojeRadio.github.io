@@ -1924,7 +1924,8 @@ html.lc .tabs button {
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.31</div>
+          <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.32</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2510,7 +2511,8 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-const APP_VERSION = "3.31";
+// УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
+const APP_VERSION = "3.32";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -5119,12 +5121,14 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
        завеликий розмір). clamp тримає баланс: у маленькому вікні — компактно,
        у широкому — пропорційно більше, без «стрибка» у 28px, як було раніше. */
     #mpStation { background:none; font-size:clamp(14px, 7vw, 26px); font-weight:700; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    #mpTrack { font-size:clamp(12px, 5vw, 18px); color: color-mix(in srgb, var(--fg, #fff) 85%, transparent); background:none; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
+    #mpTrack { font-size:clamp(12px, 5vw, 18px); color: color-mix(in srgb, var(--fg, #fff) 85%, transparent); background:none; text-align:center; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:clip; min-height:1.1em; letter-spacing:.3px; text-transform:uppercase; }
     #mpCtrls { display:flex; align-items:center; gap:1rem; margin-top:0.25rem; }
     button { border:0.09rem solid var(--ctrlborder, rgba(255,255,255,.7)); background: var(--ctrlbg, rgba(255,255,255,.08)); color: var(--ctrlfg, #fff);
       border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
     button:hover { filter:brightness(1.15); }
     button:active { transform:scale(.95); }
+    /* Обводка трьох кнопок керування: росте разом із кнопками, але не тонша за 1.7px і не товща за 2px. */
+    #mpPrev, #mpPlay, #mpNext { border-width:clamp(1.7px, 0.09rem, 2px); }
     #mpPrev, #mpNext { width:2.2rem; height:2.2rem; }
     #mpPlay { width:3rem; height:3rem; }
     #mpPlay svg { width:1.5rem; height:1.5rem; }
@@ -5210,6 +5214,11 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     #mpStationArrow { position:absolute; right:0; top:50%; transform:translateY(-50%); width:0.65rem; height:0.65rem; opacity:.7; }
     #mpStation:hover #mpStationArrow { opacity:1; }
     #mpTrack { cursor:pointer; }
+    /* Довга назва пісні не обрізається, а повільно й плавно їздить вліво-вправо. */
+    .mpTrackIn { display:inline-block; white-space:nowrap; }
+    .mpTrackIn.scr { animation: mpTrackScroll var(--mp-dur, 10s) ease-in-out infinite; will-change: transform; }
+    @keyframes mpTrackScroll { 0%, 14% { transform: translateX(0); } 50%, 64% { transform: translateX(calc(-1 * var(--mp-dist, 0px))); } 100% { transform: translateX(0); } }
+    @media (prefers-reduced-motion: reduce) { .mpTrackIn.scr { animation: none; } #mpTrack { text-overflow: ellipsis; } }
     /* малі кнопки без кіл: улюблене, історія, закрити, зірочки в списках */
     #mpFav, #mpHistBtn, .mpX, .mpRow button { border:none; background:none; border-radius:0.25rem; width:1.3rem; height:1.3rem; color:var(--fg, #fff); opacity:.85; }
     #mpFav:hover, #mpHistBtn:hover, .mpX:hover, .mpRow button:hover { opacity:1; filter:none; }
@@ -5576,6 +5585,35 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     if (narrowList) fill(narrowList);
     [list, narrowList].forEach(l => { if (l && l._refreshScrollBtns) l._refreshScrollBtns(); });
   }
+  // Назва пісні в міні-плеєрі: якщо не вміщується — повільна прокрутка вліво-вправо замість «…».
+  // Усередині #mpTrack лежить span.mpTrackIn; textContent контейнера лишається тим самим текстом.
+  function setMpTrack(b, text) {
+    let inn = b.firstElementChild;
+    if (!inn || !inn.classList.contains("mpTrackIn")) {
+      b.textContent = "";
+      inn = b.ownerDocument.createElement("span");
+      inn.className = "mpTrackIn";
+      b.appendChild(inn);
+      b._mpKey = "";
+    }
+    if (inn.textContent !== text) inn.textContent = text;
+    fitMpTrack(b, inn);
+  }
+  function fitMpTrack(b, inn) {
+    const cs = pipWin.getComputedStyle(b);
+    const avail = b.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    const key = inn.textContent + "|" + avail + "|" + cs.fontSize;
+    if (b._mpKey === key) return;
+    b._mpKey = key;
+    inn.classList.remove("scr");
+    const over = Math.ceil(inn.offsetWidth - avail);
+    if (avail > 0 && over > 1) {
+      inn.style.setProperty("--mp-dist", over + "px");
+      inn.style.setProperty("--mp-dur", Math.max(7, over / 22 / 0.35) + "s");
+      void inn.offsetWidth;
+      inn.classList.add("scr");
+    }
+  }
   function copyText(txt, flashEl) {
     if (!txt) return;
     try { pipWin.navigator.clipboard.writeText(txt); } catch (e) { try { navigator.clipboard.writeText(txt); } catch (e2) {} }
@@ -5758,7 +5796,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       const stShow = actName || (trIsStation ? tr.trim().toLowerCase() : st); // назва станції завжди зверху, з малої
       const trShow = (trIsStation || trIsLoading) ? t("appName") : tr; // немає пісні -> «моє радіо»
       if (a.textContent !== stShow) a.textContent = stShow;
-      if (b.textContent !== trShow) b.textContent = trShow;
+      setMpTrack(b, trShow);
       const trl = tr.trim().toLowerCase();
       const known = !!trl && ![t("chooseStation"), t("playPrompt"), t("buffering"), t("stopped"), t("loading"), t("cantPlay"), t("appName")].some(x => x && x.toLowerCase() === trl)
         && !state.stations.some(x => (x.name && x.name.toLowerCase() === trl) || (x.fullName && x.fullName.toLowerCase() === trl));
