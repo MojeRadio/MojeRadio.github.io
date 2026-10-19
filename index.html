@@ -899,6 +899,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .stationRow.drop-before { box-shadow: inset 0 2px 0 var(--accent); }
   .stationRow.drop-after { box-shadow: inset 0 -2px 0 var(--accent); }
   #stationList.filtering .folderBody { display: block !important; }
+  #stationList.dragActive #stationListMore > summary { visibility: hidden; }
   #folderToolbar { margin: 2px 0 6px; }
   #folderToolbar .folderNewRow { display: none; gap: 6px; margin-top: 6px; }
   #folderToolbar .folderNewRow.open { display: flex; }
@@ -10560,6 +10561,7 @@ function setupModalDragDrop() {
       const rowHeight = rowRect.height;
       const startY = e.clientY;
       row.classList.add("dragging");
+      list.classList.add("dragActive");
       row.style.position = "relative";
       row.style.zIndex = "50";
       row.style.transition = "none";
@@ -10602,6 +10604,7 @@ function setupModalDragDrop() {
         document.removeEventListener("pointerup", onUp);
         document.removeEventListener("pointercancel", onUp);
         row.classList.remove("dragging");
+        list.classList.remove("dragActive");
         row.style.position = ""; row.style.zIndex = ""; row.style.boxShadow = ""; row.style.transform = "";
         allRows.forEach(r => { r.style.transition = ""; r.style.transform = ""; });
         if (targetIndex !== fromIndex) {
