@@ -1001,6 +1001,14 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #devLogList { max-height: 240px; overflow: auto; margin: 4px 0 0; padding: 8px; border-radius: 8px; background: rgba(128,128,128,0.14); font: 11px/1.4 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; user-select: text; -webkit-user-select: text; }
   .searchResultsWrap { position: relative; margin-top: 8px; }
   .searchResults { max-height: 260px; overflow-y: auto; position: relative; }
+  /* Бічна панель, вкладка "Станції": вкладка — колонка на всю висоту панелі, список результатів пошуку
+     займає всю решту місця (мінімум 260px), а "Резервний пошук" лишається внизу. Без JS-вимірювань. */
+  #app.panel-side #tabStations.active { display: flex; flex-direction: column; min-height: 100%; }
+  #app.panel-side #addForm { flex: 1 1 auto; display: flex; flex-direction: column; }
+  #app.panel-side #addForm > * { flex: 0 0 auto; }
+  #app.panel-side #addForm > .searchResultsWrap:has(> .searchResults > *) { flex: 1 1 auto; min-height: 260px; }
+  #app.panel-side .searchResultsWrap:has(> .searchResults > *) > .searchResults { position: absolute; inset: 0; max-height: none; }
+  #app.panel-side #manualAddToggleBtn { align-self: flex-start; }
   .searchResultsWrap::before, .searchResultsWrap::after {
     content: ""; position: absolute; left: 0; right: 0; height: 16px; pointer-events: none; z-index: 2;
     opacity: 0; transition: opacity 0.25s ease;
@@ -1179,6 +1187,11 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   }
   /* Скролбар лишаємо нативним. */
   #app.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(58px + env(safe-area-inset-top) + 14px); padding-bottom: calc(var(--volRowH, 42px) + 14px); scrollbar-gutter: stable both-edges; }
+  /* iOS PWA, вигляд "Список": шапка не лізе під системний статус-бар (там iOS 26 дає розмиття),
+     а лежить під суцільною смужкою #statusBarZone — як у "Сітці". Відступ списку рахується від шапки. */
+  html.ios.pwa #app.list-mode:not(.neumorphic) #headerBand { top: var(--statusZoneH); }
+  html.ios.pwa #app.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(58px + 14px); }
+  html.ios.pwa #app.landscape.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(calc(27.5px * var(--app-scale, 1)) + calc(8px * var(--app-scale, 1))) !important; }
   #app.list-mode:not(.neumorphic) #volRow {
     position: absolute; left: 0; right: 0;
     /* -2px — невелике перекриття з блоком кнопок. Раніше bottom був рівно
@@ -1968,7 +1981,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.33</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.34</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2558,7 +2571,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.33";
+const APP_VERSION = "3.34";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -9316,7 +9329,11 @@ function updateSearchClearBtnVisibility() {
   const hasQuery = document.getElementById("searchQuery").value.length > 0;
   const hasGenre = document.getElementById("searchGenreFilter").value.length > 0;
   const hasCountry = document.getElementById("searchCountryFilter").value.length > 0;
-  btn.style.display = (hasQuery || hasGenre || hasCountry) ? "block" : "none";
+  // × потрібен і тоді, коли поля порожні, але під ними вже є список (режим "Популярні станції"
+  // або будь-які результати) — інакше його неможливо прибрати.
+  const resEl = document.getElementById("searchResults");
+  const hasResults = !!searchDiscover || !!(resEl && resEl.children.length);
+  btn.style.display = (hasQuery || hasGenre || hasCountry || hasResults) ? "block" : "none";
   updateSearchBtnIcon();
 }
 // Кнопка пошуку: коли поле не в фокусі й нічого не вибрано й не вписано — іконка "мені пощастить" (кубик),
@@ -10222,6 +10239,24 @@ document.getElementById("modalCloseX").onclick = closeModalFn;
   b.insertAdjacentHTML("beforeend", '<svg class="hdrXSvg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="20" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/></svg>');
 });
 window.addEventListener("resize", () => { drawerPanelW = 0; });
+// Поворот екрана з відкритою бічною панеллю: ширина панелі змінюється, а зсув головного екрана
+// лишався старим (контент "застрявав" збоку). Перераховуємо зсув після повороту — iOS віддає
+// актуальні розміри із запізненням, тому кілька спроб.
+function resyncOpenDrawer() {
+  try {
+    if (!drawerShiftActive || !modalBg.classList.contains("open")) return;
+    const appEl = document.getElementById("app");
+    if (!appEl.classList.contains("panel-side")) return;
+    const pn = document.querySelector("#modalBg .modal");
+    if (!pn || !pn.offsetWidth) return;
+    drawerPanelW = 0;
+    applyMainShift(pn.offsetWidth);
+  } catch (e) {}
+}
+["resize", "orientationchange"].forEach(ev => window.addEventListener(ev, () => {
+  resyncOpenDrawer();
+  [120, 350, 800].forEach(t => setTimeout(resyncOpenDrawer, t));
+}));
 // Поки бічна панель відкрита, ліва кнопка шапки працює як «закрити» (а не оновити/меню).
 document.getElementById("topbarLeft").addEventListener("click", (e) => {
   const btn = e.target.closest("#topbarLeft > button:first-child");
@@ -12588,6 +12623,7 @@ document.getElementById("autoDetectBtn").onclick = async () => {
   showToast(t("searchingSongTitleToast"));
   const streamUrl = (document.getElementById("editUrl").value || "").trim() || s.url;
   const results = await fetchTitleCandidates(url, s.name, streamUrl);
+  if (editingIndex === -1 || state.stations[editingIndex] !== s) return; // користувач уже закрив редактор цієї станції
   if (!results || !results.length) { showToast(t("titleNotFoundToast")); return; }
   showTrackOptions(results, url); // вікно показуємо завжди, навіть якщо знайдено лише одне джерело
 };
@@ -12683,7 +12719,8 @@ async function fetchTitleCandidates(url, stationName, streamUrl) {
     triedUrls.add(u);
     try {
       const raw = await fetchTextSmart(u);
-      if (raw) {
+      // двійкові дані (напр. аудіо замість тексту) — не джерело назви: символи-«кракозябри» або керівні коди
+      if (raw && !/[\u0000-\u0008\u000E-\u001F\uFFFD]/.test(raw.slice(0, 2000))) {
         const items = extractTitleCandidatesFromText(raw, true);
         items.forEach(it => { results.push(it.t); found.push({ title: it.t, key: it.k, endpoint: u }); });
       }
@@ -12818,17 +12855,47 @@ async function fetchWithTimeout(url, timeoutMs) {
     clearTimeout(timer);
   }
 }
+// Таймаут діє на ВЕСЬ запит разом з тілом відповіді; розмір обмежено; аудіо-потік (нескінченне тіло)
+// відкидається за заголовками — інакше res.text() на потоці радіостанції висить, поки не обірветься.
+async function fetchTextBounded(url, timeoutMs, maxBytes) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { cache: "no-store", signal: controller.signal });
+    if (!res.ok) return null;
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (/^(audio|video)\//.test(ct) || ct.includes("ogg") || res.headers.has("icy-name") || res.headers.has("icy-metaint")) return null;
+    if (!res.body || !res.body.getReader) return await res.text();
+    const reader = res.body.getReader();
+    const chunks = [];
+    let total = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      total += value.length;
+      if (total >= maxBytes) break;
+    }
+    const all = new Uint8Array(total);
+    let off = 0;
+    for (const c of chunks) { all.set(c, off); off += c.length; }
+    return new TextDecoder("utf-8").decode(all);
+  } finally {
+    clearTimeout(timer);
+    try { controller.abort(); } catch (e) {}
+  }
+}
 async function fetchTextSmartOnce(url) {
   if (!state.settings.forceProxy) {
     try {
-      const res = await fetchWithTimeout(url, 12000);
-      if (res.ok) { const txt = await res.text(); return txt; }
+      const txt = await fetchTextBounded(url, 12000, 4194304);
+      if (txt) return txt;
     } catch (e) {}
   }
   for (const proxy of CORS_PROXIES) {
     try {
-      const res2 = await fetchWithTimeout(proxy + encodeURIComponent(url), 12000);
-      if (res2.ok) { const txt = await res2.text(); if (txt && txt.length > 0) return txt; }
+      const txt = await fetchTextBounded(proxy + encodeURIComponent(url), 12000, 4194304);
+      if (txt && txt.length > 0) return txt;
     } catch (e) { continue; }
   }
   return null;
