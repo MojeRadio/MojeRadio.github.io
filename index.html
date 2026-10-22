@@ -90,6 +90,8 @@
   #app.neumorphic.theme-neuLight .stationBtn.active { box-shadow: inset 4px 4px 9px var(--neuDark), inset -4px -4px 9px var(--neuLight); }
   #app.neumorphic.theme-neuLight #reloadBtn, #app.neumorphic.theme-neuLight #shareBtn, #app.neumorphic.theme-neuLight #pipBtn, #app.neumorphic.theme-neuLight #menuBtnTop { box-shadow: 3px 3px 7px var(--neuDark), -3px -3px 7px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.5); }
   #app.neumorphic.theme-neuLight #logoWrap { box-shadow: 11px 11px 24px var(--neuDark), -11px -11px 24px var(--neuLight); }
+  /* Світла неоморфна тема: майже повністю білі (в т.ч. напівпрозорі) логотипи на світлому фоні не читаються — робимо їх чорними */
+  #app.neumorphic.theme-neuLight img.logoWhite { filter: brightness(0); }
   #app.neumorphic.theme-neuLight #logoWrap::after { box-shadow: inset 3px 3px 6px rgba(255,255,255,0.85), inset -4px -4px 8px var(--neuDark); }
   #app.neumorphic.theme-neuLight .ctrlBtn, #app.neumorphic.theme-neuLight #playBtn.paused-attn { box-shadow: 4px 4px 8px var(--neuDark), -4px -4px 8px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.5); }
   #app.neumorphic.theme-neuLight #playBtn:not(.paused-attn) { box-shadow: inset 4px 4px 9px var(--neuDark), inset -4px -4px 9px var(--neuLight); }
@@ -1252,7 +1254,12 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .mouse-only { display: none; }
   .no-touch .mouse-only { display: flex; }
 
-  #sleepMinutes { width: 60px; flex: none; background: rgba(128,128,128,0.12); color: var(--modaltext); border: 1px solid rgba(128,128,128,0.3); border-radius: 6px; padding: 6px 8px; }
+  #sleepMinutes { flex: none; box-sizing: border-box; width: 6.6em; max-width: 100%; padding: 6px 24px 6px 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); font-size: 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 10px 6px; }
+  #sleepMinutes option { background-color: var(--modalbg); color: var(--modaltext); }
+  #sleepCustomInput { padding: 6px 4px; text-align: center; -moz-appearance: textfield; appearance: textfield; }
+  #sleepCustomInput::-webkit-inner-spin-button, #sleepCustomInput::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  html.lc #sleepCustomInput { padding: 4px; }
+  html.lc #sleepMinutes { padding: 4px 22px 4px 6px; font-size: 12px; }
 
   #eqControls { display: none; margin-top: 8px; padding: 8px 4px; background: rgba(128,128,128,0.08); border-radius: 10px; }
   #eqControls.visible { display: block; }
@@ -1966,10 +1973,9 @@ html.lc .tabs button {
             <div class="checkLine" style="flex-wrap:wrap;">
               <input type="checkbox" id="sleepToggle">
               <label for="sleepToggle" data-i18n="sleepLabel" style="white-space:nowrap;">Зупинити відтворення через</label>
-              <input type="number" id="sleepMinutes" placeholder="30" min="1" style="width:60px; flex:none; background:rgba(128,128,128,0.12); color:var(--modaltext); border:1px solid rgba(128,128,128,0.3); border-radius:6px; padding:6px 8px;">
-              <span data-i18n="minutesWord">хв</span>
+              <select id="sleepMinutes" aria-label="Sleep timer"></select>
+              <span id="sleepCustomWrap" style="display:none; align-items:center; gap:4px;"><input type="number" id="sleepCustomInput" inputmode="numeric" min="1" max="1440" placeholder="45" style="width:58px;"><span data-i18n="minutesWord">хв</span></span>
             </div>
-            <div class="hint" id="sleepStatus"></div>
             <div class="hint" id="sleepCountdown" style="font-weight:700; font-size:15px; margin-top:4px;"></div>
           </div>
 
@@ -1981,7 +1987,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.34</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.36</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2260,7 +2266,7 @@ const I18N = {
     wakeLockLabel:"Не вимикати екран під час гри", orientationTitle:"Орієнтація", landscapeLabel:"Компактний горизонтальний вигляд", landscapeLabelTouch:"Ввімкнути автоповорот екрану", devForceLandscapeLabel:"Примусовий горизонтальний вид", devForcePortraitLabel:"Примусовий вертикальний вид", forceTouchModeLabel:"Бокова панель налаштувань", forceDesktopModeLabel:"Компактне вікно налаштувань", swipeLabel:"Перемикати станції свайпом",
     timerTitle:"Сон-таймер", sleepLabel:"Зупинити відтворення через",
     visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові станції", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Вимкнути додаткові ефекти візуалізатора", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Альтернативний вигляд станцій", powerSaveLabel:"Енергозбереження (спрощення ефектів)", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
-    contactLabel:"Контакт з розробником", usedThisSession:"Використано за сесію", maintenanceTitle:"Обслуговування", resetDefaultsLabel:"Скинути до заводських налаштувань", minutesWord:"хв", visitorsToday:"Візити сьогодні", visitorsTotal:"всього", visitorsUnavailable:"Візити: недоступно", appDataSize:"Дані додатку", loading:"...", exportBtn:"Експортувати станції", importBtn:"Імпортувати станції", restoreDefault:"Скинути до версії з файлу", manualStationsQ:"Зберегти станції та улюблені пісні?", keepManual:"Так, зберегти", removeManual:"Ні, повне скидання", searchNewStations:"Пошук нових станцій", editTitle:"Редагувати станцію", filterAnyGenre:"Будь-який жанр", filterAnyCountry:"Будь-яка країна", editSectionBasic:"Основне", editSectionIcon:"Іконка та інфо", editSectionTrack:"Назва треку, що грає",
+    contactLabel:"Контакт з розробником", usedThisSession:"Використано за сесію", maintenanceTitle:"Обслуговування", resetDefaultsLabel:"Скинути до заводських налаштувань", minutesWord:"хв", sleepUntil:"до", sleepCustom:"Своє…", visitorsToday:"Візити сьогодні", visitorsTotal:"всього", visitorsUnavailable:"Візити: недоступно", appDataSize:"Дані додатку", loading:"...", exportBtn:"Експортувати станції", importBtn:"Імпортувати станції", restoreDefault:"Скинути до версії з файлу", manualStationsQ:"Зберегти станції та улюблені пісні?", keepManual:"Так, зберегти", removeManual:"Ні, повне скидання", searchNewStations:"Пошук нових станцій", editTitle:"Редагувати станцію", filterAnyGenre:"Будь-який жанр", filterAnyCountry:"Будь-яка країна", editSectionBasic:"Основне", editSectionIcon:"Іконка та інфо", editSectionTrack:"Назва треку, що грає",
     etOff:"Вимкнено (назва станції)", etAdmin:"Брати з адмін файлу (якщо є)", etManual:"Вручну за посиланням", etIcy:"Автоматично з потоку (ICY)", etIcyHint:"Назва визначатиметься з метаданих самого аудіопотоку станції — окреме посилання не потрібне.",
     save:"Зберегти", deleteStation:"Видалити", phUrl:"Пряме посилання на потік (https://...)", phSearch:"Пошук у базі radio-browser.info",
     phFullName:"Назва", editWord:"Ред.", deleteWord:"Видалити", manualAddTitle:"Резервний пошук / додати вручну",
@@ -2277,7 +2283,7 @@ const I18N = {
     wakeLockLabel:"Nie wygaszaj ekranu podczas odtwarzania", orientationTitle:"Orientacja", landscapeLabel:"Kompaktowy widok poziomy", landscapeLabelTouch:"Włącz autoobrót ekranu", devForceLandscapeLabel:"Wymuszony widok poziomy", devForcePortraitLabel:"Wymuszony widok pionowy", forceTouchModeLabel:"Boczny panel ustawień", forceDesktopModeLabel:"Kompaktowe okno ustawień", swipeLabel:"Zmiana stacji przesunięciem",
     timerTitle:"Wyłącznik czasowy", sleepLabel:"Zatrzymaj odtwarzanie po",
     visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Liczyć odwiedziny (licznik)", visitorLegacyCounterLabel:"Używać stary licznik (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe stacje", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Wyłącz dodatkowe efekty wizualizatora", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Alternatywny wygląd stacji", powerSaveLabel:"Oszczędzanie energii (uproszczone efekty)", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
-    contactLabel:"Kontakt z twórcą", usedThisSession:"Zużyto w tej sesji", maintenanceTitle:"Konserwacja", resetDefaultsLabel:"Przywróć ustawienia fabryczne", minutesWord:"min", visitorsToday:"Wizyty dzisiaj", visitorsTotal:"razem", visitorsUnavailable:"Wizyty: niedostępne", appDataSize:"Dane aplikacji", loading:"...", exportBtn:"Eksportuj stacje", importBtn:"Importuj stacje", restoreDefault:"Zresetuj do wersji z pliku", manualStationsQ:"Zachować stacje i ulubione utwory?", keepManual:"Tak, zachowaj", removeManual:"Nie, pełny reset", searchNewStations:"Szukaj nowych stacji", editTitle:"Edytuj stację", filterAnyGenre:"Dowolny gatunek", filterAnyCountry:"Dowolny kraj", editSectionBasic:"Podstawowe", editSectionIcon:"Ikona i info", editSectionTrack:"Nazwa utworu",
+    contactLabel:"Kontakt z twórcą", usedThisSession:"Zużyto w tej sesji", maintenanceTitle:"Konserwacja", resetDefaultsLabel:"Przywróć ustawienia fabryczne", minutesWord:"min", sleepUntil:"do", sleepCustom:"Własna…", visitorsToday:"Wizyty dzisiaj", visitorsTotal:"razem", visitorsUnavailable:"Wizyty: niedostępne", appDataSize:"Dane aplikacji", loading:"...", exportBtn:"Eksportuj stacje", importBtn:"Importuj stacje", restoreDefault:"Zresetuj do wersji z pliku", manualStationsQ:"Zachować stacje i ulubione utwory?", keepManual:"Tak, zachowaj", removeManual:"Nie, pełny reset", searchNewStations:"Szukaj nowych stacji", editTitle:"Edytuj stację", filterAnyGenre:"Dowolny gatunek", filterAnyCountry:"Dowolny kraj", editSectionBasic:"Podstawowe", editSectionIcon:"Ikona i info", editSectionTrack:"Nazwa utworu",
     etOff:"Wyłączone (nazwa stacji)", etAdmin:"Z pliku administratora (jeśli jest)", etManual:"Ręcznie, wg linku", etIcy:"Automatycznie ze strumienia (ICY)", etIcyHint:"Tytuł będzie pobierany z metadanych samego strumienia audio stacji — osobny link nie jest potrzebny.",
     save:"Zapisz", deleteStation:"Usuń", phUrl:"Bezpośredni link do strumienia (https://...)", phSearch:"Szukaj w bazie radio-browser.info",
     phFullName:"Nazwa", editWord:"Edytuj", deleteWord:"Usuń", manualAddTitle:"Wyszukiwanie zapasowe / dodaj ręcznie",
@@ -2294,7 +2300,7 @@ const I18N = {
     wakeLockLabel:"Keep screen on while playing", orientationTitle:"Orientation", landscapeLabel:"Compact landscape layout", landscapeLabelTouch:"Enable screen auto-rotate", devForceLandscapeLabel:"Force landscape layout", devForcePortraitLabel:"Force portrait layout", forceTouchModeLabel:"Side settings panel", scaleTitle:"Interface scale", scaleHint:"Size of buttons and fonts on the main screen", forceDesktopModeLabel:"Compact settings window", swipeLabel:"Swipe to change stations",
     timerTitle:"Sleep timer", sleepLabel:"Stop playback after",
     visualsTitle:"Visuals & appearance", devTitle:"Developer", devLogsTitle:"Recent logs", devLogsCopy:"Copy", devLogsClear:"Clear", devLogsEmpty:"Nothing yet", devLogsCopied:"Logs copied", devModeLabel:"Developer mode", devModeOnToast:"Developer mode enabled", devModeOffToast:"Developer mode disabled", visitorCounterLabel:"Count visits (counter)", visitorLegacyCounterLabel:"Use legacy counter (countapi)", realVizLabel:"Turn off pseudo-visualizer", blackWhiteLabel:"Colored stations", devToastsLabel:"Show event log popups", hideCapsLabel:"Turn off extra visualizer effects", showVolIOSLabel:"Show volume slider on iOS", forceProxyLabel:"Always use CORS proxy", altStationStyleLabel:"Alternative station style", powerSaveLabel:"Power saving (simplified effects)", simDropLabel:"Simulate stream drop", autoThemeLabel:"Automatic theme switching ☀️/🌙", autoThemeDevice:"By device theme", autoThemeTime:"By time of day (Warsaw)", statsSpoiler:"Listening statistics", resetStatsLabel:"Reset statistics", session:"session", totalAllStations:"All stations combined", showMoreStats:"Show {n} more", newVersionAvailable:"A new app version is available", updateNowBtn:"Update", updateHideBtn:"Hide", reserveSearchHint:"If a station could not be found automatically: go to {site}, find the station, and paste its name and link below.", findStationOn:"Find a station on: {site} ↗",
-    contactLabel:"Contact the developer", usedThisSession:"Used this session", maintenanceTitle:"Maintenance", resetDefaultsLabel:"Reset to factory settings", minutesWord:"min", visitorsToday:"Visits today", visitorsTotal:"total", visitorsUnavailable:"Visits: unavailable", appDataSize:"App data", loading:"...", exportBtn:"Export stations", importBtn:"Import stations", restoreDefault:"Reset to file version", manualStationsQ:"Keep stations and liked songs?", keepManual:"Yes, keep them", removeManual:"No, full reset", searchNewStations:"Search for new stations", editTitle:"Edit station", filterAnyGenre:"Any genre", filterAnyCountry:"Any country", editSectionBasic:"Basic info", editSectionIcon:"Icon & info", editSectionTrack:"Now-playing title",
+    contactLabel:"Contact the developer", usedThisSession:"Used this session", maintenanceTitle:"Maintenance", resetDefaultsLabel:"Reset to factory settings", minutesWord:"min", sleepUntil:"until", sleepCustom:"Custom…", visitorsToday:"Visits today", visitorsTotal:"total", visitorsUnavailable:"Visits: unavailable", appDataSize:"App data", loading:"...", exportBtn:"Export stations", importBtn:"Import stations", restoreDefault:"Reset to file version", manualStationsQ:"Keep stations and liked songs?", keepManual:"Yes, keep them", removeManual:"No, full reset", searchNewStations:"Search for new stations", editTitle:"Edit station", filterAnyGenre:"Any genre", filterAnyCountry:"Any country", editSectionBasic:"Basic info", editSectionIcon:"Icon & info", editSectionTrack:"Now-playing title",
     etOff:"Off (station name)", etAdmin:"From admin file (if available)", etManual:"Manually, by link", etIcy:"Automatically from the stream (ICY)", etIcyHint:"The title will be read from the station's own audio stream metadata — no separate link needed.",
     save:"Save", deleteStation:"Delete", phUrl:"Direct stream link (https://...)", phSearch:"Search radio-browser.info",
     phFullName:"Name", editWord:"Edit", deleteWord:"Delete", manualAddTitle:"Backup search / add manually",
@@ -2322,6 +2328,7 @@ function applyI18nDom() {
   if (typeof updateVisitorCountUI === "function") updateVisitorCountUI();
   if (typeof updateSearchBtnIcon === "function") updateSearchBtnIcon();
   if (typeof renderBackupSearchLink === "function") renderBackupSearchLink();
+  if (typeof renderSleepOptions === "function") renderSleepOptions();
 }
 
 // ===================== themes =====================
@@ -2352,7 +2359,7 @@ const SWATCHES = ["#4a8a4a","#c0562e","#3d6d94","#6b7d3d","#c99a2e","#4a5b94","#
 let warsawSunTimes = null;
 async function fetchWarsawSunTimes() {
   try {
-    const res = await fetch("https://api.sunrise-sunset.org/json?lat=52.2297&lng=21.0122&formatted=0");
+    const res = await fetchTimed("https://api.sunrise-sunset.org/json?lat=52.2297&lng=21.0122&formatted=0");
     if (!res.ok) return;
     const j = await res.json();
     warsawSunTimes = { sunrise: new Date(j.results.sunrise), sunset: new Date(j.results.sunset) };
@@ -2571,7 +2578,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.34";
+const APP_VERSION = "3.36";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -2970,7 +2977,7 @@ function loadState() {
       if (parsed.streamRoutes) state.streamRoutes = parsed.streamRoutes;
       if (parsed.settings && typeof parsed.settings.httpsFirst === "boolean") state.settings.httpsFirst = parsed.settings.httpsFirst;
     }
-  } catch (e) {}
+  } catch (e) { errLogPush("STORAGE: не вдалося прочитати збережений стан — " + (e && e.name || e)); }
   cleanStationNames();
   migrateStationNameCase();
   cleanGenericFavicons();
@@ -3013,6 +3020,7 @@ function saveStateImmediate() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(persist));
     storageErrorShown = false;
   } catch (e) {
+    errLogOnce("STORAGE: не вдалося зберегти стан — " + (e && e.name || e));
     if (!storageErrorShown) {
       storageErrorShown = true;
       try { showToast(t("storageFullToast")); } catch (e2) {}
@@ -3709,6 +3717,14 @@ function errLogPush(msg) {
     else { list.push({ t: Date.now(), m: msg }); if (list.length > ERR_LOG_MAX) list.splice(0, list.length - ERR_LOG_MAX); }
     localStorage.setItem(ERR_LOG_KEY, JSON.stringify(list));
   } catch (e) {}
+}
+// Те саме, що errLogPush, але не частіше разу на 5 хв для того самого повідомлення — для запитів, що повторюються.
+const errLogOnceAt = {};
+function errLogOnce(msg) {
+  const now = Date.now();
+  if (errLogOnceAt[msg] && now - errLogOnceAt[msg] < 300000) return;
+  errLogOnceAt[msg] = now;
+  errLogPush(msg);
 }
 function errLogText() {
   return errLogRead().reverse().map(x => new Date(x.t).toLocaleString() + "  " + x.m + (x.n > 1 ? "  ×" + x.n : "")).join("\n");
@@ -7532,7 +7548,7 @@ async function enrichSingleStation(station) {
   try {
     const name = station.fullName || station.name;
     for (const server of RB_SERVERS) {
-      const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5&hidebroken=true");
+      const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5&hidebroken=true");
       if (!res.ok) continue;
       const data = await res.json();
       if (data && data.length) {
@@ -8223,15 +8239,112 @@ if (window.matchMedia) { try { window.matchMedia("(prefers-color-scheme: dark)")
 setInterval(applyAutoThemeIfNeeded, 5 * 60000);
 
 let sleepTimeoutHandle = null;
-let sleepEndTs = null;
-function armSleepTimerIfNeeded() {
-  clearTimeout(sleepTimeoutHandle);
-  if (state.settings.sleepEnabled && state.settings.sleepMinutes > 0) {
-    sleepEndTs = Date.now() + state.settings.sleepMinutes * 60000;
-    sleepTimeoutHandle = setTimeout(() => { audioEl.pause(); isPlaying = false; updatePlayUI(); sleepEndTs = null; showToast(t("sleepTimerStoppedToast")); updateSleepCountdownUI(); }, state.settings.sleepMinutes * 60000);
-  } else { sleepEndTs = null; }
+let sleepEndTs = null;          // момент закінчення, поки відлік іде (грає музика)
+let sleepRemainingMs = null;    // залишок, поки відлік стоїть (пауза) або ще не починався
+let sleepFading = false;
+const SLEEP_PRESETS = [15, 30, 45, 60, 90, 120, 180];
+const SLEEP_MAX_MIN = 1440;
+let sleepListOpen = false;   // час закінчення в дужках показуємо лише поки відкрито випадаючий список
+const SLEEP_FADE_MS = 20000;   // у останні 20 с гучність плавно спадає до нуля, і лише тоді пауза
+const sleepClock = (ts) => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+const sleepOptionText = (min) => min + " " + t("minutesWord") + (sleepListOpen ? " (" + t("sleepUntil") + " ~" + sleepClock(Date.now() + min * 60000) + ")" : "");
+// Список: стандартні пункти + збережене користувачем нестандартне значення (якщо є). Час у дужках — «якщо запустити зараз».
+function renderSleepOptions() {
+  const sel = document.getElementById("sleepMinutes");
+  if (!sel) return;
+  const cur = parseInt(state.settings.sleepMinutes) || 30;
+  const list = SLEEP_PRESETS.includes(cur) ? SLEEP_PRESETS : SLEEP_PRESETS.concat(cur).sort((x, y) => x - y);
+  sel.innerHTML = "";
+  list.forEach(m => { const o = document.createElement("option"); o.value = String(m); o.textContent = sleepOptionText(m); sel.appendChild(o); });
+  const oc = document.createElement("option"); oc.value = "custom"; oc.textContent = t("sleepCustom"); sel.appendChild(oc);
+  sel.value = String(cur);
+}
+let sleepOptMinute = -1;
+function refreshSleepOptionTimes(force) {
+  if (!sleepListOpen && !force) return;
+  const mk = Math.floor(Date.now() / 60000);
+  if (!force && mk === sleepOptMinute) return;
+  sleepOptMinute = mk;
+  const sel = document.getElementById("sleepMinutes");
+  if (!sel) return;
+  sel.querySelectorAll("option").forEach(o => { if (o.value === "custom") return; const txt = sleepOptionText(parseInt(o.value)); if (o.textContent !== txt) o.textContent = txt; });
+}
+function setSleepListOpen(v) { sleepListOpen = v; refreshSleepOptionTimes(true); }
+// Ручне введення хвилин (пункт «Своє значення…»).
+function applySleepCustom() {
+  const inp = document.getElementById("sleepCustomInput");
+  const v = Math.min(SLEEP_MAX_MIN, parseInt(inp.value));
+  document.getElementById("sleepCustomWrap").style.display = "none";
+  inp.value = "";
+  if (v > 0) { state.settings.sleepMinutes = v; saveState(); resetSleepTimer(); }
+  renderSleepOptions();
+}
+function canSleepFade() { return !(isIOSDevice && !gainNode) && fadeUserVolume() > 0.001; }
+function startSleepFade(left) { sleepFading = true; fadeRun(false, left, finishSleep); }
+function endSleepFade() { if (sleepFading) { sleepFading = false; fadeStop(); fadeRestoreSoon(); } }
+const sleepActive = () => !!state.settings.sleepEnabled && state.settings.sleepMinutes > 0;
+// Рахується лише час слухання: пауза (кнопка, зміна станції, дзвінок) заморожує залишок, Play — продовжує.
+// Скидає відлік тільки користувач (вмикач чи нове значення) — і це єдиний випадок.
+function freezeSleepTimer() {
+  if (!sleepEndTs) return;
+  clearTimeout(sleepTimeoutHandle); sleepTimeoutHandle = null;
+  sleepRemainingMs = Math.max(0, sleepEndTs - Date.now());
+  sleepEndTs = null;
+  endSleepFade();
   updateSleepCountdownUI();
 }
+function runSleepTimer() {
+  if (sleepEndTs || !sleepActive()) return;
+  if (sleepRemainingMs == null) sleepRemainingMs = state.settings.sleepMinutes * 60000;
+  sleepEndTs = Date.now() + sleepRemainingMs;
+  sleepRemainingMs = null;
+  sleepCheck();
+  updateSleepCountdownUI();
+}
+// Користувач змінив вмикач або значення: відлік заново (іде одразу, якщо грає, інакше — з першим Play).
+function resetSleepTimer() {
+  clearTimeout(sleepTimeoutHandle); sleepTimeoutHandle = null;
+  sleepEndTs = null; sleepRemainingMs = null;
+  endSleepFade();
+  if (sleepActive()) {
+    sleepRemainingMs = state.settings.sleepMinutes * 60000;
+    if (isPlaying && !audioEl.paused) runSleepTimer();
+  }
+  updateSleepCountdownUI();
+}
+// Викликається при кожному старті/відновленні відтворення: продовжує відлік, але ніколи не скидає його.
+function armSleepTimerIfNeeded() {
+  if (!sleepActive()) { if (sleepEndTs || sleepRemainingMs != null) resetSleepTimer(); return; }
+  runSleepTimer();
+}
+// Кінець: пауза, як кнопкою Pause (м'яка пауза, візуалізатор, Media Session, wake lock), і таймер вимикається.
+function finishSleep() {
+  if (!sleepEndTs) return;
+  clearTimeout(sleepTimeoutHandle); sleepTimeoutHandle = null;
+  sleepEndTs = null; sleepRemainingMs = null;
+  const wasFading = sleepFading;
+  sleepFading = false; fadeStop();
+  state.settings.sleepEnabled = false; saveState();
+  const tg = document.getElementById("sleepToggle"); if (tg) tg.checked = false;
+  if (isPlaying || !audioEl.paused) doUserPause();
+  if (wasFading) fadeRestoreSoon();
+  showToast(t("sleepTimerStoppedToast"));
+  updateSleepCountdownUI();
+}
+// Перевірка за часовою міткою (а не одним setTimeout): викликається таймером, щосекундним опитуванням і при
+// поверненні в додаток, тож запізнення таймерів на заблокованому телефоні не збивають кінець.
+function sleepCheck() {
+  clearTimeout(sleepTimeoutHandle); sleepTimeoutHandle = null;
+  if (!sleepEndTs) return;
+  const left = sleepEndTs - Date.now();
+  if (left <= 0) { finishSleep(); return; }
+  if (left <= SLEEP_FADE_MS && !sleepFading && canSleepFade()) startSleepFade(left);
+  const next = (left > SLEEP_FADE_MS && !sleepFading) ? left - SLEEP_FADE_MS : left;
+  sleepTimeoutHandle = setTimeout(sleepCheck, next + 20);
+}
+audioEl.addEventListener("pause", freezeSleepTimer);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) sleepCheck(); });
+window.addEventListener("pageshow", () => sleepCheck());
 // Підганяє лого/пульс під реальний вільний простір stageWrap. Викликається і після renderStations,
 // і коли з'являється/зникає таймер сну над сценою.
 // Лого станції зверху над візуалізатором: показуємо лише якщо над смужкою візуалізатора вистачає вільного місця.
@@ -8283,21 +8396,33 @@ function refitStageCenter() {
   const fitPx = Math.max(60, Math.min(avail * 0.816, 200)) + "px";
   targets.forEach(el => { el.style.width = fitPx; el.style.height = fitPx; el.style.maxWidth = fitPx; el.style.maxHeight = fitPx; });
 }
+// Формат відліку: м:сс, а від години — г:мм:сс.
+function sleepFmt(totalSec) {
+  const h = Math.floor(totalSec / 3600), mm = Math.floor(totalSec % 3600 / 60), ss = totalSec % 60;
+  return (h ? h + ":" + String(mm).padStart(2, "0") : mm) + ":" + String(ss).padStart(2, "0");
+}
+// У налаштуваннях відлік видно, поки таймер увімкнено: іде — залишок; на паузі — той самий залишок, що стоїть, приглушено.
+// Над сценою — лише поки відлік реально іде.
 function updateSleepCountdownUI() {
   const settingsEl = document.getElementById("sleepCountdown");
+  refreshSleepOptionTimes();
   const mainWarnId = "sleepMainWarning";
   let mainWarn = document.getElementById(mainWarnId);
-  if (!sleepEndTs) {
-    if (settingsEl) settingsEl.textContent = "";
+  const st = state.settings;
+  const remainingMs = sleepEndTs ? sleepEndTs - Date.now() : 0;
+  const running = remainingMs > 0;
+  if (settingsEl) {
+    const idleMs = sleepRemainingMs != null ? sleepRemainingMs : st.sleepMinutes * 60000;
+    const txt = running ? "⏱ " + sleepFmt(Math.floor(remainingMs / 1000))
+      : (st.sleepEnabled && st.sleepMinutes > 0 ? "⏱ " + sleepFmt(Math.ceil(idleMs / 1000)) : "");
+    if (settingsEl.textContent !== txt) settingsEl.textContent = txt;
+    settingsEl.style.opacity = running ? "" : "0.55";
+  }
+  if (!running) {
     if (mainWarn) { mainWarn.remove(); refitStageCenter(); }
     return;
   }
-  const remainingMs = sleepEndTs - Date.now();
-  if (remainingMs <= 0) { if (settingsEl) settingsEl.textContent = ""; if (mainWarn) { mainWarn.remove(); refitStageCenter(); } return; }
-  const totalSec = Math.floor(remainingMs / 1000);
-  const mm = Math.floor(totalSec / 60), ss = totalSec % 60;
-  const label = mm + ":" + String(ss).padStart(2, "0");
-  if (settingsEl) settingsEl.textContent = "⏱ " + label;
+  const label = sleepFmt(Math.floor(remainingMs / 1000));
   if (!mainWarn) {
     mainWarn = document.createElement("div");
     mainWarn.id = mainWarnId;
@@ -8309,8 +8434,25 @@ function updateSleepCountdownUI() {
   }
   mainWarn.textContent = "⏱ " + label;
 }
-document.getElementById("sleepToggle").onchange = (e) => { state.settings.sleepEnabled = e.target.checked; saveState(); armSleepTimerIfNeeded(); };
-document.getElementById("sleepMinutes").onchange = (e) => { state.settings.sleepMinutes = parseInt(e.target.value) || 30; saveState(); armSleepTimerIfNeeded(); };
+document.getElementById("sleepToggle").onchange = (e) => { state.settings.sleepEnabled = e.target.checked; saveState(); resetSleepTimer(); };
+document.getElementById("sleepMinutes").onchange = (e) => {
+  const sel = e.target;
+  setSleepListOpen(false);
+  sel.blur();
+  if (sel.value === "custom") {
+    document.getElementById("sleepCustomWrap").style.display = "flex";
+    const inp = document.getElementById("sleepCustomInput");
+    inp.value = "";
+    inp.focus();
+    return;
+  }
+  document.getElementById("sleepCustomWrap").style.display = "none";
+  state.settings.sleepMinutes = parseInt(sel.value) || 30; saveState(); renderSleepOptions(); resetSleepTimer();
+};
+["pointerdown", "focus"].forEach(ev => document.getElementById("sleepMinutes").addEventListener(ev, () => setSleepListOpen(true)));
+document.getElementById("sleepMinutes").addEventListener("blur", () => setSleepListOpen(false));
+document.getElementById("sleepCustomInput").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); e.target.blur(); } });
+document.getElementById("sleepCustomInput").addEventListener("blur", applySleepCustom);
 
 document.querySelectorAll('.input-wrap .clear-btn').forEach(btn => {
   const targetId = btn.dataset.target;
@@ -8982,7 +9124,7 @@ async function buildDiscoverPool() {
     let raw = null;
     for (const server of RB_SERVERS) {
       try {
-        const res = await fetch(server + "/json/stations/topclick/" + DISCOVER_RAW_COUNT + "?hidebroken=true");
+        const res = await fetchTimed(server + "/json/stations/topclick/" + DISCOVER_RAW_COUNT + "?hidebroken=true");
         if (res.ok) { raw = await res.json(); break; }
       } catch (e) { continue; }
     }
@@ -9048,7 +9190,7 @@ async function performSearch() {
           if (q) url += "&name=" + encodeURIComponent(q);
           if (searchTag) url += "&tag=" + encodeURIComponent(searchTag);
           if (cc) url += "&countrycode=" + encodeURIComponent(cc);
-          const res = await fetch(url);
+          const res = await fetchTimed(url);
           if (res.ok) return await res.json();
         } catch (e) { continue; }
       }
@@ -9458,6 +9600,58 @@ function computeDefaultStationIcon() {
   );
 }
 let DEFAULT_STATION_ICON = computeDefaultStationIcon();
+
+// Білі логотипи: визначаємо за пікселями (32×32) і ставимо клас logoWhite; CSS чорнить його лише в світлій
+// неоморфній темі. Білий = майже всі видимі пікселі світлі, є прозорий фон, темних/кольорових пікселів майже нема.
+// Логотипи з кольоровим вмістом (навіть на білій плашці) білими не вважаються. Результат кешується за адресою.
+const whiteLogoCache = new Map(); // src -> true | false | null (null — не вдалося прочитати)
+const WHITE_LOGO_SEL = "#centerLogo, img.favicon, img.fav";
+function pixelsAreWhiteLogo(px) {
+  let vis = 0, light = 0, clear = 0;
+  const n = px.length / 4;
+  for (let i = 0; i < px.length; i += 4) {
+    if (px[i + 3] < 24) { clear++; continue; }
+    vis++;
+    if (Math.min(px[i], px[i + 1], px[i + 2]) >= 200) light++;
+  }
+  return vis >= 12 && clear >= n * 0.05 && light / vis >= 0.96;
+}
+async function detectWhiteLogo(src) {
+  if (!src || src === DEFAULT_STATION_ICON) return false;
+  const tries = [src];
+  if (!src.startsWith("data:") && !isProxiedStreamUrl(src)) tries.push(STREAM_PROXIES[0] + encodeURIComponent(src));
+  for (const u of tries) {
+    const px = await loadIconPixels(u);
+    if (px) return pixelsAreWhiteLogo(px);
+  }
+  return null;
+}
+function checkWhiteLogo(img) {
+  const src = img.getAttribute("src");
+  if (!src || img.dataset.wlSrc === src) return;
+  img.dataset.wlSrc = src;
+  img.classList.toggle("logoWhite", whiteLogoCache.get(src) === true);
+  if (whiteLogoCache.has(src)) return;
+  whiteLogoCache.set(src, null);
+  detectWhiteLogo(src).then(w => {
+    if (w === null) { whiteLogoCache.delete(src); return; }
+    whiteLogoCache.set(src, w);
+    document.querySelectorAll(WHITE_LOGO_SEL).forEach(el => {
+      if (el.getAttribute("src") === src) el.classList.toggle("logoWhite", w);
+    });
+  });
+}
+new MutationObserver(muts => {
+  for (const m of muts) {
+    if (m.type === "attributes") { if (m.target.matches && m.target.matches(WHITE_LOGO_SEL)) checkWhiteLogo(m.target); }
+    else m.addedNodes.forEach(n => {
+      if (n.nodeType !== 1) return;
+      if (n.matches(WHITE_LOGO_SEL)) checkWhiteLogo(n);
+      n.querySelectorAll && n.querySelectorAll(WHITE_LOGO_SEL).forEach(checkWhiteLogo);
+    });
+  }
+}).observe(document.getElementById("app"), { subtree: true, childList: true, attributes: true, attributeFilter: ["src"] });
+document.querySelectorAll(WHITE_LOGO_SEL).forEach(checkWhiteLogo);
 const RB_SERVERS = ["https://de1.api.radio-browser.info", "https://nl1.api.radio-browser.info", "https://at1.api.radio-browser.info"];
 
 var wakeLockObj = null, wakeLockBusy = false, wakeLockUnsupportedLogged = false;
@@ -9772,7 +9966,7 @@ function openModal() {
   document.getElementById("gridLongPressEditToggle").checked = !!state.settings.gridLongPressEdit;
   updateLongPressHint();
   document.getElementById("sleepToggle").checked = state.settings.sleepEnabled;
-  document.getElementById("sleepMinutes").value = state.settings.sleepMinutes;
+  renderSleepOptions();
   document.getElementById("syncIntervalInput").value = state.settings.syncIntervalMinutes || 60;
   document.getElementById("eqToggle").checked = state.settings.eqEnabled || false;
   document.getElementById("loudnessToggle").checked = !!state.settings.volumeNormalization;
@@ -11208,7 +11402,7 @@ async function findStarterStationInRadioBrowser(query, desiredName) {
     // Крок 1: базовий запит — топ за кліками.
     let list = null;
     try {
-      const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(query) + "&countrycode=PL&limit=30&hidebroken=true&order=clickcount&reverse=true");
+      const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(query) + "&countrycode=PL&limit=30&hidebroken=true&order=clickcount&reverse=true");
       if (res.ok) list = await res.json();
     } catch (e) {}
     let pool = buildStarterPool(list, query, desiredName);
@@ -11218,7 +11412,7 @@ async function findStarterStationInRadioBrowser(query, desiredName) {
     // завжди мають мало кліків і у топ-30 за clickcount не потрапляють.
     if (isHttpsPage() && !pool.some(st => (st.url_resolved || st.url || "").startsWith("https://"))) {
       try {
-        const res2 = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(query) + "&countrycode=PL&limit=50&hidebroken=true");
+        const res2 = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(query) + "&countrycode=PL&limit=50&hidebroken=true");
         if (res2.ok) {
           const list2 = await res2.json();
           const pool2 = buildStarterPool(list2, query, desiredName);
@@ -11782,7 +11976,7 @@ async function performFactoryReset(keepStations) {
         stations: savedStations,
         songFavorites: savedFavorites || []
       }));
-    } catch (e) {}
+    } catch (e) { errLogPush("STORAGE: не вдалося відновити станції після скидання — " + (e && e.name || e)); }
   }
   // Прапорець у sessionStorage — він не чиститься разом із localStorage і
   // переживає location.reload() у тій самій вкладці. Завдяки йому init()
@@ -12243,13 +12437,13 @@ async function fetchImageSearchIcons(query) {
     return items.slice(0, 12)
       .map(item => ({ url: item.url, source: "imgsearch", name: query }))
       .filter(ic => !!ic.url);
-  } catch (e) { return []; }
+  } catch (e) { errLogOnce("IMGSEARCH: " + (e && e.name === "AbortError" ? "таймаут воркера" : ((e && e.message) || e))); return []; }
 }
 async function fetchIconCandidatesFor(name, homepage, streamUrl) {
   let rawIcons = [];
   for (const server of RB_SERVERS) {
     try {
-      const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5");
+      const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5");
       if (res.ok) {
         const data = await res.json();
         if (data && data.length) {
@@ -12269,7 +12463,7 @@ async function fetchIconCandidatesFor(name, homepage, streamUrl) {
     if (simpleName.length > 3) {
       for (const server of RB_SERVERS) {
         try {
-          const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(simpleName) + "&limit=5");
+          const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(simpleName) + "&limit=5");
           if (res.ok) {
             const data = await res.json();
             if (data && data.length) {
@@ -12733,7 +12927,7 @@ async function fetchTitleCandidates(url, stationName, streamUrl) {
   if (!results.length && stationName) {
     try {
       for (const server of RB_SERVERS) {
-        const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(stationName) + "&limit=5");
+        const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(stationName) + "&limit=5");
         if (res.ok) {
           const data = await res.json();
           if (data && data.length) {
@@ -12846,6 +13040,29 @@ function showTrackOptions(options, sourceUrl) {
   };
 }
 
+// Запит із таймаутом на ВЕСЬ обмін (заголовки + тіло). Ніколи не кидає виняток: при помилці, таймауті чи
+// обриві повертає { ok: false }, тож цикли перебору серверів (radio-browser) переходять до наступного
+// сервера, а не висять. Інтерфейс як у fetch: res.ok, res.status, await res.json(), await res.text().
+async function fetchTimed(url, timeoutMs) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs || 8000);
+  const logFail = (why) => {
+    if (!/radio-browser\.info/.test(url)) return;
+    const m = String(url).match(/\/\/([^/]+)/);
+    errLogOnce("NET: " + (m ? m[1] : "radio-browser") + " — " + why);
+  };
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    const body = await res.text();
+    if (!res.ok) logFail("HTTP " + res.status);
+    return { ok: res.ok, status: res.status, json: async () => JSON.parse(body), text: async () => body };
+  } catch (e) {
+    logFail(e && e.name === "AbortError" ? "таймаут" : "немає зв'язку");
+    return { ok: false, status: 0, json: async () => { throw e; }, text: async () => { throw e; } };
+  } finally {
+    clearTimeout(timer);
+  }
+}
 async function fetchWithTimeout(url, timeoutMs) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
@@ -12892,9 +13109,10 @@ async function fetchTextSmartOnce(url) {
       if (txt) return txt;
     } catch (e) {}
   }
-  for (const proxy of CORS_PROXIES) {
+  // Воркер (перший) — 12 с; публічні проксі лише запасні — 5 с кожен, щоб не чекати довго, коли лежить усе.
+  for (let i = 0; i < CORS_PROXIES.length; i++) {
     try {
-      const txt = await fetchTextBounded(proxy + encodeURIComponent(url), 12000, 4194304);
+      const txt = await fetchTextBounded(CORS_PROXIES[i] + encodeURIComponent(url), i === 0 ? 12000 : 5000, 4194304);
       if (txt && txt.length > 0) return txt;
     } catch (e) { continue; }
   }
@@ -13079,6 +13297,7 @@ async function syncStationsFromFile(manual) {
   if (!text) {
     state.settings.lastSyncTime = Date.now(); state.settings.lastSyncOk = false; saveState(); updateSyncStatusUI();
     devLog("Помилка синхронізації файлу");
+    errLogOnce("SYNC: файл станцій не завантажився");
     if (manual) showToast(t("syncLoadFailToast"));
     scheduleSyncRetry();
     return;
@@ -13086,6 +13305,7 @@ async function syncStationsFromFile(manual) {
   try {
     const parsed = parseStationsText(text);
     if (!parsed.stations.length) {
+      errLogOnce("SYNC: у файлі не знайдено станцій");
       state.settings.lastSyncTime = Date.now(); state.settings.lastSyncOk = false; saveState(); updateSyncStatusUI();
       if (manual) showToast(t("syncNoStationsToast"));
       scheduleSyncRetry();
@@ -13145,6 +13365,7 @@ async function syncStationsFromFile(manual) {
     if (manual) showToast(t("syncUpdatedToast"));
     clearSyncRetry();
   } catch (e) {
+    errLogOnce("SYNC: помилка обробки файлу — " + ((e && e.message) || e));
     state.settings.lastSyncTime = Date.now(); state.settings.lastSyncOk = false; saveState(); updateSyncStatusUI();
     if (manual) showToast(t("syncParseErrorToast"));
     scheduleSyncRetry();
@@ -13242,7 +13463,7 @@ async function enrichExistingStations() {
       try {
         const name = station.fullName || station.name;
         for (const server of RB_SERVERS) {
-          const res = await fetch(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5&hidebroken=true");
+          const res = await fetchTimed(server + "/json/stations/search?name=" + encodeURIComponent(name) + "&limit=5&hidebroken=true");
           if (res.ok) {
             const data = await res.json();
             if (data && data.length) {
@@ -13345,7 +13566,7 @@ async function tryFetchIcyTitle(streamUrl) {
     const data = await res.json();
     const title = cleanupTrackText((data && data.title || "").trim());
     return title ? title : null;
-  } catch (e) { return null; }
+  } catch (e) { errLogOnce("ICY: " + (e && e.name === "AbortError" ? "таймаут воркера" : ((e && e.message) || e))); return null; }
 }
 async function tryFetchTitleFromUrl(url, key) {
   if (!url) return null;
@@ -13688,6 +13909,7 @@ function pollDataUsage() {
     const pt = document.getElementById("playTimeBlock");
     if (pt) pt.innerHTML = clockTime(accumulatedSeconds);
   }
+  if (sleepEndTs && (Date.now() >= sleepEndTs || (!sleepFading && sleepEndTs - Date.now() <= SLEEP_FADE_MS))) sleepCheck();
   updateSleepCountdownUI();
 }
 setInterval(pollDataUsage, 1000);
@@ -13812,7 +14034,7 @@ let visitorTotal = null, visitorToday = null;
 async function countVisitViaWorker() {
   let total = null, today = null;
   try {
-    const totalRes = await fetch(`${VISITOR_WORKER_BASE}/hits?key=total`);
+    const totalRes = await fetchTimed(`${VISITOR_WORKER_BASE}/hits?key=total`);
     if (totalRes.ok) {
       const j = await totalRes.json();
       if (typeof j.value === "number") total = j.value;
@@ -13820,7 +14042,7 @@ async function countVisitViaWorker() {
   } catch (e) {}
   try {
     const dayKey = "day-" + new Date().toISOString().slice(0, 10);
-    const todayRes = await fetch(`${VISITOR_WORKER_BASE}/hits?key=${dayKey}`);
+    const todayRes = await fetchTimed(`${VISITOR_WORKER_BASE}/hits?key=${dayKey}`);
     if (todayRes.ok) {
       const j2 = await todayRes.json();
       if (typeof j2.value === "number") today = j2.value;
@@ -13832,7 +14054,7 @@ async function countVisitViaWorker() {
 async function countVisitViaCountapi() {
   let total = null, today = null;
   try {
-    const totalRes = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_KEY_TOTAL}`);
+    const totalRes = await fetchTimed(`https://countapi.mileshilliard.com/api/v1/hit/${COUNTER_KEY_TOTAL}`);
     if (totalRes.ok) {
       const j = await totalRes.json();
       if (typeof j.value === "number") total = j.value;
@@ -13840,7 +14062,7 @@ async function countVisitViaCountapi() {
   } catch (e) {}
   try {
     const dayKey = COUNTER_KEY_TOTAL + "-day-" + new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const todayRes = await fetch(`https://countapi.mileshilliard.com/api/v1/hit/${dayKey}`);
+    const todayRes = await fetchTimed(`https://countapi.mileshilliard.com/api/v1/hit/${dayKey}`);
     if (todayRes.ok) {
       const j2 = await todayRes.json();
       if (typeof j2.value === "number") today = j2.value;
