@@ -127,9 +127,9 @@ Attribution to the original author is appreciated but not required for personal 
 
 ## 🙏 Credits
 
-- Station metadata: [radio-browser.info](https://www.radio-browser.info/)
+- Station metadata: radio-browser.info
 - Icons: custom SVG, no external icon fonts
-- Font: [Manrope](https://fonts.google.com/specimen/Manrope)
+- Font: Manrope
 
 <img width="3308" height="2788" alt="_Screens2" src="https://github.com/user-attachments/assets/fcf1e34a-b087-45f2-9adc-759be648fc37" />
 ---
