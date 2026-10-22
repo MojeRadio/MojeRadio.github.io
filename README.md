@@ -62,7 +62,7 @@ A lightweight, offline-capable **Progressive Web App** for listening to internet
 ## 🚀 Getting started
 
 ### Option 1: Use the hosted version
-Open https://mojeradio.netlify.app/
+Open https://mojeradio.pages.dev/
 
 ### Option 2: Run locally
 ```bash
