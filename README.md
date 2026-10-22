@@ -1,6 +1,7 @@
 # My Radio — PWA radio player
 
 <img width="1724" height="1904" alt="_Screens" src="https://github.com/user-attachments/assets/088101d4-2bae-4703-9092-ac9c4709a5fd" />
+
 A lightweight, offline-capable **Progressive Web App** for listening to internet radio streams. Built as a single self-contained HTML file with zero build step — just open it and it works.
 
 **Live demo:** https://mojeradio.pages.dev/
