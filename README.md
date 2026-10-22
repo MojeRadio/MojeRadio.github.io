@@ -30,7 +30,7 @@ A lightweight, offline-capable **Progressive Web App** for listening to internet
 - Color auto-detection from station logos
 
 ### Interface
-- **16 color themes** — light, dark, and neumorphic variants, with automatic sun/moon switching by device preference or Warsaw sunrise/sunset times
+- **20 color themes** — light, dark, and neumorphic variants, with automatic sun/moon switching by device preference or Warsaw sunrise/sunset times
 - **3 languages** — Ukrainian, Polish, English
 - Two view modes: **grid** (paginated) and **list**
 - **Compact landscape layout** — auto-activates on wide-low viewports
@@ -95,12 +95,8 @@ All settings are managed in-app:
 
 ## 🎨 Themes
 
-16 built-in themes with light/dark pairs, plus 3 neumorphic sets:
+20 built-in themes with light/dark pairs, include 3 neumorphic sets
 
-| Light | Dark |
-|---|---|
-| Classic · Forest · Blue · Tangerine · Ocean · Burgundy | Indigo dark · Sage · True Black · Copper · Teal · Cherry |
-| Neo Light · Neo Sage · Neo Azure | Neo Dark · Neo Sage Dark · Neo Azure Dark |
 
 ---
 
@@ -140,7 +136,7 @@ Attribution to the original author is appreciated but not required for personal 
 
 **My Radio** — це легкий офлайн-сумісний PWA-плеєр для інтернет-радіо. Один HTML-файл, без збірки й залежностей.
 
-**Можливості:** підтримка MP3/AAC/OGG/HLS, автовідновлення потоку, ICY-метадані, керування зі шторки (Media Session), Wake Lock, сон-таймер, пошук станцій через radio-browser.info, drag-and-drop сортування, синхронізація списку з віддаленого файлу, імпорт/експорт JSON, 16 кольорових тем (включно з неоморфними), 3 мови, 5-смуговий еквалайзер, реальний і симульований аудіовізуалізатор, вирівнювання гучності, компактний горизонтальний вигляд, масштаб інтерфейсу 50–150%, без трекінгу й реклами.
+**Можливості:** підтримка MP3/AAC/OGG/HLS, автовідновлення потоку, ICY-метадані, керування зі шторки (Media Session), Wake Lock, сон-таймер, пошук станцій через radio-browser.info, drag-and-drop сортування, синхронізація списку з віддаленого файлу, імпорт/експорт JSON, 20 кольорових тем (включно з неоморфними), 3 мови, 5-смуговий еквалайзер, реальний аудіовізуалізатор, вирівнювання гучності, компактний горизонтальний вигляд, масштаб інтерфейсу, без трекінгу й реклами.
 
 **Демо:** https://mojeradio.pages.dev/
 
