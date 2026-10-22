@@ -1,4 +1,4 @@
-# My Radio — PWA radio player
+# My Radio — PWA radio player for any device
 
 <img width="1724" height="1904" alt="_Screens" src="https://github.com/user-attachments/assets/088101d4-2bae-4703-9092-ac9c4709a5fd" />
 
