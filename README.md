@@ -146,5 +146,5 @@ Attribution to the original author is appreciated but not required for personal 
 
 
 ```
-pwa  radio  radio-player  internet-radio  vanilla-javascript  no-dependencies  single-file  audio-player  hls  equalizer  web-audio  cloudflare-worker  netlify  offline-first  ukrainian  polish
+pwa  radio  radio-player  internet-radio  vanilla-javascript  no-dependencies  single-file  audio-player  hls  equalizer  web-audio  cloudflare-worker  offline-first  ukrainian  polish
 ```
