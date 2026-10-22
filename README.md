@@ -56,7 +56,7 @@ A lightweight, offline-capable **Progressive Web App** for listening to internet
 - CSS Custom Properties for theming, `clip-path`/`transform` for 60 fps visualizations
 - **Cloudflare Worker** as the CORS proxy and ICY metadata endpoint
 - Progressive Web App — `manifest.json` + service worker friendly
-- Radio station metadata from [radio-browser.info](https://www.radio-browser.info/)
+- Radio station metadata from _radio-browser.info_
 
 ---
 
@@ -127,9 +127,9 @@ Attribution to the original author is appreciated but not required for personal 
 
 ## 🙏 Credits
 
-- Station metadata: radio-browser.info
+- Station metadata: _radio-browser.info_
 - Icons: custom SVG, no external icon fonts
-- Font: Manrope
+- Font: _Manrope_
 
 <img width="3308" height="2788" alt="_Screens2" src="https://github.com/user-attachments/assets/fcf1e34a-b087-45f2-9adc-759be648fc37" />
 ---
