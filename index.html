@@ -70,7 +70,7 @@
   #app.neumorphic #stations .stationBtn:not(.grid-name) { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
   #app.neumorphic #stations .stationBtn.plusTile { display: flex; align-items: center; justify-content: center; }
   #app.neumorphic #headerBand { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none; }
-  #app.neumorphic #reloadBtn, #app.neumorphic #shareBtn, #app.neumorphic #pipBtn, #app.neumorphic #menuBtnTop { border-radius: 50%; box-shadow: 5px 5px 11px var(--neuDark), -5px -5px 11px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); background: var(--neuIconSurface, var(--g2)); color: rgba(var(--ring), 0.6); }
+  #app.neumorphic #reloadBtn, #app.neumorphic #shareBtn, #app.neumorphic #pipBtn, #app.neumorphic #airplayBtn, #app.neumorphic #menuBtnTop { border-radius: 50%; box-shadow: 5px 5px 11px var(--neuDark), -5px -5px 11px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); background: var(--neuIconSurface, var(--g2)); color: rgba(var(--ring), 0.6); }
   #app.neumorphic #stationTitle, #app.neumorphic #trackInfo { color: var(--fg); }
   #app.neumorphic #stageWrap { flex: 1; }
   #app.neumorphic #logoWrap { background: none; border-radius: 24px; box-shadow: 13px 13px 28px var(--neuDark), -13px -13px 28px var(--neuLight); padding: 0; }
@@ -88,7 +88,7 @@
   #app.neumorphic #volRow { background: none; box-shadow: inset 5px 5px 11px var(--neuDark), inset -5px -5px 11px var(--neuLight); border-radius: 20px; padding: 8px 16px; margin: 10px 12px 0; width: auto; flex-shrink: 0; }
   #app.neumorphic.theme-neuLight .stationBtn { box-shadow: 4px 4px 9px var(--neuDark), -4px -4px 9px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.5); }
   #app.neumorphic.theme-neuLight .stationBtn.active { box-shadow: inset 4px 4px 9px var(--neuDark), inset -4px -4px 9px var(--neuLight); }
-  #app.neumorphic.theme-neuLight #reloadBtn, #app.neumorphic.theme-neuLight #shareBtn, #app.neumorphic.theme-neuLight #pipBtn, #app.neumorphic.theme-neuLight #menuBtnTop { box-shadow: 3px 3px 7px var(--neuDark), -3px -3px 7px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.5); }
+  #app.neumorphic.theme-neuLight #reloadBtn, #app.neumorphic.theme-neuLight #shareBtn, #app.neumorphic.theme-neuLight #pipBtn, #app.neumorphic.theme-neuLight #airplayBtn, #app.neumorphic.theme-neuLight #menuBtnTop { box-shadow: 3px 3px 7px var(--neuDark), -3px -3px 7px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.5); }
   #app.neumorphic.theme-neuLight #logoWrap { box-shadow: 11px 11px 24px var(--neuDark), -11px -11px 24px var(--neuLight); }
   /* Світла неоморфна тема: майже повністю білі (в т.ч. напівпрозорі) логотипи на світлому фоні не читаються — робимо їх чорними */
   #app.neumorphic.theme-neuLight img.logoWhite { filter: brightness(0); }
@@ -100,7 +100,7 @@
   #app.neumorphic.theme-neuLight #stations.listStyle .stationBtn.active { box-shadow: inset 4px 4px 9px var(--neuDark), inset -4px -4px 9px var(--neuLight), inset 3px 0 0 var(--listActiveColor, var(--accent)); }
   #app.neumorphic.theme-neuLight #volRow { box-shadow: inset 4px 4px 9px var(--neuDark), inset -4px -4px 9px var(--neuLight); }
   #app.neumorphic.theme-neuDark .stationBtn { box-shadow: 6px 6px 13px var(--neuDark), -4px -4px 9px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); }
-  #app.neumorphic.theme-neuDark #reloadBtn, #app.neumorphic.theme-neuDark #shareBtn, #app.neumorphic.theme-neuDark #pipBtn, #app.neumorphic.theme-neuDark #menuBtnTop { box-shadow: 4px 4px 9px var(--neuDark), -3px -3px 7px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); }
+  #app.neumorphic.theme-neuDark #reloadBtn, #app.neumorphic.theme-neuDark #shareBtn, #app.neumorphic.theme-neuDark #pipBtn, #app.neumorphic.theme-neuDark #airplayBtn, #app.neumorphic.theme-neuDark #menuBtnTop { box-shadow: 4px 4px 9px var(--neuDark), -3px -3px 7px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); }
   #app.neumorphic.theme-neuDark #logoWrap { box-shadow: 14px 14px 30px var(--neuDark), -8px -8px 18px var(--neuLight); }
   #app.neumorphic.theme-neuDark #logoWrap::after { background: radial-gradient(circle at 28% 24%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 55%), linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0.26) 100%); box-shadow: inset 3px 3px 6px rgba(255,255,255,0.12), inset -4px -4px 8px var(--neuDark); }
   #app.neumorphic.theme-neuDark .ctrlBtn, #app.neumorphic.theme-neuDark #playBtn.paused-attn { box-shadow: 5px 5px 11px var(--neuDark), -4px -4px 8px var(--neuLight), inset 0 1px 1px rgba(255,255,255,0.06); }
@@ -742,8 +742,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .modalTabTitle { display: none; }
   #app.panel-side #modalBg .modalHead,
   #app.panel-side #editBg .modalHead,
-  #app.panel-side #trackOptionsBg .modalHead,
-  #app.panel-side #eqPresetBg .modalHead {
+  #app.panel-side #trackOptionsBg .modalHead {
     background: transparent;
   }
   #app.panel-side #modalBg .modalHead { padding: 6px 20px 6px 16px; }
@@ -785,7 +784,6 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #modalCloseX.close-hint > svg,
   #editCloseX.close-hint > svg,
   #editBackBtn.close-hint > svg,
-  #eqPresetClose.close-hint > svg,
   #trackOptionsClose.close-hint > svg {
     animation: closeHintPulse 0.55s ease-in-out 4;
   }
@@ -995,6 +993,10 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #searchClearBtn { height: auto; align-self: stretch; }
   .devLogDetails { margin: 8px 0; }
   #app #manualAddToggleBtn { width: auto; margin: 0; padding: 6px 0; border: none !important; background: none !important; box-shadow: none !important; border-radius: 0; text-align: left; font-size: 15px; opacity: 0.85; color: inherit; cursor: pointer; }
+  .manualChev { display: inline-block; vertical-align: middle; margin: 0 0 1px 7px; opacity: 0.7; transition: transform 0.2s ease; }
+  #manualAddToggleBtn.open .manualChev { transform: rotate(180deg); opacity: 1; }
+  #app #manualAddToggleBtn.open { opacity: 1; }
+  #manualAddFields { background: rgba(128,128,128,0.14); border-radius: 10px; padding: 10px; margin-top: 6px; }
   .exportSummary { list-style: none; }
   .exportSummary::-webkit-details-marker { display: none; }
   .devLogDetails summary { cursor: pointer; font-size: 13px; padding: 6px 0; }
@@ -1256,12 +1258,13 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .mouse-only { display: none; }
   .no-touch .mouse-only { display: flex; }
 
-  #sleepMinutes { flex: none; box-sizing: border-box; width: 6.6em; max-width: 100%; padding: 6px 24px 6px 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); font-size: 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 10px 6px; }
-  #sleepMinutes option { background-color: var(--modalbg); color: var(--modaltext); }
+  #sleepMinutes, #eqPresetSelect { flex: none; box-sizing: border-box; width: 6.6em; max-width: 100%; padding: 6px 24px 6px 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); font-size: 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 10px 6px; }
+  #sleepMinutes option, #eqPresetSelect option { background-color: var(--modalbg); color: var(--modaltext); }
   #sleepCustomInput { padding: 6px 4px; text-align: center; -moz-appearance: textfield; appearance: textfield; }
   #sleepCustomInput::-webkit-inner-spin-button, #sleepCustomInput::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   html.lc #sleepCustomInput { padding: 4px; }
-  html.lc #sleepMinutes { padding: 4px 22px 4px 6px; font-size: 12px; }
+  html.lc #sleepMinutes, html.lc #eqPresetSelect { padding: 4px 22px 4px 6px; font-size: 12px; }
+  #eqPresetSelect { width: auto; min-width: 7em; }
 
   #eqControls { display: none; margin-top: 8px; padding: 8px 4px; background: rgba(128,128,128,0.08); border-radius: 10px; }
   #eqControls.visible { display: block; }
@@ -1273,9 +1276,6 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .eq-system-link:hover { background: var(--attn); }
   .eq-links-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   .eq-links-row .eq-system-link { margin-top: 0; }
-  button.eq-preset-btn { border: 0; cursor: pointer; font-family: inherit; color: #fff; background: var(--modalbtn, var(--accent)); padding: 4px 12px; border-radius: 6px; font-size: 12px; transition: background 0.2s; }
-  button.eq-preset-btn:hover { background: var(--attn); }
-  #eqPresetBg .option-item.manual { border-top: 1px solid rgba(128,128,128,0.25); border-radius: 0 0 8px 8px; margin-top: 4px; }
 
   .stationBtn.grid-name { display: flex; align-items: center; justify-content: center; -webkit-line-clamp: unset; }
   .stationBtn.grid-name > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; text-align: center; line-height: 1.3; }
@@ -1447,8 +1447,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #modalBg.open .modal::after { opacity: 1; }
   #app.drawer-dragging #modalBg .modal::after { transition: none; }
   #editBg .modalHead,
-  #trackOptionsBg .modalHead,
-  #eqPresetBg .modalHead {
+  #trackOptionsBg .modalHead {
     display: flex;
     align-items: center;
     padding: 10px 60px 10px 16px;
@@ -1456,8 +1455,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
     margin-bottom: 10px;
   }
   #editBg .modalHead .modalCloseX,
-  #trackOptionsBg .modalHead .modalCloseX,
-  #eqPresetBg .modalHead .modalCloseX {
+  #trackOptionsBg .modalHead .modalCloseX {
     top: 50%;
     transform: translateY(-50%);
   }
@@ -1630,7 +1628,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.landscape #topbar button { padding: calc(2px * var(--app-scale, 1)) !important; }
   #app.landscape #topbar button svg { width: calc(13px * var(--app-scale, 1)) !important; height: calc(13px * var(--app-scale, 1)) !important; }
   #app.landscape #topbarLeft > button:first-child > .hdrXSvg { margin: calc(-6.5px * var(--app-scale, 1)) 0 0 calc(-6.5px * var(--app-scale, 1)) !important; }
-  #app.landscape.neumorphic #reloadBtn, #app.landscape.neumorphic #shareBtn, #app.landscape.neumorphic #pipBtn, #app.landscape.neumorphic #menuBtnTop { box-shadow: 2px 2px 4px var(--neuDark), -2px -2px 4px var(--neuLight) !important; }
+  #app.landscape.neumorphic #reloadBtn, #app.landscape.neumorphic #shareBtn, #app.landscape.neumorphic #pipBtn, #app.landscape.neumorphic #airplayBtn, #app.landscape.neumorphic #menuBtnTop { box-shadow: 2px 2px 4px var(--neuDark), -2px -2px 4px var(--neuLight) !important; }
   #app.landscape #stationsDots .dot { width: calc(4.2px * var(--app-scale, 1)); height: calc(4.2px * var(--app-scale, 1)); }
   #app.landscape.neumorphic #stationsDots .dot { width: calc(5.6px * var(--app-scale, 1)); height: calc(5.6px * var(--app-scale, 1)); box-shadow: inset 1.4px 1.4px 3.5px var(--neuDark), inset -1.4px -1.4px 3.5px var(--neuLight); }
   #app.landscape.neumorphic #stationsDots .dot.active { box-shadow: 1.8px 1.8px 2px var(--neuDark), -1px -1px 1.4px var(--neuLight); }
@@ -1707,22 +1705,66 @@ html.lc .tabs button {
   #app.ios-no-vol:not(.landscape) #stageWrap { align-content: center; padding-top: 0; }
   /* Поле пошуку серед власних станцій: праве поле під хрестик потрібне лише коли є введений текст, інакше підказка обрізається */
   #stationFilterInput:placeholder-shown { padding-right: 10px !important; }
-  /* iOS PWA, вигляд "Список": смуга під системним статус-баром теж стає напівпрозорим "склом" —
-     список прокручується під нею з розмиттям, як під шапкою. Смуга виймається з потоку (absolute),
-     а відступ списку збільшується на її висоту, тож розкладка не змінюється. */
-  html.ios.pwa #app.list-mode:not(.neumorphic) > #statusBarZone {
-    position: absolute; top: 0; left: 0; right: 0; z-index: 4;
-    background: var(--headerbg-a, var(--headerbg, var(--g1)));
-    backdrop-filter: blur(13px) saturate(2.1);
-    -webkit-backdrop-filter: blur(13px) saturate(2.1);
+  /* iOS PWA, вигляд "Список": шапка тягнеться до самого верху разом із зоною під статус-баром
+     і є ОДНИМ шаром скла (один backdrop-filter) — без шва між смугою та шапкою. Вміст шапки
+     зсунуто вниз на --statusZoneH (padding-top), тож іконки й назва лишаються там, де були.
+     Окрема смуга #statusBarZone у цьому вигляді не потрібна. Найвищу частину екрана (сам статус-бар)
+     малює iOS — CSS на неї не впливає. */
+  html.ios.pwa #app.list-mode:not(.neumorphic) > #statusBarZone { display: none; }
+  html.ios.pwa #app.list-mode:not(.neumorphic) > #headerBand {
+    top: 0; padding-top: var(--statusZoneH) !important; min-height: calc(58px + var(--statusZoneH)) !important;
   }
-  html.ios.pwa #app.list-mode.panel-side.drawer-active:not(.neumorphic) > #statusBarZone { z-index: 11; }
-  html.ios.pwa #app.list-mode.power-save:not(.neumorphic) > #statusBarZone, html.ios.pwa #app.list-mode.ps-noblur:not(.neumorphic) > #statusBarZone {
-    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-    background: var(--headerbg, var(--g1)) !important;
+  html.ios.pwa #app.landscape.list-mode:not(.neumorphic) > #headerBand {
+    min-height: calc(calc(27.5px * var(--app-scale, 1)) + var(--statusZoneH)) !important;
   }
   html.ios.pwa #app.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(var(--statusZoneH) + 58px + 14px); }
   html.ios.pwa #app.landscape.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(var(--statusZoneH) + calc(27.5px * var(--app-scale, 1)) + calc(8px * var(--app-scale, 1))) !important; }
+  /* Щоб розмиття шапки не зникало й не блимало, коли відкривається бічна панель (контент зсувається),
+     шари шапки та списку заздалегідь виносяться в окремі композитні шари. */
+  html.ios.pwa #app.list-mode:not(.neumorphic) > #headerBand,
+  html.ios.pwa #app.list-mode:not(.neumorphic) > #stationsWrap { will-change: transform; }
+
+  /* Рядки з іконкою зліва та тумблером справа (Потік, Сон-таймер). */
+  .switchRow { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; }
+  .switchRow .swIcon { flex: 0 0 auto; opacity: 0.8; }
+  .switchRow > label { flex: 1 1 auto; min-width: 0; cursor: pointer; }
+  .switchRow .swBody { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .switchRow .swBody > label { cursor: pointer; }
+  .switchRow .swSub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  /* Сон-таймер: назва й вибір хвилин в одному ряду (переносяться лише коли зовсім немає місця). */
+  .switchRow.sleepRow .swBody { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .switchRow.sleepRow .swBody > label { white-space: nowrap; }
+  .switchRow input.switch {
+    -webkit-appearance: none; appearance: none; flex: 0 0 auto; position: relative;
+    width: 44px; height: 26px; margin: 0; border-radius: 13px; cursor: pointer;
+    background: rgba(128,128,128,0.45); border: none; outline: none; transition: background 0.2s;
+  }
+  .switchRow input.switch::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.35); transition: transform 0.2s;
+  }
+  .switchRow input.switch:checked { background: var(--accent, #3d4fb5); }
+  .switchRow input.switch:checked::after { transform: translateX(18px); }
+  html.lc .switchRow { margin: 4px 0; font-size: 12px; gap: 8px; }
+  /* Роздільник між блоком "Збережені станції" і пошуком нових. */
+  .stationsDivider { border: none; border-top: 2px dotted rgba(128,128,128,0.55); margin: 6px 2px 6px; height: 0; }
+  /* Під лінією власні відступи форми (14px + 10px) давали більше місця, ніж над нею — вирівнюємо. */
+  .stationsDivider + #addForm { margin-top: 6px; }
+  .stationsDivider + #addForm > .searchRow:first-child { margin-top: 6px; }
+  /* Список коротший за екран і нема рядка гучності (iOS / альбомна): панель керування лишається внизу, а не підтягується до списку. */
+  #app.list-mode:not(.neumorphic).list-short.ios-no-vol #controls,
+  #app.list-mode:not(.neumorphic).list-short.landscape #controls { margin-top: auto; }
+
+  /* Позначка елементів, відкритих режимом розробника. */
+  .devNew:not(button) { position: relative; border-left: 3px solid #e0973d; padding-left: 8px; padding-right: 40px; box-sizing: border-box; }
+  .devNew:not(button)::after {
+    content: "DEV"; position: absolute; top: 4px; right: 4px; font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+    line-height: 1; padding: 2px 5px; border-radius: 6px; background: #e0973d; color: #1a1a1a; pointer-events: none;
+  }
+  /* Кнопка-вкладка (Sync): оранжева смужка зверху, щоб не чіпати роздільники вкладок. */
+  .tabs button.devNew { box-shadow: inset 0 3px 0 #e0973d; }
+  #app #airplayBtn.castOn { color: var(--accent); }
+  .switchRow label[for="powerSaveToggle"], .switchRow label[for="eqToggle"], .switchRow label[for="loudnessToggle"] { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -1741,6 +1783,7 @@ html.lc .tabs button {
       <div id="stationTitle"><span id="stationTitleInner">радіо</span></div>
       <div class="side" id="topbarRight">
         <button id="shareBtn" aria-label="поділитись" data-i18n-aria="shareWord"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+        <button id="airplayBtn" aria-label="AirPlay" data-i18n-aria="airplayWord" style="display:none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><polygon points="12 15 17 21 7 21 12 15" fill="currentColor" fill-opacity="0.85"/></svg></button>
         <button id="pipBtn" aria-label="міні-плеєр" data-i18n-aria="pipWord" style="display:none;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="17" rx="3.5"/><rect x="12" y="11.5" width="7" height="6" rx="1.6" fill="currentColor" fill-opacity="0.85" stroke="none"/></svg></button>
       </div>
     </div>
@@ -1844,6 +1887,7 @@ html.lc .tabs button {
     <input type="file" id="importFileInput" accept="application/json" style="display:none;">
   </details>
 </div>
+          <hr class="stationsDivider">
           <div id="addForm">
             <div class="searchRow" style="align-items:stretch;">
               <div style="flex:1; display:flex; flex-direction:column; gap:8px; min-width:0;">
@@ -1863,7 +1907,7 @@ html.lc .tabs button {
               </div>
             </div>
             <div class="searchResultsWrap" id="searchResultsWrap"><div class="searchResults" id="searchResults"></div></div>
-            <button class="ghostBtn" id="manualAddToggleBtn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 6px 2px 2px;" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span data-i18n="manualAddTitle" style="vertical-align:middle;">Резервний пошук / додати вручну</span></button>
+            <button class="ghostBtn" id="manualAddToggleBtn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 6px 2px 2px;" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span data-i18n="manualAddTitle" style="vertical-align:middle;">Резервний пошук / додати вручну</span><svg class="manualChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
             <div id="manualAddFields" style="display:none;">
               <div class="hint" style="font-size:11px;" id="reserveSearchHintEl">Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.</div>
               <div style="display:flex; align-items:center; gap:8px; margin:8px 0;">
@@ -1875,6 +1919,17 @@ html.lc .tabs button {
                 <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
                   <div class="input-wrap"><input type="text" id="newName" data-i18n-ph="phFullName" placeholder="Назва станції"><button class="clear-btn" data-target="newName"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
                   <div class="input-wrap"><input type="url" id="newUrl" data-i18n-ph="phUrl" placeholder="Пряме посилання на потік (https://...)"><button class="clear-btn" data-target="newUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                  <div id="newIconRow" class="station-edit-icon">
+                    <img id="newIconPreview" alt="" style="display:none;">
+                    <span class="hint" id="newIconLabel" data-i18n="newIconLabel" style="margin:0; flex:1 1 auto; min-width:90px;">Іконка (необов'язково)</span>
+                    <div class="icon-actions">
+                      <button type="button" id="newIconFetchBtn" data-i18n-title="iconFetch" title="Взяти з пошуку" style="display:flex; align-items:center; gap:4px; padding:5px 8px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span data-i18n="iconFetchShort">знайти</span></button>
+                      <button type="button" id="newIconUrlBtn" class="iconOnlyBtn" title="Вставити адресу іконки" data-i18n-title="iconUrlApply"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                      <button type="button" id="newIconUploadBtn" class="iconOnlyBtn" title="Завантажити" data-i18n-title="uploadWord"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
+                      <button type="button" id="newIconRemoveBtn" class="iconOnlyBtn" title="Видалити" data-i18n-title="removeWord" style="display:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e05a5a" stroke-width="2.3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                    </div>
+                    <input type="file" id="newIconInput" accept="image/*" style="display:none;">
+                  </div>
                   <div id="newSwatchPicker" style="display:none;"></div>
                   <button class="primaryBtn" id="addBtn" data-i18n="addStation">Додати</button>
                 </div>
@@ -1943,9 +1998,9 @@ html.lc .tabs button {
           <div class="settingBlock">
             <span class="title" data-i18n="langTitle">Мова</span>
             <div class="langRow">
-              <button data-lang="en" class="active flag-en">English</button>
-              <button data-lang="uk" class="flag-uk">Українська</button>
               <button data-lang="pl" class="flag-pl">Polski</button>
+              <button data-lang="uk" class="flag-uk">Українська</button>
+              <button data-lang="en" class="active flag-en">English</button>
             </div>
           </div>
 
@@ -1970,7 +2025,6 @@ html.lc .tabs button {
               <button data-view="grid" class="active"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="3" y="4" width="8" height="4" rx="1.2"/><rect x="13" y="4" width="8" height="4" rx="1.2"/><rect x="3" y="10" width="8" height="4" rx="1.2"/><rect x="13" y="10" width="8" height="4" rx="1.2"/><rect x="3" y="16" width="8" height="4" rx="1.2"/><rect x="13" y="16" width="8" height="4" rx="1.2"/></svg><span data-i18n="viewGrid">Сітка</span></button>
               <button data-view="list"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-i18n="viewList">Список</span></button>
             </div>
-            <div class="checkLine touch-only"><input type="checkbox" id="swipeToggle"><label for="swipeToggle" data-i18n="swipeLabel">Перемикати станцію свайпом</label></div>
             <div class="checkLine mouse-only"><input type="checkbox" id="prevNextToggle"><label for="prevNextToggle" data-i18n="prevNextLabel">Показувати кнопки перемикання станції</label></div>
           </div>
 
@@ -1985,30 +2039,32 @@ html.lc .tabs button {
           </div>
 
           <div class="settingBlock" id="wakeLockBlock">
-            <span class="title" data-i18n="streamTitle">Потік</span>
-            <div class="checkLine"><input type="checkbox" id="wakeLock"><label for="wakeLock" data-i18n="wakeLockLabel">Не вимикати екран під час гри</label></div>
+            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><label for="wakeLock" data-i18n="wakeLockLabel">Не вимикати екран під час гри</label><input type="checkbox" id="wakeLock" class="switch"></div>
           </div>
 
           <div class="settingBlock">
-            <span class="title" data-i18n="timerTitle">Сон-таймер</span>
-            <div class="checkLine" style="flex-wrap:wrap;">
-              <input type="checkbox" id="sleepToggle">
-              <label for="sleepToggle" data-i18n="sleepLabel" style="white-space:nowrap;">Зупинити відтворення через</label>
-              <select id="sleepMinutes" aria-label="Sleep timer"></select>
-              <span id="sleepCustomWrap" style="display:none; align-items:center; gap:4px;"><input type="number" id="sleepCustomInput" inputmode="numeric" min="1" max="1440" placeholder="45" style="width:58px;"><span data-i18n="minutesWord">хв</span></span>
+            <div class="switchRow sleepRow">
+              <svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+              <div class="swBody">
+                <label for="sleepToggle" data-i18n="sleepLabel">Сон-таймер</label>
+                <div class="swSub">
+                  <select id="sleepMinutes" aria-label="Sleep timer"></select>
+                  <span id="sleepCustomWrap" style="display:none; align-items:center; gap:4px;"><input type="number" id="sleepCustomInput" inputmode="numeric" min="1" max="1440" placeholder="45" style="width:58px;"><span data-i18n="minutesWord">хв</span></span>
+                </div>
+              </div>
+              <input type="checkbox" id="sleepToggle" class="switch">
             </div>
             <div class="hint" id="sleepCountdown" style="font-weight:700; font-size:15px; margin-top:4px;"></div>
           </div>
 
           <div class="settingBlock">
-            <span class="title" data-i18n="maintenanceTitle">Обслуговування</span>
             <button class="ghostBtn" id="resetDefaultsBtn" style="padding:12px; font-size:15px; display:flex; align-items:center; justify-content:center; gap:8px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg><span data-i18n="resetDefaultsLabel">Скинути до заводських налаштувань</span></button>
             <div class="hint" id="cacheSizeHint"></div>
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.36</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.40</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2023,8 +2079,30 @@ html.lc .tabs button {
             <div class="hint" data-i18n="scaleHint" style="text-align:center; margin-top:4px;">Розмір кнопок і шрифтів на головному екрані. Не впливає на панель налаштувань.</div>
           </div>
           <div class="settingBlock">
-            <span class="title" data-i18n="powerSaveTitle">Енергозбереження</span>
-            <div class="checkLine"><input type="checkbox" id="powerSaveToggle"><label for="powerSaveToggle" data-i18n="powerSaveLabel">Енергозбереження (спрощення ефектів)</label></div>
+            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg><label for="powerSaveToggle" data-i18n="powerSaveLabel">Енергозбереження</label><input type="checkbox" id="powerSaveToggle" class="switch"></div>
+          </div>
+          <div class="settingBlock">
+            <div class="switchRow sleepRow">
+              <svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="2" y1="14" x2="6" y2="14"/><line x1="10" y1="8" x2="14" y2="8"/><line x1="18" y1="16" x2="22" y2="16"/></svg>
+              <div class="swBody">
+                <label for="eqToggle" data-i18n="eqTitle">Еквалайзер</label>
+                <div class="swSub"><select id="eqPresetSelect" aria-label="Equalizer preset"></select></div>
+              </div>
+              <input type="checkbox" id="eqToggle" class="switch">
+            </div>
+            <div id="eqControls">
+              <div class="eq-band"><label>60</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="0"><span class="eq-val">0</span></div>
+              <div class="eq-band"><label>230</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="1"><span class="eq-val">0</span></div>
+              <div class="eq-band"><label>910</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="2"><span class="eq-val">0</span></div>
+              <div class="eq-band"><label>3.6k</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="3"><span class="eq-val">0</span></div>
+              <div class="eq-band"><label>14k</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="4"><span class="eq-val">0</span></div>
+            </div>
+            <div class="eq-links-row">
+              <a class="eq-system-link" href="#" id="eqSystemLink" target="_blank">⚙️ Системний еквалайзер</a>
+            </div>
+          </div>
+          <div class="settingBlock">
+            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg><label for="loudnessToggle" data-i18n="loudnessTitle">Вирівнювання гучності</label><input type="checkbox" id="loudnessToggle" class="switch"></div>
           </div>
           <div class="settingBlock">
             <span class="title" data-i18n="foldersTitle">Папки станцій</span>
@@ -2032,7 +2110,7 @@ html.lc .tabs button {
           </div>
           <div class="settingBlock">
             <span class="title" data-i18n="autoSwitchTitle">Автоперемикання станції</span>
-            <div class="checkLine"><input type="checkbox" id="autoSwitchToggle"><label for="autoSwitchToggle" data-i18n="autoSwitchLabel">Перемикати станцію в разі помилки</label></div>
+            <div class="checkLine"><input type="checkbox" id="autoSwitchToggle"><label for="autoSwitchToggle" data-i18n="autoSwitchLabel">Перемикатись на іншу станцію в разі помилки</label></div>
           </div>
 
           <div class="settingBlock">
@@ -2043,31 +2121,11 @@ html.lc .tabs button {
             <div class="checkLine" id="showVolIOSRow" style="display:none;"><input type="checkbox" id="showVolIOSToggle"><label for="showVolIOSToggle" data-i18n="showVolIOSLabel">Показувати слайдер гучності на iOS</label></div>
             <div class="checkLine"><input type="checkbox" id="hideCapsToggle"><label for="hideCapsToggle" data-i18n="hideCapsLabel">Вимкнути додаткові ефекти візуалізатора</label></div>
             <div class="alt-style-container" id="altStyleContainer">
-              <div class="checkLine"><input type="checkbox" id="altStationStyleToggle"><label for="altStationStyleToggle" data-i18n="altStationStyleLabel">Альтернативний вигляд станцій</label></div>
+              <div class="checkLine"><input type="checkbox" id="altStationStyleToggle"><label for="altStationStyleToggle" data-i18n="altStationStyleLabel">Заокруглені кнопки станцій</label></div>
             </div>
-            <div class="checkLine touch-only"><input type="checkbox" id="gridLongPressEditToggle"><label for="gridLongPressEditToggle" data-i18n="gridLongPressEditLabel">Редагування станції довгим утриманням</label></div>
-            <div class="checkLine"><input type="checkbox" id="blackWhiteToggle"><label for="blackWhiteToggle" data-i18n="blackWhiteLabel">Кольорові станції</label></div>
-          </div>
-
-          <div class="settingBlock">
-            <span class="title" data-i18n="loudnessTitle">Вирівнювання гучності</span>
-            <div class="checkLine"><input type="checkbox" id="loudnessToggle"><label for="loudnessToggle" data-i18n="loudnessEnable">Однакова гучність на всіх станціях</label></div>
-          </div>
-		  
-          <div class="settingBlock">
-            <span class="title" data-i18n="eqTitle">Еквалайзер</span>
-            <div class="checkLine"><input type="checkbox" id="eqToggle"><label for="eqToggle" data-i18n="eqEnable">Увімкнути еквалайзер</label></div>
-            <div id="eqControls">
-              <div class="eq-band"><label>60</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="0"><span class="eq-val">0</span></div>
-              <div class="eq-band"><label>230</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="1"><span class="eq-val">0</span></div>
-              <div class="eq-band"><label>910</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="2"><span class="eq-val">0</span></div>
-              <div class="eq-band"><label>3.6k</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="3"><span class="eq-val">0</span></div>
-              <div class="eq-band"><label>14k</label><input type="range" min="-12" max="12" value="0" step="0.5" data-band="4"><span class="eq-val">0</span></div>
-            </div>
-            <div class="eq-links-row">
-              <a class="eq-system-link" href="#" id="eqSystemLink" target="_blank">⚙️ Системний еквалайзер</a>
-              <button type="button" class="eq-preset-btn" id="eqPresetBtn">🎚️ Пресети</button>
-            </div>
+            <div class="checkLine touch-only"><input type="checkbox" id="swipeToggle"><label for="swipeToggle" data-i18n="swipeLabel">Перемикати станцію свайпом</label></div>
+            <div class="checkLine touch-only"><input type="checkbox" id="gridLongPressEditToggle"><label for="gridLongPressEditToggle" data-i18n="gridLongPressEditLabel">Довге утримування для редагування станції</label></div>
+            <div class="checkLine"><input type="checkbox" id="blackWhiteToggle"><label for="blackWhiteToggle" data-i18n="blackWhiteLabel">Кольорові кнопки станцій</label></div>
           </div>
 
           <div class="settingBlock">
@@ -2110,18 +2168,6 @@ html.lc .tabs button {
   <div id="mainEdgeShadow"></div>
 
   <!-- Інші модалки -->
-  <div class="modalBg track-options-modal" id="eqPresetBg" style="z-index:11;">
-    <div class="modal">
-      <div class="modalHead">
-        <button class="modalCloseX" id="eqPresetClose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <h3 class="modalHeaderTitle" id="eqPresetTitle" data-i18n="eqPresetsTitle">Пресети еквалайзера</h3>
-      </div>
-      <div class="modalScroll">
-        <div id="eqPresetList"></div>
-      </div>
-    </div>
-  </div>
-
   <div class="modalBg track-options-modal" id="trackOptionsBg" style="z-index:11;">
     <div class="modal">
       <div class="modalHead">
@@ -2216,9 +2262,9 @@ html.lc .tabs button {
     <div class="modal">
       <h3>Оберіть мову / Wybierz język / Choose language</h3>
       <div class="langRow" style="margin-top:14px;">
-        <button data-lang="en" class="flag-en">English</button>
-        <button data-lang="uk" class="flag-uk">Українська</button>
         <button data-lang="pl" class="flag-pl">Polski</button>
+        <button data-lang="uk" class="flag-uk">Українська</button>
+        <button data-lang="en" class="flag-en">English</button>
       </div>
     </div>
   </div>
@@ -2284,14 +2330,14 @@ html.lc .tabs button {
 <script>
 // ===================== i18n =====================
 const I18N = {
-  uk: { appName:"моє радіо", installBanner:"Встановити застосунок", installIosTitle:"Встановлення на iPhone", installIosText:"1. Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у браузері.\n2. Оберіть «На екран „Додому“».\n3. Натисніть «Додати».", installOk:"Зрозуміло", stationFilterPh:"Пошук серед моїх станцій", stationFilterEmpty:"Нічого не знайдено", versionChecking:"Перевіряю оновлення…", versionLatest:"У вас остання актуальна версія", versionCheckFail:"Не вдалося перевірити оновлення", versionNewBtn:"Доступна нова версія {v} — натисни, щоб оновити", pipWord:"Міні-плеєр поверх вікон",copyTip:"Копіювати",pipHintToast:"Порада: кнопка в шапці відкриває міні-плеєр поверх вікон — музика завжди під рукою", colorAutoBtn:"Авто з іконки", colorAutoFailToast:"Не вдалось визначити колір з іконки", chooseStation:"Оберіть станцію знизу", buffering:"Буферизація...", playPrompt:"Натисни play, щоб продовжити", noUrl:"Немає посилання — додай його в меню", copied:"Скопійовано", copiedSongName:"Скопійовано назву пісні", linkCopiedToast:"Посилання скопійовано", stopped:"Оберіть станцію знизу", cantPlay:"Не вдалось відтворити потік", streamUrlPlaceholder:"Посилання на потік", stationIconAlt:"іконка станції", resetAllConfirmText:"Точно скинути все?", resetStatsConfirmText:"Точно скинути статистику?", historyExportedToast:"Історію експортовано", resetDoneToast:"Скинуто до заводських налаштувань — перезавантаження...", versionLabel:"Версія", bitrateLabel:"Бітрейт", kbUnit:"КБ", syncStatusOk:"успішно ", syncStatusFail:"помилка ", syncLoadFailToast:"Не вдалось завантажити файл — навіть через резервні проксі. Пробую далі у фоні.", syncNoStationsToast:"Файл завантажено, але станцій не знайдено — перевір формат", syncUpdatedToast:"Список станцій оновлено", syncParseErrorToast:"Помилка обробки файлу", addedStationsSummary:"Збережені станції", otherParamsSummary:"Інші параметри у файлі", cancelWord:"Скасувати", iconChangedToast:"Іконку змінено", clearHistoryConfirm:"Очистити всю історію пісень?", clearFavoritesConfirm:"Очистити всі улюблені пісні?", favoritesCleared:"Улюблені очищено", deleteStationConfirm:"Видалити станцію «{name}»?", messageUnderTitleLabel:"Текст під назвою пісні", manualTrackTitleLabel:"Ручна назва треку", stopWordsLabel:"Стоп-слова в назві пісні", manualWord:"вручну", stopWordsPlaceholder:"реклама, autopromocja, ...", backupSearchLabel:"Резервний пошук", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Оберіть іконку для станції:", copyFailedToast:"Не вдалось скопіювати", historyCleared:"Історію очищено", statsResetToast:"Статистику прослуховування скинуто", connOffline:"Немає з'єднання з інтернетом", connRetrying:"Зв'язок зі станцією втрачено · спроба {n}/{max}", connSlow:"Станція не відповідає · спроба {n}/{max}", connFailed:"Не вдалося відновити потік — натисніть ⟳, щоб спробувати знову", streamLostRetrying:"Втрата потоку — спроба відновлення ", offlineToast:"Немає мережі — відновлю потік, щойно зʼявиться звʼязок", onlineToast:"Мережу відновлено — підключаюсь знову", devErrLogTitle:"Збережені помилки", recoverFailedToast:"Не вдалось відновити потік", storageFullToast:"Не вдається зберегти налаштування — сховище браузера переповнене", sleepTimerStoppedToast:"Сон-таймер: зупинено", openSystemSoundSettingsToast:"Відкрийте системні налаштування звуку вручну", deletedToast:"Видалено", enterNameUrlToast:"Введіть назву та посилання", simDropSentToast:"Симуляція обриву відправлена", stationsFileLoadedToast:"Файл станцій завантажено", noStationsInFileToast:"У файлі не знайдено станцій", addedToast:"Додано: ", cantReadFileToast:"Не вдалось прочитати файл — перевір формат", searchingIconToast:"Шукаю іконку...", iconUploadedToast:"Іконку завантажено", iconRemovedToast:"Іконку видалено", noSuccessfulSyncToast:"Ще немає жодної успішної синхронізації для відновлення", stationNotInSyncToast:"Станцію не знайдено в останній синхронізації", restoredFromSyncToast:"Відновлено з останньої успішної синхронізації", noSourceToast:"Немає джерела для визначення", titleNotFoundToast:"Не вдалось знайти назву пісні", savedToast:"Збережено: ", sessionUsageResetToast:"Використання за сесію скинуто", updatingToast:"Оновлення...", updatedWord:"оновлено", stationExistsToast:"Така станція вже є у списку", chooseThemeTitle:"Оберіть тему кольору", confirmWord:"Готово", exportHistoryQ:"Що експортувати?", exportFavOnlyOpt:"Тільки улюблені (зі зірочкою)", exportAllOpt:"Усю історію", searchingSongTitleToast:"Шукаю назву пісні...", messagePlaceholder:"текст повідомлення", manualTrackPlaceholder:"назва треку вручну", lastSuccessLabel:"востаннє вдало", iconNotFoundToast:"Не вдалось знайти іконку", iconWord:"Іконка", chooseOptionToast:"Оберіть варіант", iconUrlPromptLabel:"Адреса іконки:", iconFetchShort:"знайти", iconUrlApply:"Вставити адресу іконки", httpsFirstLabel:"Спершу пробувати http → https напряму замість проксі", prevNextLabel:"Показувати кнопки перемикання станції", refreshWord:"оновити", menuWord:"меню", shareWord:"поділитись", muteWord:"звук", prevStationWord:"попередня станція", playWord:"грати", nextStationWord:"наступна станція", stopWord:"стоп", resetWord:"скинути", prevPageWord:"Попередня сторінка", nextPageWord:"Наступна сторінка", uploadWord:"Завантажити", removeWord:"Видалити", tooltipReload:"Перезапустити потік", tooltipMenu:"Меню: станції та налаштування", tooltipStop:"Зупинити і скинути", tooltipPrevStation:"Попередня станція", tooltipNextStation:"Наступна станція", tooltipShare:"Поділитись станцією", tooltipMute:"Увімкнути / вимкнути звук", iconManualSearchPlaceholder:"або впишіть назву станції вручну",
-    tabOptions:"Опції", sortDefault:"Довільний порядок", sortAsc:"За алфавітом (А-Я)", sortDesc:"За алфавітом (Я-А)", tabStations:"Станції", tabSync:"Синхр.", tabSyncLong:"Синхронізація", tabStats:"Статистика", tabStatsShort:"Статист.", tabAdvanced:"Ще", desktopStationHint:"Права кнопка миші по станції — редагування; перетягніть станцію, щоб змінити порядок.", autoSwitchTitle:"Автоперемикання станції", autoSwitchLabel:"Перемикати станцію в разі помилки", autoSwitchToast:"Станція не відповідає — перемикаю на «{name}»", autoSwitchBackToast:"Станція «{name}» знову працює — повертаюсь", foldersTitle:"Папки станцій", foldersLabel:"Групувати станції в папки", newFolderBtn:"Нова папка", folderNamePh:"Назва папки", folderDefaultName:"Папка", noFolderWord:"Без папки", folderFieldLabel:"Папка", renameFolderTip:"Перейменувати папку", deleteFolderTip:"Видалити папку (станції лишаться)", folderDragTip:"Перетягніть станцію на папку", powerSaveTitle:"Енергозбереження", scaleTitle:"Масштаб інтерфейсу", scaleHint:"Розмір кнопок і шрифтів на головному екрані", stationListExportSummary:"Експорт/Імпорт станцій", search:"Шукати", longPressHint:"Довге утримання станції — перетягніть, щоб змінити порядок.", longPressHintReorder:"Довге утримання станції — редагування (перетягування вимкнено).", gridLongPressEditLabel:"Утримання лише для редагування (без перетягування)",
+  uk: { appName:"моє радіо", installBanner:"Встановити застосунок", installIosTitle:"Встановлення на iPhone / iPad", installIosText:"1. Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у браузері.\\n2. Оберіть «Додати на головний екран».\\n3. Натисніть «Додати».", installOk:"Зрозуміло", stationFilterPh:"Пошук серед моїх станцій", stationFilterEmpty:"Нічого не знайдено", versionChecking:"Перевіряю оновлення…", versionLatest:"У вас остання актуальна версія", versionCheckFail:"Не вдалося перевірити оновлення", versionNewBtn:"Доступна нова версія {v} — натисни, щоб оновити", pipWord:"Міні-плеєр поверх вікон",copyTip:"Копіювати",pipHintToast:"Порада: кнопка в шапці відкриває міні-плеєр поверх вікон — музика завжди під рукою", colorAutoBtn:"Авто з іконки", colorAutoFailToast:"Не вдалось визначити колір з іконки", chooseStation:"Оберіть станцію знизу", buffering:"Буферизація...", playPrompt:"Натисни play, щоб продовжити", noUrl:"Немає посилання — додай його в меню", copied:"Скопійовано", copiedSongName:"Скопійовано назву пісні", linkCopiedToast:"Посилання скопійовано", stopped:"Оберіть станцію знизу", cantPlay:"Не вдалось відтворити потік", streamUrlPlaceholder:"Посилання на потік", stationIconAlt:"іконка станції", resetAllConfirmText:"Точно скинути все?", resetStatsConfirmText:"Точно скинути статистику?", historyExportedToast:"Історію експортовано", resetDoneToast:"Скинуто до заводських налаштувань — перезавантаження...", versionLabel:"Версія", bitrateLabel:"Бітрейт", kbUnit:"КБ", syncStatusOk:"успішно ", syncStatusFail:"помилка ", syncLoadFailToast:"Не вдалось завантажити файл — навіть через резервні проксі. Пробую далі у фоні.", syncNoStationsToast:"Файл завантажено, але станцій не знайдено — перевір формат", syncUpdatedToast:"Список станцій оновлено", syncParseErrorToast:"Помилка обробки файлу", addedStationsSummary:"Збережені станції", otherParamsSummary:"Інші параметри у файлі", cancelWord:"Скасувати", iconChangedToast:"Іконку змінено", clearHistoryConfirm:"Очистити всю історію пісень?", clearFavoritesConfirm:"Очистити всі улюблені пісні?", favoritesCleared:"Улюблені очищено", deleteStationConfirm:"Видалити станцію «{name}»?", messageUnderTitleLabel:"Текст під назвою пісні", manualTrackTitleLabel:"Ручна назва треку", stopWordsLabel:"Стоп-слова в назві пісні", manualWord:"вручну", stopWordsPlaceholder:"реклама, autopromocja, ...", backupSearchLabel:"Резервний пошук", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Оберіть іконку для станції:", copyFailedToast:"Не вдалось скопіювати", historyCleared:"Історію очищено", statsResetToast:"Статистику прослуховування скинуто", connOffline:"Немає з'єднання з інтернетом", connRetrying:"Зв'язок зі станцією втрачено · спроба {n}/{max}", connSlow:"Станція не відповідає · спроба {n}/{max}", connFailed:"Не вдалося відновити потік — натисніть ⟳, щоб спробувати знову", streamLostRetrying:"Втрата потоку — спроба відновлення ", offlineToast:"Немає мережі — відновлю потік, щойно зʼявиться звʼязок", onlineToast:"Мережу відновлено — підключаюсь знову", devErrLogTitle:"Збережені помилки", recoverFailedToast:"Не вдалось відновити потік", storageFullToast:"Не вдається зберегти налаштування — сховище браузера переповнене", sleepTimerStoppedToast:"Сон-таймер: зупинено", openSystemSoundSettingsToast:"Відкрийте системні налаштування звуку вручну", deletedToast:"Видалено", enterNameUrlToast:"Введіть назву та посилання", simDropSentToast:"Симуляція обриву відправлена", stationsFileLoadedToast:"Файл станцій завантажено", noStationsInFileToast:"У файлі не знайдено станцій", addedToast:"Додано: ", cantReadFileToast:"Не вдалось прочитати файл — перевір формат", searchingIconToast:"Шукаю іконку...", iconUploadedToast:"Іконку завантажено", iconRemovedToast:"Іконку видалено", noSuccessfulSyncToast:"Ще немає жодної успішної синхронізації для відновлення", stationNotInSyncToast:"Станцію не знайдено в останній синхронізації", restoredFromSyncToast:"Відновлено з останньої успішної синхронізації", noSourceToast:"Немає джерела для визначення", titleNotFoundToast:"Не вдалось знайти назву пісні", savedToast:"Збережено: ", sessionUsageResetToast:"Використання за сесію скинуто", updatingToast:"Оновлення...", updatedWord:"оновлено", stationExistsToast:"Така станція вже є у списку", chooseThemeTitle:"Оберіть тему кольору", confirmWord:"Готово", exportHistoryQ:"Що експортувати?", exportFavOnlyOpt:"Тільки улюблені (зі зірочкою)", exportAllOpt:"Усю історію", searchingSongTitleToast:"Шукаю назву пісні...", messagePlaceholder:"текст повідомлення", manualTrackPlaceholder:"назва треку вручну", lastSuccessLabel:"востаннє вдало", iconNotFoundToast:"Не вдалось знайти іконку", iconWord:"Іконка", chooseOptionToast:"Оберіть варіант", iconUrlPromptLabel:"Адреса іконки:", iconFetchShort:"знайти", iconUrlApply:"Вставити адресу іконки", httpsFirstLabel:"Спершу пробувати http → https напряму замість проксі", prevNextLabel:"Показувати кнопки перемикання станції", refreshWord:"оновити", menuWord:"меню", shareWord:"поділитись", muteWord:"звук", prevStationWord:"попередня станція", playWord:"грати", nextStationWord:"наступна станція", stopWord:"стоп", resetWord:"скинути", prevPageWord:"Попередня сторінка", nextPageWord:"Наступна сторінка", uploadWord:"Завантажити", removeWord:"Видалити", tooltipReload:"Перезапустити потік", tooltipMenu:"Меню: станції та налаштування", tooltipStop:"Зупинити і скинути", tooltipPrevStation:"Попередня станція", tooltipNextStation:"Наступна станція", tooltipShare:"Поділитись станцією", tooltipMute:"Увімкнути / вимкнути звук", iconManualSearchPlaceholder:"або впишіть назву станції вручну",
+    tabOptions:"Опції", sortDefault:"Довільний порядок", sortAsc:"За алфавітом (А-Я)", sortDesc:"За алфавітом (Я-А)", tabStations:"Станції", tabSync:"Синхр.", tabSyncLong:"Синхронізація", tabStats:"Статистика", tabStatsShort:"Статист.", tabAdvanced:"Ще", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Трансляція на «{name}»", castEndedToast:"Трансляцію завершено", castFailToast:"Chromecast не зміг відтворити цей потік", newIconLabel:"Іконка (необов'язково)", desktopStationHint:"Права кнопка миші по станції — редагування; перетягніть станцію, щоб змінити порядок.", autoSwitchTitle:"Автоперемикання станції", autoSwitchLabel:"Перемикатись на іншу станцію в разі помилки", autoSwitchToast:"Станція не відповідає — перемикаю на «{name}»", autoSwitchBackToast:"Станція «{name}» знову працює — повертаюсь", foldersTitle:"Папки станцій", foldersLabel:"Групувати станції в папки", newFolderBtn:"Нова папка", folderNamePh:"Назва папки", folderDefaultName:"Папка", noFolderWord:"Без папки", folderFieldLabel:"Папка", renameFolderTip:"Перейменувати папку", deleteFolderTip:"Видалити папку (станції лишаться)", folderDragTip:"Перетягніть станцію на папку", scaleTitle:"Масштаб інтерфейсу", scaleHint:"Розмір кнопок і шрифтів на головному екрані", stationListExportSummary:"Експорт/Імпорт станцій", search:"Шукати", longPressHint:"Довге утримання станції — перетягніть, щоб змінити порядок.", longPressHintReorder:"Довге утримання станції — редагування (перетягування вимкнено).", gridLongPressEditLabel:"Довге утримування для редагування станції",
     syncEnableLabel:"Зв'язок додатку з сервером", syncFileDesc:"Посилання на файл, звідки береться список станцій і налаштування нижче, з сервера.", notSynced:"ще не синхронізовано",
     langTitle:"Мова", themeTitle:"Тема", centerElementTitle:"Елемент по центру", vizShowLabel:"Аудіовізуалізатор", vizLogoLabel:"Показувати лого", pulseShowLabel:"Пульсуючий круг", logoShowLabel:"Лого станції", streamTitle:"Потік",
     wakeLockLabel:"Не вимикати екран під час гри", orientationTitle:"Орієнтація", landscapeLabel:"Компактний горизонтальний вигляд", landscapeLabelTouch:"Ввімкнути автоповорот екрану", devForceLandscapeLabel:"Примусовий горизонтальний вид", devForcePortraitLabel:"Примусовий вертикальний вид", forceTouchModeLabel:"Бокова панель налаштувань", forceDesktopModeLabel:"Компактне вікно налаштувань", swipeLabel:"Перемикати станції свайпом",
-    timerTitle:"Сон-таймер", sleepLabel:"Зупинити відтворення через",
-    visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові станції", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Вимкнути додаткові ефекти візуалізатора", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Альтернативний вигляд станцій", powerSaveLabel:"Енергозбереження (спрощення ефектів)", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
-    contactLabel:"Контакт з розробником", usedThisSession:"Використано за сесію", maintenanceTitle:"Обслуговування", resetDefaultsLabel:"Скинути до заводських налаштувань", minutesWord:"хв", sleepUntil:"до", sleepCustom:"Своє…", visitorsToday:"Візити сьогодні", visitorsTotal:"всього", visitorsUnavailable:"Візити: недоступно", appDataSize:"Дані додатку", loading:"...", exportBtn:"Експортувати станції", importBtn:"Імпортувати станції", restoreDefault:"Скинути до версії з файлу", manualStationsQ:"Зберегти станції та улюблені пісні?", keepManual:"Так, зберегти", removeManual:"Ні, повне скидання", searchNewStations:"Пошук нових станцій", editTitle:"Редагувати станцію", filterAnyGenre:"Будь-який жанр", filterAnyCountry:"Будь-яка країна", editSectionBasic:"Основне", editSectionIcon:"Іконка та інфо", editSectionTrack:"Назва треку, що грає",
+    timerTitle:"Сон-таймер", sleepLabel:"Сон-таймер",
+    visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові кнопки станцій", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Вимкнути додаткові ефекти візуалізатора", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Заокруглені кнопки станцій", powerSaveLabel:"Енергозбереження", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
+    contactLabel:"Контакт з розробником", usedThisSession:"Використано за сесію", resetDefaultsLabel:"Скинути до заводських налаштувань", minutesWord:"хв", sleepUntil:"до", sleepCustom:"Своє…", visitorsToday:"Візити сьогодні", visitorsTotal:"всього", visitorsUnavailable:"Візити: недоступно", appDataSize:"Дані додатку", loading:"...", exportBtn:"Експортувати станції", importBtn:"Імпортувати станції", restoreDefault:"Скинути до версії з файлу", manualStationsQ:"Зберегти станції та улюблені пісні?", keepManual:"Так, зберегти", removeManual:"Ні, повне скидання", searchNewStations:"Пошук нових станцій", editTitle:"Редагувати станцію", filterAnyGenre:"Будь-який жанр", filterAnyCountry:"Будь-яка країна", editSectionBasic:"Основне", editSectionIcon:"Іконка та інфо", editSectionTrack:"Назва треку, що грає",
     etOff:"Вимкнено (назва станції)", etAdmin:"Брати з адмін файлу (якщо є)", etManual:"Вручну за посиланням", etIcy:"Автоматично з потоку (ICY)", etIcyHint:"Назва визначатиметься з метаданих самого аудіопотоку станції — окреме посилання не потрібне.",
     save:"Зберегти", deleteStation:"Видалити", phUrl:"Пряме посилання на потік (https://...)", phSearch:"Пошук у базі radio-browser.info",
     phFullName:"Назва", editWord:"Ред.", deleteWord:"Видалити", manualAddTitle:"Резервний пошук / додати вручну",
@@ -2300,15 +2346,15 @@ const I18N = {
     searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", recentSongsTitle:"Останні пісні", clearHistory:"Очистити історію", exportHistory:"Експортувати", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewLabel:"Вигляд станцій:", viewTitle:"Вигляд станцій",
     loadMore:"Завантажити ще...",
     iconFetch:"Взяти з пошуку", country:"Країна", notDefined:"не визначено", addBtnWord:"+",
-    eqTitle:"Еквалайзер", eqEnable:"Увімкнути еквалайзер", loudnessTitle:"Вирівнювання гучності", loudnessEnable:"Однакова гучність на всіх станціях", eqSystemLink:"Системний еквалайзер", eqPresetsBtn:"Пресети", eqPresetsTitle:"Пресети еквалайзера", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
-  pl: { appName:"moje radio", installBanner:"Zainstaluj aplikację", installIosTitle:"Instalacja na iPhonie", installIosText:"1. Naciśnij przycisk „Udostępnij” (kwadrat ze strzałką w górę) w przeglądarce.\n2. Wybierz „Do ekranu początkowego”.\n3. Naciśnij „Dodaj”.", installOk:"Rozumiem", stationFilterPh:"Szukaj wśród moich stacji", stationFilterEmpty:"Nic nie znaleziono", versionChecking:"Sprawdzam aktualizacje…", versionLatest:"Masz najnowszą wersję", versionCheckFail:"Nie udało się sprawdzić aktualizacji", versionNewBtn:"Dostępna nowa wersja {v} — naciśnij, aby zaktualizować", pipWord:"Mini odtwarzacz nad oknami",copyTip:"Kopiuj",pipHintToast:"Wskazówka: przycisk w nagłówku otwiera mini odtwarzacz nad oknami — muzyka zawsze pod ręką", colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", copiedSongName:"Skopiowano nazwę utworu", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry w pliku", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", stationsFileLoadedToast:"Plik stacji wczytany", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", exportHistoryQ:"Co wyeksportować?", exportFavOnlyOpt:"Tylko ulubione (z gwiazdką)", exportAllOpt:"Całą historię", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw próbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
-    tabOptions:"Opcje", sortDefault:"Dowolna kolejność", sortAsc:"Alfabetycznie (A-Z)", sortDesc:"Alfabetycznie (Z-A)", tabStations:"Stacje", tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statyst.", tabAdvanced:"Więcej", desktopStationHint:"Prawy przycisk myszy na stacji — edycja; przeciągnij stację, aby zmienić kolejność.", autoSwitchTitle:"Automatyczna zmiana stacji", autoSwitchLabel:"Przełączaj stację w razie błędu", autoSwitchToast:"Stacja nie odpowiada — przełączam na «{name}»", autoSwitchBackToast:"Stacja «{name}» znów działa — wracam", foldersTitle:"Foldery stacji", foldersLabel:"Grupuj stacje w foldery", newFolderBtn:"Nowy folder", folderNamePh:"Nazwa folderu", folderDefaultName:"Folder", noFolderWord:"Bez folderu", folderFieldLabel:"Folder", renameFolderTip:"Zmień nazwę folderu", deleteFolderTip:"Usuń folder (stacje zostają)", folderDragTip:"Przeciągnij stację na folder", powerSaveTitle:"Oszczędzanie energii", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", longPressHintReorder:"Długie przytrzymanie stacji — edycja (przeciąganie wyłączone).", gridLongPressEditLabel:"Przytrzymanie tylko do edycji (bez przeciągania)",
+    eqTitle:"Еквалайзер", loudnessTitle:"Вирівнювання гучності", eqSystemLink:"Системний еквалайзер", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
+  pl: { appName:"moje radio", installBanner:"Zainstaluj aplikację", installIosTitle:"Instalacja na iPhonie / iPadzie", installIosText:"1. Naciśnij przycisk „Udostępnij” (kwadrat ze strzałką w górę) w przeglądarce.\\n2. Wybierz „Dodaj do ekranu początkowego”.\\n3. Naciśnij „Dodaj”.", installOk:"Rozumiem", stationFilterPh:"Szukaj wśród moich stacji", stationFilterEmpty:"Nic nie znaleziono", versionChecking:"Sprawdzam aktualizacje…", versionLatest:"Masz najnowszą wersję", versionCheckFail:"Nie udało się sprawdzić aktualizacji", versionNewBtn:"Dostępna nowa wersja {v} — naciśnij, aby zaktualizować", pipWord:"Mini odtwarzacz nad oknami",copyTip:"Kopiuj",pipHintToast:"Wskazówka: przycisk w nagłówku otwiera mini odtwarzacz nad oknami — muzyka zawsze pod ręką", colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", copiedSongName:"Skopiowano nazwę utworu", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry w pliku", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", stationsFileLoadedToast:"Plik stacji wczytany", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", exportHistoryQ:"Co wyeksportować?", exportFavOnlyOpt:"Tylko ulubione (z gwiazdką)", exportAllOpt:"Całą historię", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw próbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
+    tabOptions:"Opcje", sortDefault:"Dowolna kolejność", sortAsc:"Alfabetycznie (A-Z)", sortDesc:"Alfabetycznie (Z-A)", tabStations:"Stacje", tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statyst.", tabAdvanced:"Więcej", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Transmisja na «{name}»", castEndedToast:"Transmisja zakończona", castFailToast:"Chromecast nie może odtworzyć tego strumienia", newIconLabel:"Ikona (opcjonalnie)", desktopStationHint:"Prawy przycisk myszy na stacji — edycja; przeciągnij stację, aby zmienić kolejność.", autoSwitchTitle:"Automatyczna zmiana stacji", autoSwitchLabel:"Przełączaj na inną stację w razie błędu", autoSwitchToast:"Stacja nie odpowiada — przełączam na «{name}»", autoSwitchBackToast:"Stacja «{name}» znów działa — wracam", foldersTitle:"Foldery stacji", foldersLabel:"Grupuj stacje w foldery", newFolderBtn:"Nowy folder", folderNamePh:"Nazwa folderu", folderDefaultName:"Folder", noFolderWord:"Bez folderu", folderFieldLabel:"Folder", renameFolderTip:"Zmień nazwę folderu", deleteFolderTip:"Usuń folder (stacje zostają)", folderDragTip:"Przeciągnij stację na folder", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", longPressHintReorder:"Długie przytrzymanie stacji — edycja (przeciąganie wyłączone).", gridLongPressEditLabel:"Długie przytrzymanie do edycji stacji",
     syncEnableLabel:"Powiązanie aplikacji z serwerem", syncFileDesc:"Link do pliku, z którego pobierane są stacje i poniższe ustawienia z serwera.", notSynced:"jeszcze nie zsynchronizowano",
-    langTitle:"Język", themeTitle:"Motyw", centerElementTitle:"Element na środku", vizShowLabel:"Wizualizator", vizLogoLabel:"Pokazuj logo", pulseShowLabel:"Pulsujące koło", logoShowLabel:"Logo stacji", streamTitle:"Strumień",
+    langTitle:"Język", themeTitle:"Motyw", centerElementTitle:"Element na środku", vizShowLabel:"Wizualizator audio", vizLogoLabel:"Pokazuj logo", pulseShowLabel:"Pulsujące koło", logoShowLabel:"Logo stacji", streamTitle:"Strumień",
     wakeLockLabel:"Nie wygaszaj ekranu podczas odtwarzania", orientationTitle:"Orientacja", landscapeLabel:"Kompaktowy widok poziomy", landscapeLabelTouch:"Włącz autoobrót ekranu", devForceLandscapeLabel:"Wymuszony widok poziomy", devForcePortraitLabel:"Wymuszony widok pionowy", forceTouchModeLabel:"Boczny panel ustawień", forceDesktopModeLabel:"Kompaktowe okno ustawień", swipeLabel:"Zmiana stacji przesunięciem",
-    timerTitle:"Wyłącznik czasowy", sleepLabel:"Zatrzymaj odtwarzanie po",
-    visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Liczyć odwiedziny (licznik)", visitorLegacyCounterLabel:"Używać stary licznik (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe stacje", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Wyłącz dodatkowe efekty wizualizatora", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Alternatywny wygląd stacji", powerSaveLabel:"Oszczędzanie energii (uproszczone efekty)", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
-    contactLabel:"Kontakt z twórcą", usedThisSession:"Zużyto w tej sesji", maintenanceTitle:"Konserwacja", resetDefaultsLabel:"Przywróć ustawienia fabryczne", minutesWord:"min", sleepUntil:"do", sleepCustom:"Własna…", visitorsToday:"Wizyty dzisiaj", visitorsTotal:"razem", visitorsUnavailable:"Wizyty: niedostępne", appDataSize:"Dane aplikacji", loading:"...", exportBtn:"Eksportuj stacje", importBtn:"Importuj stacje", restoreDefault:"Zresetuj do wersji z pliku", manualStationsQ:"Zachować stacje i ulubione utwory?", keepManual:"Tak, zachowaj", removeManual:"Nie, pełny reset", searchNewStations:"Szukaj nowych stacji", editTitle:"Edytuj stację", filterAnyGenre:"Dowolny gatunek", filterAnyCountry:"Dowolny kraj", editSectionBasic:"Podstawowe", editSectionIcon:"Ikona i info", editSectionTrack:"Nazwa utworu",
+    timerTitle:"Wyłącznik czasowy", sleepLabel:"Wyłącznik czasowy",
+    visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Liczyć odwiedziny (licznik)", visitorLegacyCounterLabel:"Używać stary licznik (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe przyciski stacji", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Wyłącz dodatkowe efekty wizualizatora", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Zaokrąglone przyciski stacji", powerSaveLabel:"Oszczędzanie energii", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
+    contactLabel:"Kontakt z twórcą", usedThisSession:"Zużyto w tej sesji", resetDefaultsLabel:"Przywróć ustawienia fabryczne", minutesWord:"min", sleepUntil:"do", sleepCustom:"Własna…", visitorsToday:"Wizyty dzisiaj", visitorsTotal:"razem", visitorsUnavailable:"Wizyty: niedostępne", appDataSize:"Dane aplikacji", loading:"...", exportBtn:"Eksportuj stacje", importBtn:"Importuj stacje", restoreDefault:"Zresetuj do wersji z pliku", manualStationsQ:"Zachować stacje i ulubione utwory?", keepManual:"Tak, zachowaj", removeManual:"Nie, pełny reset", searchNewStations:"Szukaj nowych stacji", editTitle:"Edytuj stację", filterAnyGenre:"Dowolny gatunek", filterAnyCountry:"Dowolny kraj", editSectionBasic:"Podstawowe", editSectionIcon:"Ikona i info", editSectionTrack:"Nazwa utworu",
     etOff:"Wyłączone (nazwa stacji)", etAdmin:"Z pliku administratora (jeśli jest)", etManual:"Ręcznie, wg linku", etIcy:"Automatycznie ze strumienia (ICY)", etIcyHint:"Tytuł będzie pobierany z metadanych samego strumienia audio stacji — osobny link nie jest potrzebny.",
     save:"Zapisz", deleteStation:"Usuń", phUrl:"Bezpośredni link do strumienia (https://...)", phSearch:"Szukaj w bazie radio-browser.info",
     phFullName:"Nazwa", editWord:"Edytuj", deleteWord:"Usuń", manualAddTitle:"Wyszukiwanie zapasowe / dodaj ręcznie",
@@ -2317,15 +2363,15 @@ const I18N = {
     searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", recentSongsTitle:"Ostatnie utwory", clearHistory:"Wyczyść historię", exportHistory:"Eksportuj", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewLabel:"Widok stacji:", viewTitle:"Widok stacji",
     loadMore:"Załaduj więcej...",
     iconFetch:"Pobierz z wyszukiwania", country:"Kraj", notDefined:"nie określono", addBtnWord:"+",
-    eqTitle:"Equalizer", eqEnable:"Włącz equalizer", loudnessTitle:"Wyrównanie głośności", loudnessEnable:"Jednakowa głośność na wszystkich stacjach", eqSystemLink:"Systemowy equalizer", eqPresetsBtn:"Presety", eqPresetsTitle:"Presety equalizera", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
-  en: { appName:"my radio", installBanner:"Install the app", installIosTitle:"Install on iPhone", installIosText:"1. Tap the Share button (square with an up arrow) in your browser.\n2. Choose “Add to Home Screen”.\n3. Tap “Add”.", installOk:"Got it", stationFilterPh:"Search my stations", stationFilterEmpty:"Nothing found", versionChecking:"Checking for updates…", versionLatest:"You have the latest version", versionCheckFail:"Couldn't check for updates", versionNewBtn:"New version {v} available — tap to update", pipWord:"Always-on-top mini player",copyTip:"Copy",pipHintToast:"Tip: the header button opens an always-on-top mini player — your music stays at hand", colorAutoBtn:"Auto from icon", colorAutoFailToast:"Couldn't detect a color from the icon", chooseStation:"Choose a station below", buffering:"Buffering...", playPrompt:"Press play to continue", noUrl:"No link yet — add it in the menu", copied:"Copied", copiedSongName:"Song name copied", linkCopiedToast:"Link copied", stopped:"Choose a station below", cantPlay:"Could not play the stream", streamUrlPlaceholder:"Stream link", stationIconAlt:"station icon", resetAllConfirmText:"Really reset everything?", resetStatsConfirmText:"Really reset statistics?", historyExportedToast:"History exported", resetDoneToast:"Reset to factory settings — reloading...", versionLabel:"Version", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"success ", syncStatusFail:"error ", syncLoadFailToast:"Couldn't load the file — even via backup proxies. Still retrying in the background.", syncNoStationsToast:"File loaded, but no stations found — check the format", syncUpdatedToast:"Station list updated", syncParseErrorToast:"Error processing the file", addedStationsSummary:"Saved stations", otherParamsSummary:"Other parameters in the file", cancelWord:"Cancel", iconChangedToast:"Icon changed", clearHistoryConfirm:"Clear the entire song history?", clearFavoritesConfirm:"Clear all liked songs?", favoritesCleared:"Favorites cleared", deleteStationConfirm:"Delete station «{name}»?", messageUnderTitleLabel:"Text under the song title", manualTrackTitleLabel:"Manual track title", stopWordsLabel:"Stop-words in the song title", manualWord:"manually", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Backup search", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Choose an icon for the station:", copyFailedToast:"Couldn't copy", historyCleared:"History cleared", statsResetToast:"Listening stats reset", connOffline:"No internet connection", connRetrying:"Station connection lost · attempt {n}/{max}", connSlow:"Station not responding · attempt {n}/{max}", connFailed:"Couldn't restore the stream — press ⟳ to try again", streamLostRetrying:"Stream lost — attempting to reconnect ", offlineToast:"No network — I will resume the stream as soon as it is back", onlineToast:"Network is back — reconnecting", devErrLogTitle:"Saved errors", recoverFailedToast:"Couldn't recover the stream", storageFullToast:"Can't save settings — browser storage is full", sleepTimerStoppedToast:"Sleep timer: stopped", openSystemSoundSettingsToast:"Open your system sound settings manually", deletedToast:"Deleted", enterNameUrlToast:"Enter a name and link", simDropSentToast:"Dropout simulation sent", stationsFileLoadedToast:"Stations file loaded", noStationsInFileToast:"No stations found in the file", addedToast:"Added: ", cantReadFileToast:"Couldn't read the file — check the format", searchingIconToast:"Searching for icon...", iconUploadedToast:"Icon uploaded", iconRemovedToast:"Icon removed", noSuccessfulSyncToast:"No successful sync yet to restore from", stationNotInSyncToast:"Station not found in the last sync", restoredFromSyncToast:"Restored from the last successful sync", noSourceToast:"No source to detect from", titleNotFoundToast:"Couldn't find the song title", savedToast:"Saved: ", sessionUsageResetToast:"Session usage reset", updatingToast:"Updating...", updatedWord:"updated", stationExistsToast:"This station is already in the list", chooseThemeTitle:"Choose a color theme", confirmWord:"Done", exportHistoryQ:"What to export?", exportFavOnlyOpt:"Favorites only (starred)", exportAllOpt:"Entire history", searchingSongTitleToast:"Searching for the song title...", messagePlaceholder:"message text", manualTrackPlaceholder:"manual track title", lastSuccessLabel:"last succeeded", iconNotFoundToast:"Couldn't find an icon", iconWord:"Icon", chooseOptionToast:"Choose an option", iconUrlPromptLabel:"Icon address:", iconFetchShort:"find", iconUrlApply:"Paste icon URL", httpsFirstLabel:"Try http → https directly first, instead of the proxy", prevNextLabel:"Show station switch buttons", refreshWord:"refresh", menuWord:"menu", shareWord:"share", muteWord:"sound", prevStationWord:"previous station", playWord:"play", nextStationWord:"next station", stopWord:"stop", resetWord:"reset", prevPageWord:"Previous page", nextPageWord:"Next page", uploadWord:"Upload", removeWord:"Remove", tooltipReload:"Restart the stream", tooltipMenu:"Menu: stations and settings", tooltipStop:"Stop and reset", tooltipPrevStation:"Previous station", tooltipNextStation:"Next station", tooltipShare:"Share the station", tooltipMute:"Turn sound on / off", iconManualSearchPlaceholder:"or type a station name manually",
-    tabOptions:"Options", sortDefault:"Custom order", sortAsc:"Alphabetical (A-Z)", sortDesc:"Alphabetical (Z-A)", tabStations:"Stations", tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsShort:"Stats", tabAdvanced:"Advanced", desktopStationHint:"Right-click a station to edit; drag a station to reorder.", autoSwitchTitle:"Automatic station switch", autoSwitchLabel:"Switch station on error", autoSwitchToast:"Station not responding — switching to «{name}»", autoSwitchBackToast:"Station «{name}» works again — switching back", foldersTitle:"Station folders", foldersLabel:"Group stations into folders", newFolderBtn:"New folder", folderNamePh:"Folder name", folderDefaultName:"Folder", noFolderWord:"No folder", folderFieldLabel:"Folder", renameFolderTip:"Rename folder", deleteFolderTip:"Delete folder (stations are kept)", folderDragTip:"Drag a station onto a folder", powerSaveTitle:"Power saving", stationListExportSummary:"Export/Import stations", search:"Search", longPressHint:"Long-press a station and drag to reorder.", longPressHintReorder:"Long-press a station to edit (dragging is off).", gridLongPressEditLabel:"Hold for editing only (no dragging)",
+    eqTitle:"Equalizer", loudnessTitle:"Wyrównanie głośności", eqSystemLink:"Systemowy equalizer", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
+  en: { appName:"my radio", installBanner:"Install the app", installIosTitle:"Install on iPhone / iPad", installIosText:"1. Tap the Share button (square with an up arrow) in your browser.\n2. Choose “Add to Home Screen”.\n3. Tap “Add”.", installOk:"Got it", stationFilterPh:"Search my stations", stationFilterEmpty:"Nothing found", versionChecking:"Checking for updates…", versionLatest:"You have the latest version", versionCheckFail:"Couldn't check for updates", versionNewBtn:"New version {v} available — tap to update", pipWord:"Always-on-top mini player",copyTip:"Copy",pipHintToast:"Tip: the header button opens an always-on-top mini player — your music stays at hand", colorAutoBtn:"Auto from icon", colorAutoFailToast:"Couldn't detect a color from the icon", chooseStation:"Choose a station below", buffering:"Buffering...", playPrompt:"Press play to continue", noUrl:"No link yet — add it in the menu", copied:"Copied", copiedSongName:"Song name copied", linkCopiedToast:"Link copied", stopped:"Choose a station below", cantPlay:"Could not play the stream", streamUrlPlaceholder:"Stream link", stationIconAlt:"station icon", resetAllConfirmText:"Really reset everything?", resetStatsConfirmText:"Really reset statistics?", historyExportedToast:"History exported", resetDoneToast:"Reset to factory settings — reloading...", versionLabel:"Version", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"success ", syncStatusFail:"error ", syncLoadFailToast:"Couldn't load the file — even via backup proxies. Still retrying in the background.", syncNoStationsToast:"File loaded, but no stations found — check the format", syncUpdatedToast:"Station list updated", syncParseErrorToast:"Error processing the file", addedStationsSummary:"Saved stations", otherParamsSummary:"Other parameters in the file", cancelWord:"Cancel", iconChangedToast:"Icon changed", clearHistoryConfirm:"Clear the entire song history?", clearFavoritesConfirm:"Clear all liked songs?", favoritesCleared:"Favorites cleared", deleteStationConfirm:"Delete station «{name}»?", messageUnderTitleLabel:"Text under the song title", manualTrackTitleLabel:"Manual track title", stopWordsLabel:"Stop-words in the song title", manualWord:"manually", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Backup search", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Choose an icon for the station:", copyFailedToast:"Couldn't copy", historyCleared:"History cleared", statsResetToast:"Listening stats reset", connOffline:"No internet connection", connRetrying:"Station connection lost · attempt {n}/{max}", connSlow:"Station not responding · attempt {n}/{max}", connFailed:"Couldn't restore the stream — press ⟳ to try again", streamLostRetrying:"Stream lost — attempting to reconnect ", offlineToast:"No network — I will resume the stream as soon as it is back", onlineToast:"Network is back — reconnecting", devErrLogTitle:"Saved errors", recoverFailedToast:"Couldn't recover the stream", storageFullToast:"Can't save settings — browser storage is full", sleepTimerStoppedToast:"Sleep timer: stopped", openSystemSoundSettingsToast:"Open your system sound settings manually", deletedToast:"Deleted", enterNameUrlToast:"Enter a name and link", simDropSentToast:"Dropout simulation sent", stationsFileLoadedToast:"Stations file loaded", noStationsInFileToast:"No stations found in the file", addedToast:"Added: ", cantReadFileToast:"Couldn't read the file — check the format", searchingIconToast:"Searching for icon...", iconUploadedToast:"Icon uploaded", iconRemovedToast:"Icon removed", noSuccessfulSyncToast:"No successful sync yet to restore from", stationNotInSyncToast:"Station not found in the last sync", restoredFromSyncToast:"Restored from the last successful sync", noSourceToast:"No source to detect from", titleNotFoundToast:"Couldn't find the song title", savedToast:"Saved: ", sessionUsageResetToast:"Session usage reset", updatingToast:"Updating...", updatedWord:"updated", stationExistsToast:"This station is already in the list", chooseThemeTitle:"Choose a color theme", confirmWord:"Done", exportHistoryQ:"What to export?", exportFavOnlyOpt:"Favorites only (starred)", exportAllOpt:"Entire history", searchingSongTitleToast:"Searching for the song title...", messagePlaceholder:"message text", manualTrackPlaceholder:"manual track title", lastSuccessLabel:"last succeeded", iconNotFoundToast:"Couldn't find an icon", iconWord:"Icon", chooseOptionToast:"Choose an option", iconUrlPromptLabel:"Icon address:", iconFetchShort:"find", iconUrlApply:"Paste icon URL", httpsFirstLabel:"Try http → https directly first, instead of the proxy", prevNextLabel:"Show station switch buttons", refreshWord:"refresh", menuWord:"menu", shareWord:"share", muteWord:"sound", prevStationWord:"previous station", playWord:"play", nextStationWord:"next station", stopWord:"stop", resetWord:"reset", prevPageWord:"Previous page", nextPageWord:"Next page", uploadWord:"Upload", removeWord:"Remove", tooltipReload:"Restart the stream", tooltipMenu:"Menu: stations and settings", tooltipStop:"Stop and reset", tooltipPrevStation:"Previous station", tooltipNextStation:"Next station", tooltipShare:"Share the station", tooltipMute:"Turn sound on / off", iconManualSearchPlaceholder:"or type a station name manually",
+    tabOptions:"Options", sortDefault:"Custom order", sortAsc:"Alphabetical (A-Z)", sortDesc:"Alphabetical (Z-A)", tabStations:"Stations", tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsShort:"Stats", tabAdvanced:"Advanced", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Casting to «{name}»", castEndedToast:"Casting stopped", castFailToast:"Chromecast could not play this stream", newIconLabel:"Icon (optional)", desktopStationHint:"Right-click a station to edit; drag a station to reorder.", autoSwitchTitle:"Automatic station switch", autoSwitchLabel:"Switch to another station on error", autoSwitchToast:"Station not responding — switching to «{name}»", autoSwitchBackToast:"Station «{name}» works again — switching back", foldersTitle:"Station folders", foldersLabel:"Group stations into folders", newFolderBtn:"New folder", folderNamePh:"Folder name", folderDefaultName:"Folder", noFolderWord:"No folder", folderFieldLabel:"Folder", renameFolderTip:"Rename folder", deleteFolderTip:"Delete folder (stations are kept)", folderDragTip:"Drag a station onto a folder", stationListExportSummary:"Export/Import stations", search:"Search", longPressHint:"Long-press a station and drag to reorder.", longPressHintReorder:"Long-press a station to edit (dragging is off).", gridLongPressEditLabel:"Long-press to edit station",
     syncEnableLabel:"Link between the app and the server", syncFileDesc:"Link to the file that stations and the settings below are pulled from the server.", notSynced:"not synced yet",
     langTitle:"Language", themeTitle:"Theme", centerElementTitle:"Center element", vizShowLabel:"Audio visualizer", vizLogoLabel:"Show logo", pulseShowLabel:"Pulsing circle", logoShowLabel:"Station logo", streamTitle:"Stream",
     wakeLockLabel:"Keep screen on while playing", orientationTitle:"Orientation", landscapeLabel:"Compact landscape layout", landscapeLabelTouch:"Enable screen auto-rotate", devForceLandscapeLabel:"Force landscape layout", devForcePortraitLabel:"Force portrait layout", forceTouchModeLabel:"Side settings panel", scaleTitle:"Interface scale", scaleHint:"Size of buttons and fonts on the main screen", forceDesktopModeLabel:"Compact settings window", swipeLabel:"Swipe to change stations",
-    timerTitle:"Sleep timer", sleepLabel:"Stop playback after",
-    visualsTitle:"Visuals & appearance", devTitle:"Developer", devLogsTitle:"Recent logs", devLogsCopy:"Copy", devLogsClear:"Clear", devLogsEmpty:"Nothing yet", devLogsCopied:"Logs copied", devModeLabel:"Developer mode", devModeOnToast:"Developer mode enabled", devModeOffToast:"Developer mode disabled", visitorCounterLabel:"Count visits (counter)", visitorLegacyCounterLabel:"Use legacy counter (countapi)", realVizLabel:"Turn off pseudo-visualizer", blackWhiteLabel:"Colored stations", devToastsLabel:"Show event log popups", hideCapsLabel:"Turn off extra visualizer effects", showVolIOSLabel:"Show volume slider on iOS", forceProxyLabel:"Always use CORS proxy", altStationStyleLabel:"Alternative station style", powerSaveLabel:"Power saving (simplified effects)", simDropLabel:"Simulate stream drop", autoThemeLabel:"Automatic theme switching ☀️/🌙", autoThemeDevice:"By device theme", autoThemeTime:"By time of day (Warsaw)", statsSpoiler:"Listening statistics", resetStatsLabel:"Reset statistics", session:"session", totalAllStations:"All stations combined", showMoreStats:"Show {n} more", newVersionAvailable:"A new app version is available", updateNowBtn:"Update", updateHideBtn:"Hide", reserveSearchHint:"If a station could not be found automatically: go to {site}, find the station, and paste its name and link below.", findStationOn:"Find a station on: {site} ↗",
-    contactLabel:"Contact the developer", usedThisSession:"Used this session", maintenanceTitle:"Maintenance", resetDefaultsLabel:"Reset to factory settings", minutesWord:"min", sleepUntil:"until", sleepCustom:"Custom…", visitorsToday:"Visits today", visitorsTotal:"total", visitorsUnavailable:"Visits: unavailable", appDataSize:"App data", loading:"...", exportBtn:"Export stations", importBtn:"Import stations", restoreDefault:"Reset to file version", manualStationsQ:"Keep stations and liked songs?", keepManual:"Yes, keep them", removeManual:"No, full reset", searchNewStations:"Search for new stations", editTitle:"Edit station", filterAnyGenre:"Any genre", filterAnyCountry:"Any country", editSectionBasic:"Basic info", editSectionIcon:"Icon & info", editSectionTrack:"Now-playing title",
+    timerTitle:"Sleep timer", sleepLabel:"Sleep timer",
+    visualsTitle:"Visuals & appearance", devTitle:"Developer", devLogsTitle:"Recent logs", devLogsCopy:"Copy", devLogsClear:"Clear", devLogsEmpty:"Nothing yet", devLogsCopied:"Logs copied", devModeLabel:"Developer mode", devModeOnToast:"Developer mode enabled", devModeOffToast:"Developer mode disabled", visitorCounterLabel:"Count visits (counter)", visitorLegacyCounterLabel:"Use legacy counter (countapi)", realVizLabel:"Turn off pseudo-visualizer", blackWhiteLabel:"Colored station buttons", devToastsLabel:"Show event log popups", hideCapsLabel:"Turn off extra visualizer effects", showVolIOSLabel:"Show volume slider on iOS", forceProxyLabel:"Always use CORS proxy", altStationStyleLabel:"Rounded station buttons", powerSaveLabel:"Power saving", simDropLabel:"Simulate stream drop", autoThemeLabel:"Automatic theme switching ☀️/🌙", autoThemeDevice:"By device theme", autoThemeTime:"By time of day (Warsaw)", statsSpoiler:"Listening statistics", resetStatsLabel:"Reset statistics", session:"session", totalAllStations:"All stations combined", showMoreStats:"Show {n} more", newVersionAvailable:"A new app version is available", updateNowBtn:"Update", updateHideBtn:"Hide", reserveSearchHint:"If a station could not be found automatically: go to {site}, find the station, and paste its name and link below.", findStationOn:"Find a station on: {site} ↗",
+    contactLabel:"Contact the developer", usedThisSession:"Used this session", resetDefaultsLabel:"Reset to factory settings", minutesWord:"min", sleepUntil:"until", sleepCustom:"Custom…", visitorsToday:"Visits today", visitorsTotal:"total", visitorsUnavailable:"Visits: unavailable", appDataSize:"App data", loading:"...", exportBtn:"Export stations", importBtn:"Import stations", restoreDefault:"Reset to file version", manualStationsQ:"Keep stations and liked songs?", keepManual:"Yes, keep them", removeManual:"No, full reset", searchNewStations:"Search for new stations", editTitle:"Edit station", filterAnyGenre:"Any genre", filterAnyCountry:"Any country", editSectionBasic:"Basic info", editSectionIcon:"Icon & info", editSectionTrack:"Now-playing title",
     etOff:"Off (station name)", etAdmin:"From admin file (if available)", etManual:"Manually, by link", etIcy:"Automatically from the stream (ICY)", etIcyHint:"The title will be read from the station's own audio stream metadata — no separate link needed.",
     save:"Save", deleteStation:"Delete", phUrl:"Direct stream link (https://...)", phSearch:"Search radio-browser.info",
     phFullName:"Name", editWord:"Edit", deleteWord:"Delete", manualAddTitle:"Backup search / add manually",
@@ -2334,7 +2380,7 @@ const I18N = {
     searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", recentSongsTitle:"Recent songs", clearHistory:"Clear history", exportHistory:"Export", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewLabel:"Station view:", viewTitle:"Station view",
     loadMore:"Load more...",
     iconFetch:"Get from search", country:"Country", notDefined:"not defined", addBtnWord:"+",
-    eqTitle:"Equalizer", eqEnable:"Enable equalizer", loudnessTitle:"Loudness equalization", loudnessEnable:"Same volume on all stations", eqSystemLink:"System equalizer", eqPresetsBtn:"Presets", eqPresetsTitle:"Equalizer presets", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
+    eqTitle:"Equalizer", loudnessTitle:"Loudness equalization", eqSystemLink:"System equalizer", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
 };
 function t(key) { const lang = state.settings.language || "uk"; return (I18N[lang] && I18N[lang][key]) || I18N.uk[key] || key; }
 function applyI18nDom() {
@@ -2349,7 +2395,7 @@ function applyI18nDom() {
   if (contactLink) contactLink.href = "mailto:tsuand@gmail.com?subject=" + (langMap[state.settings.language] || langMap.uk);
   document.querySelectorAll("#viewToggle button [data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.querySelectorAll(".eq-system-link").forEach(el => el.textContent = "⚙️ " + t("eqSystemLink"));
-  const _eqPb = document.getElementById("eqPresetBtn"); if (_eqPb) _eqPb.textContent = "🎚️ " + t("eqPresetsBtn");
+  try { eqSelectBuild(); } catch (e) {}
   if (typeof updateVisitorCountUI === "function") updateVisitorCountUI();
   if (typeof updateSearchBtnIcon === "function") updateSearchBtnIcon();
   if (typeof renderBackupSearchLink === "function") renderBackupSearchLink();
@@ -2603,7 +2649,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.38";
+const APP_VERSION = "3.40";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -2769,7 +2815,7 @@ let state = {
   settings: {
     vizEnabled: true, pulseEnabled: false, volume: 0.8, syncEnabled: true, stationsFileUrl: DEFAULT_STATIONS_FILE_URL,
     language: "en", theme: "classic", autoThemeEnabled: false, autoThemeMode: "device",
-    devMode: false, devToasts: false, showVolIOS: false, hideCaps: false, landscapeCompact: false, landscapeUserSet: false, forceLandscape: false, forcePortrait: false, forceProxy: false, showRaw: false, altStationStyle: true, wakeLock: false, visitorCounterEnabled: true, visitorCounterUseLegacy: false, realVizEnabled: !(/iPad|iPhone|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)), blackWhiteStations: true,
+    devMode: false, devToasts: false, showVolIOS: false,  hideCaps: false, landscapeCompact: false, landscapeUserSet: false, forceLandscape: false, forcePortrait: false, forceProxy: false, showRaw: false, altStationStyle: true, wakeLock: false, visitorCounterEnabled: true, visitorCounterUseLegacy: false, realVizEnabled: !(/iPad|iPhone|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)), blackWhiteStations: true,
     swipeEnabled: false, gridLongPressEdit: false, autoSwitchOnError: false, sleepEnabled: false, sleepMinutes: 30, showPrevNextButtons: true,
     psNoAnim: false, psNoBlur: false, psNoViz: false, psDebounceSave: false, httpsFirst: true, centerMode: "viz", vizShowLogo: true,
     forceTouchMode: false, forceDesktopMode: false,
@@ -2820,6 +2866,15 @@ let state = {
 };
 const isFirstRun = !localStorage.getItem(STORAGE_KEY);
 // Поки користувач не вибрав мову на першому запуску — жодне автозбереження не пише в localStorage.
+// Мова пристрою → одна з підтримуваних (uk / pl / en); якщо жодна не підійшла — англійська.
+function detectDeviceLang() {
+  const list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || "en"];
+  for (const l of list) {
+    const c = String(l || "").toLowerCase().slice(0, 2);
+    if (c === "uk" || c === "pl" || c === "en") return c;
+  }
+  return "en";
+}
 let firstRunLangPending = false;
 
 function normalizeForMatch(s) { return (s || "").toString().trim().toLowerCase(); }
@@ -3146,6 +3201,7 @@ let longPressTimer = null;
 let longPressFired = false;
 let longPressMoveHandler = null;
 let reorderState = null;
+let activeDragAbort = null;   // скасовує перетягування станції (копія під пальцем), коли відкривається редагування
 
 let reorderDragActive = false;
 const HOLD_EDIT_TOTAL_MS = 2000;   // загальний час нерухомого утримання пальця від дотику до відкриття редагування
@@ -3169,6 +3225,7 @@ function armHoldToEdit(i, x0, y0, delayMs) {
   tm = setTimeout(() => {
     off();
     try { if (navigator.vibrate) navigator.vibrate([20, 40, 20]); } catch (e) {}
+    if (activeDragAbort) { try { activeDragAbort(); } catch (e) {} }
     openEditModal(i, false);
   }, Math.max(200, delayMs || 1000));
 }
@@ -3206,6 +3263,7 @@ function startReorderDrag(i, btn, startY) {
     }
   };
   const onEnd = () => {
+    activeDragAbort = null;
     reorderDragActive = false;
     document.removeEventListener("touchmove", onMove);
     document.removeEventListener("touchend", onEnd);
@@ -3231,6 +3289,7 @@ function startReorderDrag(i, btn, startY) {
   document.addEventListener("touchmove", onMove, { passive: false });
   document.addEventListener("touchend", onEnd, { passive: true });
   document.addEventListener("touchcancel", onEnd, { passive: true });
+  activeDragAbort = onEnd;
 }
 // Перетягування станцій у СІТЦІ на дотикових пристроях (після довгого утримання): за пальцем їде копія кнопки,
 // ціль підсвічується, біля краю екрана сторінки перегортаються, на відпусканні станція ставиться на місце цілі.
@@ -3300,6 +3359,7 @@ function startGridReorderDrag(i, btn, startX, startY) {
   const finish = (apply) => {
     if (done) return;
     done = true;
+    activeDragAbort = null;
     reorderDragActive = false;
     clearInterval(timer);
     document.removeEventListener("touchmove", onMove);
@@ -3344,6 +3404,7 @@ function startGridReorderDrag(i, btn, startX, startY) {
   document.addEventListener("touchmove", onMove, { passive: false });
   document.addEventListener("touchend", onEnd, { passive: true });
   document.addEventListener("touchcancel", onCancel, { passive: true });
+  activeDragAbort = () => finish(false);
 }
 let fakeVizInterval = null;
 let fakeVizHideTimeout = null;
@@ -3449,8 +3510,32 @@ function updateForceViewRows() {
   }
   updateHideCapsRow();
   applyIOSVolRow();
+  markDevRows();
 }
 
+// Режим розробника: усе, що з'являється лише завдяки йому, позначаємо (смужка + бейдж DEV),
+// щоб було видно, що це "нове". Список — те, що в звичайному режимі приховане на цьому пристрої.
+function markDevRows() {
+  try {
+    document.querySelectorAll(".devNew").forEach(el => el.classList.remove("devNew"));
+    if (!state.settings.devMode) return;
+    const mark = (el) => { if (el) el.classList.add("devNew"); };
+    const byId = (id) => document.getElementById(id);
+    mark(byId("tabSyncBtn"));
+    mark(byId("devExtra"));
+    mark(byId("landscapeBlock"));
+    if (!isTouchDevice) mark(byId("wakeLockBlock"));
+    if (isIOSDevice) {
+      const eq = byId("eqToggle"); if (eq) mark(eq.closest(".settingBlock"));
+      const ld = byId("loudnessToggle"); if (ld) mark(ld.closest(".settingBlock"));
+      const rv = byId("realVizToggle"); if (rv) mark(rv.closest(".checkLine"));
+      mark(byId("showVolIOSRow"));
+      const app = byId("app");
+      const hc = byId("hideCapsToggle");
+      if (hc && app && !app.classList.contains("neumorphic") && !app.classList.contains("list-mode")) mark(hc.closest(".checkLine"));
+    }
+  } catch (e) {}
+}
 // «Вимкнути додаткові ефекти візуалізатора» не потрібен, коли візуалізатор не показується (список) або
 // його малює неоморфна тема; на iOS цей рядок — лише в режимі розробника.
 function updateHideCapsRow() {
@@ -3475,6 +3560,7 @@ function applyIOSVolRow() {
 }
 
 const audioEl = document.getElementById("audioEl");
+let castActive = false; // триває трансляція Google Cast: локальний <audio> не використовується
 ["pause", "emptied"].forEach(ev => audioEl.addEventListener(ev, () => { if (!songPausedAt) songPausedAt = Date.now(); }));
 audioEl.addEventListener("playing", () => {
   if (songPausedAt && Date.now() - songPausedAt > SONG_SESSION_GAP_MS) songSessionStart = Date.now();
@@ -6220,6 +6306,7 @@ function syncPlaybackLock() {
   }
 }
 function recoverOnWake(reason) {
+  if (castActive) return;
   const now = Date.now();
   if (now - lastWakeCheckAt < 3000) return;
   const url = isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
@@ -6653,6 +6740,7 @@ function resumePausedStream(url) {
 
 async function startPlaybackAttempt(url, isRetry) {
   if (!url) return;
+  if (castActive) { castLoad(url); return; }
   flushPauseFade(false);
   if (isRetry && hasPlayedOnceForCurrent) armFadeIn();   // перепідключення після обриву — плавне наростання
   intentionalDisconnect = false;
@@ -6967,6 +7055,7 @@ function handlePlaybackFailure(token, url) {
 }
 
 function isAudioActuallyPlaying() {
+  if (castActive) return isPlaying && audioState === AUDIO_STATE.PLAYING;
   return !audioEl.paused && !audioEl.ended && audioEl.readyState >= 2 && audioEl.currentTime > 0;
 }
 
@@ -6981,6 +7070,7 @@ function heartbeatTick() {
   const now = Date.now();
   const tickGap = lastHeartbeatAt ? now - lastHeartbeatAt : 0;
   lastHeartbeatAt = now;
+  if (castActive) return;
   // Таймери зупинялись надовго (сон ПК, заморожена/пригальмована вкладка) — перевіряємо звук одразу.
   if (tickGap > 15000) recoverOnWake("таймери стояли " + Math.round(tickGap / 1000) + "с");
   if (audioState === AUDIO_STATE.PLAYING && !isAudioActuallyPlaying() && !audioEl.paused) {
@@ -7054,6 +7144,7 @@ function selectStation(i, revealPage, fromAuto) {
     teardownHls();
     stopFakeVisualizer();
     audioEl.pause();
+    if (castActive) castStopRemote();
     isPlaying = false;
     updatePlayUI();
     showAnthemBanner();
@@ -7220,6 +7311,7 @@ function attachAudioListeners() {
 let suppressPauseVizHide = false;
 
 function onAudioWaiting() {
+  if (castActive) return;
   if (isPlaybackError) return;
   if (audioState !== AUDIO_STATE.PLAYING) return;
   setAudioState(AUDIO_STATE.CONNECTING);
@@ -7253,6 +7345,7 @@ function onAudioPlaying() {
 }
 
 function onAudioEnded() {
+  if (castActive) return;
   // Живий потік не має "закінчуватись" — якщо це сталось, сервер закрив з'єднання.
   if (isPlaybackError) return;
   if (!isPlaying && audioState === AUDIO_STATE.IDLE) return;
@@ -7297,6 +7390,7 @@ window.addEventListener("online", () => {
 });
 
 function onAudioPause() {
+  if (castActive) return;
   accumulatePlayTime();
   if (!suppressPauseVizHide) stopFakeVisualizer();
   if (audioState === AUDIO_STATE.PLAYING) {
@@ -7333,6 +7427,7 @@ function scheduleStallRecoveryCheck() {
 }
 
 function onAudioStalled() {
+  if (castActive) return;
   // Нативний HLS шле "stalled" кожні ~10с між сегментами, хоча буфер повний і звук іде —
   // це не проблема. Реагуємо лише коли даних реально не вистачає.
   if (!audioEl.paused && audioEl.readyState >= 3) return;
@@ -7343,6 +7438,7 @@ function onAudioStalled() {
 }
 
 function onAudioError(e) {
+  if (castActive) return;
   devLog("Помилка аудіо-елемента");
   if (isPlaybackError || intentionalDisconnect) return;
   const silentHlsFirst = state.settings.autoRecover && !hasPlayedOnceForCurrent && hlsQuickRetries < HLS_QUICK_RETRIES && isHlsUrl(currentStreamOriginalUrl || "");
@@ -7414,6 +7510,7 @@ function doUserPause() {
 }
 function doUserPauseNow() {
   autoSwitchCancel();
+  if (castActive) castPauseRemote();
   const wasReallyPlaying = audioState === AUDIO_STATE.PLAYING && hasPlayedOnceForCurrent;
   const pauseUrl = isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
   clearPauseGrace();
@@ -7466,6 +7563,243 @@ function doUserPauseNow() {
         armPauseGraceTimer();
       }
     });
+}
+
+// ---- Google Cast (Chrome/Edge; кнопка спільна з AirPlay) ----
+// Приймач — Default Media Receiver (реєстрація не потрібна). Chromecast сам тягне потік за URL,
+// тому не-HLS потоки йдуть через воркер (https + CORS), а за невдачі — напряму.
+// Обмеження стандартного приймача: назва пісні на ТБ не оновлюється (лише станція і лого);
+// пісня й далі оновлюється в застосунку. Локальний <audio> під час трансляції вимкнений.
+const CAST_SDK_SRC = "https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1";
+const CAST_ICON_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><path d="M2 12a9 9 0 0 1 8 8"/><path d="M2 16a5 5 0 0 1 4 4"/><line x1="2" y1="20" x2="2.01" y2="20"/></svg>';
+let castCtx = null, castPlayer = null, castCtl = null;
+let castSdkRequested = false, castDevices = false, airplayAvail = false, castAirSvg = null;
+let castUrl = null, castPausedAt = 0, castRoutes = [], castRouteIdx = 0;
+let castLoading = false, castLoadSeq = 0, castTimer = null, castDrops = 0, castLastDropAt = 0;
+
+function castSupported() {
+  const secure = isHttpsPage() || location.hostname === "localhost";
+  return secure && !isIOSDevice && /Chrome\/|Edg\//.test(navigator.userAgent);
+}
+function castInitSdk() {
+  if (castSdkRequested || !castSupported()) return;
+  castSdkRequested = true;
+  window.__onGCastApiAvailable = (ok) => {
+    if (!ok) return;
+    try { castSetup(); } catch (e) { errLogPush("CAST: init " + (e && e.message || e)); }
+  };
+  setTimeout(() => {
+    const s = document.createElement("script");
+    s.src = CAST_SDK_SRC; s.async = true;
+    s.onerror = () => { castSdkRequested = false; };
+    document.head.appendChild(s);
+  }, 3000);
+}
+function castSetup() {
+  const fw = window.cast && window.cast.framework;
+  if (!fw || !window.chrome || !chrome.cast) return;
+  castCtx = fw.CastContext.getInstance();
+  castCtx.setOptions({
+    receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+    resumeSavedSession: false
+  });
+  castPlayer = new fw.RemotePlayer();
+  castCtl = new fw.RemotePlayerController(castPlayer);
+  castCtx.addEventListener(fw.CastContextEventType.CAST_STATE_CHANGED, (e) => {
+    castDevices = e.castState !== fw.CastState.NO_DEVICES_AVAILABLE;
+    castBtnRefresh();
+  });
+  castCtx.addEventListener(fw.CastContextEventType.SESSION_STATE_CHANGED, castOnSession);
+  castCtl.addEventListener(fw.RemotePlayerEventType.PLAYER_STATE_CHANGED, castOnPlayerState);
+  castDevices = castCtx.getCastState() !== fw.CastState.NO_DEVICES_AVAILABLE;
+  castBtnRefresh();
+}
+function castBtnRefresh() {
+  const b = document.getElementById("airplayBtn");
+  if (!b) return;
+  if (castAirSvg === null) castAirSvg = b.innerHTML;
+  const asCast = !!castCtx && (castDevices || castActive) && !airplayAvail;
+  b.style.display = (airplayAvail || asCast) ? "" : "none";
+  const mode = asCast ? "cast" : "airplay";
+  if (b.dataset.mode !== mode) {
+    b.dataset.mode = mode;
+    b.innerHTML = asCast ? CAST_ICON_SVG : castAirSvg;
+    const key = asCast ? "castWord" : "airplayWord";
+    b.setAttribute("data-i18n-aria", key);
+    b.setAttribute("aria-label", t(key));
+  }
+  b.classList.toggle("castOn", castActive);
+}
+function castOnSession(e) {
+  const S = cast.framework.SessionState;
+  if (e.sessionState === S.SESSION_STARTED || e.sessionState === S.SESSION_RESUMED) castBegin();
+  else if (e.sessionState === S.SESSION_ENDED) castEnd();
+}
+function castCurrentUrl() {
+  return isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
+}
+function castStationName() {
+  if (isSearchPlayback) return searchPlaybackName || t("appName");
+  const s = state.stations[activeIndex];
+  return (s && (s.fullName || s.name)) || t("appName");
+}
+function castStationIcon() {
+  const f = isSearchPlayback ? (searchPlaybackMeta && searchPlaybackMeta.fav)
+    : (state.stations[activeIndex] && state.stations[activeIndex].favicon);
+  if (!f || f === DEFAULT_STATION_ICON || f.startsWith("data:")) return null;
+  const p = proxifyIconUrl(f);
+  return /^https:/.test(p) ? p : null;
+}
+function castContentType(url) {
+  const u = url.toLowerCase().split("?")[0];
+  if (isHlsUrl(url)) return "application/x-mpegURL";
+  if (/\.(aac|aacp)$/.test(u) || /aacp/.test(u)) return "audio/aac";
+  if (/\.(ogg|oga|opus)$/.test(u)) return "audio/ogg";
+  if (/\.flac$/.test(u)) return "audio/flac";
+  return "audio/mpeg";
+}
+// Порядок спроб: звичайний потік — воркер, потім напряму; HLS — напряму (воркер не переписує плейлисти).
+function castBuildRoutes(url) {
+  if (isProxiedStreamUrl(url)) return [url];
+  const https = url.startsWith("http://") ? "https://" + url.slice(7) : url;
+  if (isHlsUrl(url)) return https !== url ? [https, url] : [url];
+  const worker = STREAM_PROXIES[0] + encodeURIComponent(url);
+  return [worker, url];
+}
+function castBegin() {
+  if (castActive) return;
+  const url = castCurrentUrl();
+  const wasOn = isPlaying || audioState === AUDIO_STATE.PLAYING || audioState === AUDIO_STATE.CONNECTING || audioState === AUDIO_STATE.RECOVERING;
+  accumulatePlayTime();
+  castActive = true;
+  clearAudioRecovery(); clearConnectTimeout(); clearPauseGrace(); pausedStreamAlive = false;
+  teardownHls(); stopStationGainSetup();
+  intentionalDisconnect = true;
+  try { audioEl.pause(); audioEl.removeAttribute("src"); audioEl.load(); } catch (e) {}
+  castBtnRefresh();
+  let dev = "Chromecast";
+  try { dev = castCtx.getCurrentSession().getCastDevice().friendlyName || dev; } catch (e) {}
+  showToast(t("castConnectedToast").replace("{name}", dev), true);
+  if (wasOn && url) {
+    isPlaybackError = false; recoverAttempts = 0;
+    currentStationToken++;
+    setAudioState(AUDIO_STATE.CONNECTING);
+    castLoad(url);
+  }
+}
+function castEnd() {
+  if (!castActive) return;
+  const wasOn = isPlaying || audioState === AUDIO_STATE.PLAYING || audioState === AUDIO_STATE.CONNECTING || audioState === AUDIO_STATE.RECOVERING;
+  accumulatePlayTime();
+  castActive = false;
+  clearTimeout(castTimer); castLoading = false; castLoadSeq++; castUrl = null; castPausedAt = 0;
+  intentionalDisconnect = false;
+  castBtnRefresh();
+  showToast(t("castEndedToast"));
+  // У телефоні звук саме не вмикаємо — ставимо на паузу; Play почне потік локально.
+  if (wasOn) doUserPauseNow();
+}
+function castLoad(url) {
+  const sess = castCtx && castCtx.getCurrentSession();
+  if (!sess) { castActive = false; castBtnRefresh(); startPlaybackAttempt(url); return; }
+  // Після короткої паузи просто продовжуємо той самий потік на приймачі.
+  if (castUrl === url && castPausedAt && Date.now() - castPausedAt < PAUSE_GRACE_MS &&
+      castPlayer.isMediaLoaded && castPlayer.isPaused) {
+    castPausedAt = 0; castLoading = true;
+    setAudioState(AUDIO_STATE.CONNECTING);
+    castCtl.playOrPause();
+    return;
+  }
+  castUrl = url; castPausedAt = 0;
+  castRoutes = castBuildRoutes(url); castRouteIdx = 0;
+  castLoadRoute(++castLoadSeq);
+}
+function castLoadRoute(seq) {
+  const sess = castCtx && castCtx.getCurrentSession();
+  if (!sess || seq !== castLoadSeq || !castUrl) return;
+  const target = castRoutes[castRouteIdx];
+  const mi = new chrome.cast.media.MediaInfo(target, castContentType(castUrl));
+  mi.streamType = chrome.cast.media.StreamType.LIVE;
+  const md = new chrome.cast.media.MusicTrackMediaMetadata();
+  md.title = castStationName();
+  md.artist = t("appName");
+  const fav = castStationIcon();
+  if (fav) md.images = [new chrome.cast.Image(fav)];
+  mi.metadata = md;
+  const req = new chrome.cast.media.LoadRequest(mi);
+  req.autoplay = true;
+  castLoading = true;
+  devLog("Cast: спроба " + (castRouteIdx + 1) + "/" + castRoutes.length + " → " + target);
+  sess.loadMedia(req).then(() => {}, (err) => { if (seq === castLoadSeq) castRouteFailed("loadMedia " + err); });
+  clearTimeout(castTimer);
+  castTimer = setTimeout(() => { if (seq === castLoadSeq && castLoading) castRouteFailed("таймаут"); }, 15000);
+}
+function castRouteFailed(why) {
+  clearTimeout(castTimer);
+  if (!castActive || !castUrl) return;
+  errLogPush("CAST: " + why + " (" + (castRouteIdx + 1) + "/" + castRoutes.length + ")");
+  if (castRouteIdx + 1 < castRoutes.length) { castRouteIdx++; castLoadRoute(castLoadSeq); return; }
+  castLoading = false;
+  isPlaying = false; isPlaybackError = true;
+  setAudioState(AUDIO_STATE.ERROR);
+  showToast(t("castFailToast"));
+}
+function castMarkPlaying() {
+  clearTimeout(castTimer);
+  castLoading = false;
+  if (Date.now() - castLastDropAt > 30000) castDrops = 0;
+  isPlaying = true; isPlaybackError = false; hasPlayedOnceForCurrent = true;
+  if (songPausedAt && Date.now() - songPausedAt > SONG_SESSION_GAP_MS) songSessionStart = Date.now();
+  songPausedAt = 0;
+  setAudioState(AUDIO_STATE.PLAYING);
+  if ("mediaSession" in navigator) { try { navigator.mediaSession.playbackState = "playing"; } catch (e) {} }
+  playStartTs = Date.now();
+  armSleepTimerIfNeeded();
+  if (state.settings.vizEnabled && !state.settings.psNoViz) startFakeVisualizer();
+  setupTrackPolling();
+}
+function castOnPlayerState() {
+  if (!castActive || !castPlayer) return;
+  const st = castPlayer.playerState;
+  if (st === "PLAYING") { castMarkPlaying(); return; }
+  if (st === "BUFFERING") { if (audioState === AUDIO_STATE.PLAYING) setAudioState(AUDIO_STATE.CONNECTING); return; }
+  if (st === "PAUSED") {
+    // Паузу натиснули на самому пристрої / в іншому застосунку.
+    if (audioState === AUDIO_STATE.PLAYING && !castLoading) doUserPauseNow();
+    return;
+  }
+  if (st === "IDLE") {
+    let why = "";
+    try { const ms = castCtx.getCurrentSession().getMediaSession(); why = ms && ms.idleReason || ""; } catch (e) {}
+    if (why === "ERROR") castRouteFailed("помилка приймача");
+    else if (why === "FINISHED" && !castLoading && castUrl && audioState === AUDIO_STATE.PLAYING) {
+      castLastDropAt = Date.now();
+      if (++castDrops <= 3) { setAudioState(AUDIO_STATE.RECOVERING); castLoad(castUrl); }
+      else castRouteFailed("потік обірвався");
+    }
+  }
+}
+function castPauseRemote() {
+  clearTimeout(castTimer); castLoading = false;
+  accumulatePlayTime();
+  if (!songPausedAt) songPausedAt = Date.now();
+  try {
+    if (castPlayer && castPlayer.isMediaLoaded) {
+      if (!castPlayer.isPaused) castCtl.playOrPause();
+      castPausedAt = Date.now();
+    }
+  } catch (e) {}
+}
+function castStopRemote() {
+  clearTimeout(castTimer); castLoading = false; castLoadSeq++;
+  accumulatePlayTime();
+  if (!songPausedAt) songPausedAt = Date.now();
+  castUrl = null; castPausedAt = 0;
+  try { if (castPlayer && castPlayer.isMediaLoaded) castCtl.stop(); } catch (e) {}
+}
+function castSetVolume(v) {
+  try { const s = castCtx && castCtx.getCurrentSession(); if (s) s.setVolume(v); } catch (e) {}
 }
 
 playBtn.onclick = () => {
@@ -7545,6 +7879,7 @@ function applySideButtonsVisibility() {
 }
 
 document.getElementById("stopBtn").onclick = () => {
+  if (castActive) castStopRemote();
   clearPauseGrace(); pausedStreamAlive = false;
   const wasVizVisible = !vizWrap.classList.contains("hidden");
   const wasPulseVisible = !wasVizVisible && pulse.style.opacity !== "0";
@@ -8352,6 +8687,7 @@ function setVolume(v) {
   const val = Math.max(0, Math.min(1, parseFloat(v) || 0));
   volumeSlider.value = val;
   state.settings.volume = val;
+  if (castActive) castSetVolume(val);
   if (gainNode) {
     // Граф активний: audioEl.volume тримаємо на 1.0 (нейтрально), а гучність
     // регулюємо ВИКЛЮЧНО через gainNode. Аналізатор під'єднаний через окремий
@@ -8530,7 +8866,7 @@ function sleepCheck() {
   const next = (left > SLEEP_FADE_MS && !sleepFading) ? left - SLEEP_FADE_MS : left;
   sleepTimeoutHandle = setTimeout(sleepCheck, next + 20);
 }
-audioEl.addEventListener("pause", freezeSleepTimer);
+audioEl.addEventListener("pause", () => { if (!castActive) freezeSleepTimer(); });
 document.addEventListener("visibilitychange", () => { if (!document.hidden) sleepCheck(); });
 window.addEventListener("pageshow", () => sleepCheck());
 // Підганяє лого/пульс під реальний вільний простір stageWrap. Викликається і після renderStations,
@@ -9068,6 +9404,7 @@ document.querySelectorAll('#eqControls input[type=range]').forEach((input, idx) 
       state.settings.eqPreset = "manual";   // ручне пересування повзунка → «Ручний режим»
       state.settings.eqMine = state.settings.eqGains.slice();   // пресет «Мій» = останній виставлений вручну
       saveState();
+      eqSelectSync();
       if (state.settings.eqEnabled && eqNodes[idx]) {
         eqNodes[idx].gain.value = val;
         eqUpdatePreamp();
@@ -9092,6 +9429,7 @@ function restoreEqUI() {
     const valSpan = input.parentElement.querySelector('.eq-val');
     if (valSpan) valSpan.textContent = val;
   });
+  try { eqSelectSync(); } catch (e) {}
 }
 
 // Гучність еквалайзера: загальної компенсації немає (звук лишається таким, як без нього).
@@ -9177,37 +9515,29 @@ function applyEqManual() {
   showToast(t("eqTitle") + ": " + t("eqManualMode"));
 }
 
-function openEqPresets() {
-  const bg = document.getElementById("eqPresetBg");
-  const list = document.getElementById("eqPresetList");
-  document.getElementById("eqPresetTitle").textContent = t("eqPresetsTitle");
-  list.innerHTML = "";
-  const active = state.settings.eqEnabled ? eqCurrentPresetId() : null;
-  const addItem = (label, isActive, isManual, onPick) => {
-    const div = document.createElement("div");
-    div.className = "option-item" + (isManual ? " manual" : "");
-    const radio = document.createElement("div");
-    radio.className = "radio" + (isActive ? " filled" : "");
-    const wrap = document.createElement("div");
-    wrap.style.flex = "1"; wrap.style.minWidth = "0";
-    const txt = document.createElement("div");
-    txt.textContent = label; txt.style.fontSize = "14px";
-    wrap.appendChild(txt);
-    div.appendChild(radio); div.appendChild(wrap);
-    div.onclick = () => { bg.classList.remove("open"); onPick(); };
-    list.appendChild(div);
-  };
-  addItem(t("eqPresetMine"), active === "mine", false, () => {
+// Випадний список пресетів у рядку еквалайзера: показує поточний (останній обраний) пресет, вибір застосовує його й вмикає еквалайзер.
+function eqSelectBuild() {
+  const sel = document.getElementById("eqPresetSelect");
+  if (!sel) return;
+  const items = [["mine", "eqPresetMine"]].concat(EQ_PRESETS.map(p => [p.id, p.key]), [["manual", "eqManualMode"]]);
+  sel.innerHTML = items.map(([id, key]) => '<option value="' + id + '">' + t(key) + '</option>').join("");
+  sel.value = eqCurrentPresetId();
+}
+function eqSelectSync() {
+  const sel = document.getElementById("eqPresetSelect");
+  if (!sel) return;
+  if (!sel.options.length) { eqSelectBuild(); return; }
+  sel.value = eqCurrentPresetId();
+}
+document.getElementById("eqPresetSelect").onchange = (e) => {
+  const v = e.target.value;
+  if (v === "mine") {
     if (!state.settings.eqMine) state.settings.eqMine = (state.settings.eqGains || [0, 0, 0, 0, 0]).slice();
     applyEqPreset({ id: "mine", key: "eqPresetMine", gains: state.settings.eqMine });
-  });
-  EQ_PRESETS.forEach(pr => addItem(t(pr.key), active === pr.id, false, () => applyEqPreset(pr)));
-  addItem(t("eqManualMode"), active === "manual", true, applyEqManual);
-  bg.classList.add("open");
-}
-document.getElementById("eqPresetBtn").onclick = openEqPresets;
-document.getElementById("eqPresetClose").onclick = () => document.getElementById("eqPresetBg").classList.remove("open");
-document.getElementById("eqPresetBg").addEventListener("click", (e) => { if (e.target.id === "eqPresetBg") e.target.classList.remove("open"); });
+  } else if (v === "manual") applyEqManual();
+  else applyEqPreset(EQ_PRESETS.find(p => p.id === v));
+};
+eqSelectBuild();
 
 document.getElementById("eqSystemLink").onclick = (e) => {
   e.preventDefault();
@@ -10005,7 +10335,7 @@ function showTip(el, text) {
 function attachTooltip(id, i18nKey) {
   const el = document.getElementById(id);
   if (!el) return;
-  const arm = () => { hideTip(); tipTimer = setTimeout(() => showTip(el, t(i18nKey)), 450); };
+  const arm = () => { hideTip(); tipTimer = setTimeout(() => showTip(el, typeof i18nKey === "function" ? i18nKey() : t(i18nKey)), 450); };
   const release = (e) => {
     clearTimeout(tipTimer);
     if (e.pointerType === "touch") { clearTimeout(tipHideTimer); tipHideTimer = setTimeout(hideTip, 1600); }
@@ -10025,7 +10355,6 @@ document.addEventListener("keydown", (e) => {
     else if (document.getElementById("exportHistoryConfirmBg").classList.contains("open")) { document.getElementById("exportHistoryConfirmBg").classList.remove("open"); e.preventDefault(); }
     else if (document.getElementById("ioInfoBg").classList.contains("open")) { document.getElementById("ioInfoBg").classList.remove("open"); e.preventDefault(); }
     else if (modalBg.classList.contains("open")) { closeModalFn(); e.preventDefault(); }
-    else if (document.getElementById("eqPresetBg").classList.contains("open")) { document.getElementById("eqPresetBg").classList.remove("open"); e.preventDefault(); }
     else if (document.getElementById("trackOptionsBg").classList.contains("open")) { document.getElementById("trackOptionsBg").classList.remove("open"); e.preventDefault(); }
   } else if (e.key === "Enter") {
     const el = document.activeElement;
@@ -10045,7 +10374,7 @@ document.addEventListener("keydown", (e) => {
 // Кнопка «назад» (Android): кожне відкрите вікно/панель = один запис в історії,
 // «назад» закриває верхнє вікно замість виходу з додатка.
 (function initBackClose() {
-  const els = ["modalBg", "eqPresetBg", "trackOptionsBg", "editBg", "resetConfirmBg", "exportHistoryConfirmBg", "ioInfoBg"]
+  const els = ["modalBg", "trackOptionsBg", "editBg", "resetConfirmBg", "exportHistoryConfirmBg", "ioInfoBg"]
     .map(id => document.getElementById(id)).filter(Boolean);
   const isOpen = el => el.classList.contains("open");
   let depth = 0, swallow = 0, swallowTimer = null;
@@ -10122,7 +10451,7 @@ function openModal() {
   appEl.classList.add("drawer-active");
   appEl.classList.add("drawer-open");
   startSearchButtonsInterval();
-  switchTab(state.settings.lastTab || "stats");
+  switchTab(state.settings.lastTab || "settings");
   {
     // Важке малювання вкладок одним махом гальмує головний потік (мигання панелі, клацання в навушниках).
     // Малюємо одразу лише активну вкладку, решту — пізніше, по одній, коли панель уже відкрилась.
@@ -10133,7 +10462,7 @@ function openModal() {
       settings: [renderThemeRow],
       advanced: []
     };
-    const curTab = tabRenders[state.settings.lastTab] ? state.settings.lastTab : "stats";
+    const curTab = tabRenders[state.settings.lastTab] ? state.settings.lastTab : "settings";
     const later = [];
     Object.keys(tabRenders).forEach(k => tabRenders[k].forEach(fn => { if (k === curTab) { try { fn(); } catch (e) { console.error(e); } } else later.push(fn); }));
     clearTimeout(openModal._laterTimer);
@@ -10234,7 +10563,10 @@ function openModal() {
     const isOpen = bgEl.classList.contains("open");
 
     if (isOpen) {
-      if (!panelEl.contains(e.target)) return;
+      // Закривати можна свайпом вліво і по самій панелі, і по видимій правій частині головного екрана
+      // (її перекриває прозорий #modalBg). Інші відкриті діалоги (інший .modalBg) жест не перехоплює.
+      const otherModal = e.target.closest(".modalBg");
+      if (otherModal && otherModal !== bgEl) return;
       if (e.target.closest("input, select, textarea, [contenteditable]")) return;
       gesture = {
         mode: "close", startX: x, startY: y, axis: null,
@@ -11324,15 +11656,19 @@ function renderSwatchPickerFull(containerId, selected, onPick, singleRow) {
   (secondRowDiv || el).appendChild(customWrap);
 }
 
-document.getElementById("manualAddToggleBtn").onclick = () => {
+function setManualAddOpen(open) {
   const fields = document.getElementById("manualAddFields");
-  const nowHidden = fields.style.display === "none";
-  fields.style.display = nowHidden ? "flex" : "none";
+  const btn = document.getElementById("manualAddToggleBtn");
+  fields.style.display = open ? "flex" : "none";
   fields.style.flexDirection = "column";
   fields.style.gap = "8px";
-  if (nowHidden) {
-    initNewStationColor();
-  }
+  btn.classList.toggle("open", open);
+  btn.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.getElementById("manualAddToggleBtn").onclick = () => {
+  const open = document.getElementById("manualAddFields").style.display === "none";
+  setManualAddOpen(open);
+  if (open) initNewStationColor();
 };
 
 function sanitizeSyncData(text) {
@@ -11343,6 +11679,96 @@ function sanitizeSyncData(text) {
   if (cleaned.length > 500000) cleaned = cleaned.slice(0, 500000);
   return cleaned;
 }
+
+// Іконка для станції, що додається вручну. Підтягується сама, коли вписано назву й посилання на потік;
+// користувач може замінити її: пошук зі списку, адреса, файл (зменшується до 128 px) або видалити.
+let newIconValue = "", newIconUserSet = false, newIconHomepage = null, newIconAutoTimer = null, newIconAutoSeq = 0;
+function setNewIcon(value, auto) {
+  newIconValue = value || "";
+  if (!auto) newIconUserSet = true;
+  const img = document.getElementById("newIconPreview");
+  const rm = document.getElementById("newIconRemoveBtn");
+  if (newIconValue) {
+    img.onerror = () => { img.style.display = "none"; };
+    img.onload = () => { img.style.display = "block"; };
+    img.src = proxifyIconUrl(newIconValue); img.style.display = "block"; rm.style.display = "";
+  } else { img.removeAttribute("src"); img.style.display = "none"; rm.style.display = "none"; }
+}
+function resetNewIcon() {
+  clearTimeout(newIconAutoTimer); newIconAutoSeq++;
+  newIconUserSet = false; newIconHomepage = null;
+  setNewIcon("", true);
+  const lab = document.getElementById("newIconLabel"); if (lab) lab.textContent = t("newIconLabel");
+}
+function scheduleNewIconAuto() {
+  clearTimeout(newIconAutoTimer);
+  if (newIconUserSet) return;
+  const name = document.getElementById("newName").value.trim();
+  const url = document.getElementById("newUrl").value.trim();
+  if (name.length < 2 || !/^https?:\/\/\S+\.\S+/i.test(url)) return;
+  newIconAutoTimer = setTimeout(runNewIconAuto, 900);
+}
+async function runNewIconAuto() {
+  if (newIconUserSet) return;
+  const name = document.getElementById("newName").value.trim();
+  const url = document.getElementById("newUrl").value.trim();
+  const seq = ++newIconAutoSeq;
+  const lab = document.getElementById("newIconLabel");
+  if (lab) lab.textContent = t("searchingIconToast");
+  try {
+    const res = await fetchIconCandidatesFor(name, null, url);
+    if (seq !== newIconAutoSeq || newIconUserSet) return;
+    const best = (res.icons || []).find(ic => ic.source !== "default");
+    if (best) { newIconHomepage = res.homepage || null; setNewIcon(best.url, true); }
+  } catch (e) {}
+  finally { if (seq === newIconAutoSeq && lab) lab.textContent = t("newIconLabel"); }
+}
+document.getElementById("newName").addEventListener("input", scheduleNewIconAuto);
+document.getElementById("newUrl").addEventListener("input", scheduleNewIconAuto);
+document.getElementById("newIconFetchBtn").onclick = async () => {
+  const name = document.getElementById("newName").value.trim();
+  if (!name) { showToast(t("enterNameUrlToast")); return; }
+  clearTimeout(newIconAutoTimer); newIconAutoSeq++;
+  openIconSearchLoading();
+  let found = [], hp = newIconHomepage;
+  try {
+    const res = await fetchIconCandidatesFor(name, newIconHomepage, document.getElementById("newUrl").value.trim() || null);
+    found = res.icons || []; if (res.homepage) hp = res.homepage;
+  } catch (e) { devLog("Помилка пошуку іконок: " + (e && e.message || e)); }
+  showIconOptions(found.length ? found : [{ url: DEFAULT_STATION_ICON, source: "default", name: t("defaultIconName") }], hp, name, {
+    getStation: () => ({ favicon: newIconValue, url: document.getElementById("newUrl").value.trim() }),
+    onPick: (url, homepage) => { if (homepage) newIconHomepage = homepage; setNewIcon(url); showToast(t("iconChangedToast")); }
+  });
+};
+document.getElementById("newIconUrlBtn").onclick = () => {
+  const url = (window.prompt(t("iconUrlPromptLabel"), /^data:/.test(newIconValue) ? "" : newIconValue) || "").trim();
+  if (!url) return;
+  if (!/^https?:\/\//i.test(url)) { showToast(t("iconUrlPromptLabel")); return; }
+  setNewIcon(url);
+};
+document.getElementById("newIconUploadBtn").onclick = () => document.getElementById("newIconInput").click();
+document.getElementById("newIconInput").onchange = (e) => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const im = new Image();
+    im.onload = () => {
+      try {
+        const k = Math.min(1, 128 / Math.max(im.width, im.height));
+        const c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(im.width * k)); c.height = Math.max(1, Math.round(im.height * k));
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        setNewIcon(c.toDataURL("image/png"));
+      } catch (err) { setNewIcon(ev.target.result); }
+    };
+    im.onerror = () => setNewIcon(ev.target.result);
+    im.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+document.getElementById("newIconRemoveBtn").onclick = () => { clearTimeout(newIconAutoTimer); newIconAutoSeq++; setNewIcon(""); };
 
 document.getElementById("addBtn").onclick = () => {
   const name = document.getElementById("newName").value.trim();
@@ -11362,9 +11788,21 @@ document.getElementById("addBtn").onclick = () => {
     state.stations.push({ name, fullName: name, url, color, colorUserSet: colorUser, trackMode: "icy", trackUrl: "", adminSongUrl: "", manuallyEdited: true });
   }
   const addedRef = state.stations[state.stations.length - 1];
-  enrichSingleStation(addedRef).then(ok => { if (ok) { saveState(); renderModalList(); renderStations(); } }).catch(() => {});
+  const userIcon = newIconValue, userChose = newIconUserSet, iconHomepage = newIconHomepage;
+  const applyUserIcon = () => {
+    if (!userIcon) return;
+    addedRef.favicon = userIcon;
+    if (userChose) addedRef.faviconUserSet = true;
+    if (iconHomepage) addedRef.homepage = iconHomepage;
+    setTimeout(colorizeStationsFromLogos, 0);
+  };
+  if (userIcon && userChose && !/^data:/.test(userIcon)) { try { registerFaviconUsage(userIcon); } catch (e) {} }
+  applyUserIcon();
+  resetNewIcon();
+  // Автопошук (enrich) не повинен перезаписати іконку, яку користувач вказав сам — ставимо її ще раз після нього.
+  enrichSingleStation(addedRef).then(ok => { if (userChose) applyUserIcon(); if (ok || userIcon) { saveState(); renderModalList(); renderStations(); } }).catch(() => {});
   document.getElementById("newName").value = ""; document.getElementById("newUrl").value = "";
-  document.getElementById("manualAddFields").style.display = "none";
+  setManualAddOpen(false);
   saveState(); renderModalList(); renderStations();
 };
 
@@ -11857,6 +12295,7 @@ document.getElementById("devMode").onchange = (e) => {
   // Блок «Орієнтація» теж видно лише в режимі розробника — показуємо/ховаємо
   // одразу, не чекаючи перезапуску.
   placeLandscapeBlock();
+  markDevRows();
 };
 function renderDevLog() {
   const det = document.getElementById("devLogDetails");
@@ -12742,7 +13181,7 @@ document.getElementById("editIconFetchBtn").onclick = async () => {
   showIconOptions(foundIcons.length ? foundIcons : [{ url: DEFAULT_STATION_ICON, source: 'default', name: t('defaultIconName') }], homepage, name);
 };
 
-function showIconOptions(icons, homepage, searchQuery) {
+function showIconOptions(icons, homepage, searchQuery, ctx) {
   if (!icons || !icons.length) { showToast(t("iconNotFoundToast")); return; }
   const bg = document.getElementById("trackOptionsBg");
   const container = document.getElementById("trackOptionsContainer");
@@ -12753,13 +13192,14 @@ function showIconOptions(icons, homepage, searchQuery) {
     + '<div id="iconSearchStatus" class="hint" style="display:none; margin-bottom:8px;">' + t("searchingIconToast") + '</div>';
   const statusEl = container.querySelector("#iconSearchStatus");
   document.getElementById("trackOptionsHint").textContent = "";
-  const currentStation = state.stations[editingIndex];
+  const currentStation = ctx ? ctx.getStation() : state.stations[editingIndex];
   const currentFavicon = currentStation ? currentStation.favicon : null;
 
   // Єдина дія кліку: поставити іконку станції, показати її у прев'ю
   // редактора, зберегти і закрити вікно пошуку. Жодних додаткових
   // підтверджень чи кнопки «Зберегти» в редакторі не потрібно.
   const applyIconAndClose = (url) => {
+    if (ctx) { try { ctx.onPick(url, homepage); } catch (e) {} bg.classList.remove("open"); return; }
     const s = state.stations[editingIndex];
     if (s) {
       s.favicon = url; setTimeout(colorizeStationsFromLogos, 0);
@@ -12823,7 +13263,7 @@ function showIconOptions(icons, homepage, searchQuery) {
     refreshBtn.disabled = true;
     refreshBtn.style.opacity = "0.5";
     try {
-      const s2 = state.stations[editingIndex];
+      const s2 = ctx ? ctx.getStation() : state.stations[editingIndex];
       const { icons: freshIcons, homepage: freshHomepage } = await fetchIconCandidatesFor(searchQuery, homepage, s2 ? s2.url : null);
       if (freshHomepage) homepage = freshHomepage;
       if (!freshIcons.length) { showToast(t("iconNotFoundToast")); return; }
@@ -14384,9 +14824,15 @@ document.getElementById("scaleValue").onclick = () => {
     forceLangPick = sessionStorage.getItem("forceLangPick") === "1";
     if (forceLangPick) sessionStorage.removeItem("forceLangPick");
   } catch (e) {}
-  firstRunLangPending = isFirstRun || forceLangPick;
-
+  firstRunLangPending = false; // вибір мови/теми на старті прибрано: мова — з пристрою, тема — перша (синя "classic")
   loadState();
+  if (isFirstRun || forceLangPick) {
+    try {
+      state.settings.language = detectDeviceLang();
+      state.settings.theme = "classic";
+      saveStateImmediate();
+    } catch (e) {}
+  }
   try { migrateEqPresets(); } catch (e) {}
   applyWorkerBase(resolveWorkerBase());
   applyTouchMode();
@@ -14423,8 +14869,7 @@ document.getElementById("scaleValue").onclick = () => {
     trackInfo.textContent = t("chooseStation");
   }
 
-  // Показуємо вибір мови як на першому запуску, так і після скидання.
-  if (firstRunLangPending) document.getElementById("langPickBg").classList.add("open");
+  // На першому запуску мову беремо з пристрою; стартові станції — для цієї мови (без діалогів вибору).
   try { handleSharedStationLink(); } catch (e) {}
   try { startSearchSavePrompt(); } catch (e) {}
   try { initInstallPrompt(); } catch (e) {}
@@ -14437,9 +14882,31 @@ document.getElementById("scaleValue").onclick = () => {
   attachTooltip("prevBtn", "tooltipPrevStation");
   attachTooltip("nextBtn", "tooltipNextStation");
   attachTooltip("pipBtn", "pipWord");
+  // Кнопка #airplayBtn спільна: Safari/iOS — AirPlay, Chrome/Edge — Google Cast. З'являється лише коли поруч є пристрої.
+  try {
+    const apBtn = document.getElementById("airplayBtn");
+    if (apBtn) {
+      if (typeof audioEl.webkitShowPlaybackTargetPicker === "function") {
+        audioEl.setAttribute("x-webkit-airplay", "allow");
+        audioEl.addEventListener("webkitplaybacktargetavailabilitychanged", (e) => {
+          airplayAvail = (e.availability === "available");
+          castBtnRefresh();
+        });
+      }
+      apBtn.onclick = () => {
+        try {
+          if (airplayAvail) audioEl.webkitShowPlaybackTargetPicker();
+          else if (castActive) castCtx.endCurrentSession(true);
+          else if (castCtx) { const p = castCtx.requestSession(); if (p && p.catch) p.catch(() => {}); }
+        } catch (err) {}
+      };
+      attachTooltip("airplayBtn", () => t(apBtn.dataset.mode === "cast" ? "castWord" : "airplayWord"));
+      castInitSdk();
+    }
+  } catch (e) {}
   attachTooltip("shareBtn", "tooltipShare");
   attachTooltip("muteBtn", "tooltipMute");
-  ["reloadBtn", "pipBtn", "shareBtn"].forEach(id => {
+  ["reloadBtn", "pipBtn", "shareBtn", "airplayBtn"].forEach(id => {
     const b = document.getElementById(id);
     if (!b) return;
     const pop = () => { b.classList.remove("springPop"); void b.offsetWidth; b.classList.add("springPop"); };
@@ -14452,6 +14919,11 @@ document.getElementById("scaleValue").onclick = () => {
   document.addEventListener("touchmove", e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
   syncStationsFromFile(false).then(async () => {
+    // Перший запуск: стартові станції для мови пристрою — після першої синхронізації (вона приносить списки станцій за мовами).
+    if (isFirstRun && !starterLangHandled) {
+      starterLangHandled = true;
+      try { await applyLanguageStarterStations(state.settings.language); } catch (e) {}
+    }
     const forceIconPassOnce = !state.settings.iconRepairV3Done;
     try { await repairBrokenStationIcons(); } catch (e) {}
     const needEnrich = state.stations.some(s => !s.favicon || s.favicon === DEFAULT_STATION_ICON);
