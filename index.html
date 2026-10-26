@@ -1239,9 +1239,9 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
     backdrop-filter: none; -webkit-backdrop-filter: none;
   }
   #app.list-mode:not(.neumorphic).list-short #controls { margin-top: 0; }
-  #app.list-mode.power-save:not(.neumorphic) #volRow, #app.list-mode.ps-noblur:not(.neumorphic) #volRow {
-    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-    background: var(--g5) !important;
+  #app.list-mode.power-save:not(.neumorphic) #headerBand,
+  #app.list-mode.ps-noblur:not(.neumorphic) #headerBand {
+    background: var(--headerbg, var(--g1)) !important;
   }
   #app.list-mode #stations.listStyle .stationBtn .name-wrap { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; scrollbar-width: none; }
   #app.list-mode .alt-style-container { display: none; }
