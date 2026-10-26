@@ -1205,7 +1205,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.list-mode #stations.listStyle .stationBtn { white-space: normal; overflow: visible; text-overflow: clip; }
   #app.list-mode:not(.neumorphic) #headerBand {
     position: absolute; top: 0; left: 0; right: 0; z-index: 4;
-    background: var(--headerbg, var(--g1));
+    background: var(--headerbg-a, var(--headerbg, var(--g1))) !important;
     backdrop-filter: blur(13px) saturate(2.1);
     -webkit-backdrop-filter: blur(13px) saturate(2.1);
   }
@@ -1732,11 +1732,10 @@ html.lc .tabs button {
      малює iOS — CSS на неї не впливає. */
   html.ios.pwa #app.list-mode:not(.neumorphic) > #statusBarZone { display: none; }
   html.ios.pwa #app.list-mode:not(.neumorphic) > #headerBand {
-    top: 0; padding-top: env(safe-area-inset-top) !important; min-height: calc(58px + env(safe-area-inset-top)) !important;
+    top: 0; padding-top: var(--statusZoneH) !important; min-height: calc(58px + var(--statusZoneH)) !important;
   }
   html.ios.pwa #app.landscape.list-mode:not(.neumorphic) > #headerBand {
-    min-height: calc(calc(27.5px * var(--app-scale, 1)) + env(safe-area-inset-top)) !important;
-    padding-top: env(safe-area-inset-top) !important;
+    min-height: calc(calc(27.5px * var(--app-scale, 1)) + var(--statusZoneH)) !important;
   }
   html.ios.pwa #app.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(var(--statusZoneH) + 58px + 14px); }
   html.ios.pwa #app.landscape.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(var(--statusZoneH) + calc(27.5px * var(--app-scale, 1)) + calc(8px * var(--app-scale, 1))) !important; }
@@ -2146,7 +2145,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.43</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.44</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2742,7 +2741,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.43";
+const APP_VERSION = "3.444";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -4805,20 +4804,20 @@ function renderStations() {
       // dragover/dragleave/drop тепер живуть на #stations (див. вище) — щоб працювало
       // і перетягування між сторінками, і впадання у порожнє місце сторінки.
     }
+    let moved = false; // <--- 1. ДОДАЙТЕ ЦЕЙ РЯДОК
     const startPress = (ev) => {
       if (!isTouchDevice) return;
-      ev.preventDefault();
+      // ev.preventDefault(); <--- 2. ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ ЦЕЙ РЯДОК
       longPressFired = false;
+      moved = false; // <--- 3. СКИДАЄМО ПРАПОРЕЦЬ
       const startX = ev.clientX;
       const startY = ev.clientY;
-      // Якщо палець зсунувся більш ніж на 8px по будь-якій осі — це свайп/прокрутка,
-      // а не довге утримання. Скасовуємо таймер, щоб не вискочило вікно редагування
-      // (або реордер) посеред руху.
-      if (longPressMoveHandler) document.removeEventListener("touchmove", longPressMoveHandler);
+      // ...
       longPressMoveHandler = (mv) => {
         const t = mv.touches && mv.touches[0];
         if (!t) return;
         if (Math.abs(t.clientX - startX) > 8 || Math.abs(t.clientY - startY) > 8) {
+          moved = true; // <--- 4. ПОЗНАЧАЄМО, ЩО ЦЕ БУВ СКРОЛ
           clearTimeout(longPressTimer);
           if (longPressMoveHandler) {
             document.removeEventListener("touchmove", longPressMoveHandler);
@@ -4871,7 +4870,11 @@ function renderStations() {
       if (isTouchDevice) return;
       openEditModal(i, false);
     });
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+      if (moved) { // <--- 5. ЯКЩО БУВ СКРОЛ, ІГНОРУЄМО КЛІК
+        moved = false;
+        return;
+      }
       if (!longPressFired) {
         if (isSearchPlayback) {
           audioEl.pause();
