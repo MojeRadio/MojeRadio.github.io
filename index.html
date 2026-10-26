@@ -542,6 +542,7 @@
   #app.darkRowTheme:not(.neumorphic) #stations.altStyle .stationsPage { background: rgba(0,0,0,0.22); }
   .stationBtn { padding: 10px 8px; text-align: center; font-size: clamp(13px, 2vw, 16px); font-weight: 500; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; min-height: 52px; max-height: 52px; transition: transform 0.15s; letter-spacing: 0.2px; white-space: normal; word-wrap: break-word; overflow: hidden; line-height: 1.3; opacity: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: ellipsis; }
   .stationBtn:active { transform: scale(0.95); }
+  #app.list-mode .stationBtn:active { transform: none !important; }
   .stationBtn.plusTile { background: transparent !important; color: var(--fg) !important; opacity: 0.85; border: 1.5px dashed var(--dashColor, rgba(128,128,128,0.5)); display: flex; align-items: center; justify-content: center; }
   #stations:not(.listStyle) .stationBtn.plusTile { border: 1.5px dashed var(--dashColor, rgba(128,128,128,0.5)) !important; background: transparent !important; }
   .stationBtn.ghostStation { background: transparent !important; border: 1.5px dashed var(--dashColor, rgba(128,128,128,0.5)) !important; box-shadow: none !important; opacity: 0.85; position: relative; }
@@ -1205,7 +1206,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.list-mode #stations.listStyle .stationBtn { white-space: normal; overflow: visible; text-overflow: clip; }
   #app.list-mode:not(.neumorphic) #headerBand {
     position: absolute; top: 0; left: 0; right: 0; z-index: 4;
-    background: var(--headerbg-a, var(--headerbg, var(--g1))) !important;
+    background: color-mix(in srgb, var(--headerbg, var(--g1)) 85%, transparent) !important;
     backdrop-filter: blur(13px) saturate(2.1);
     -webkit-backdrop-filter: blur(13px) saturate(2.1);
   }
@@ -4804,20 +4805,20 @@ function renderStations() {
       // dragover/dragleave/drop тепер живуть на #stations (див. вище) — щоб працювало
       // і перетягування між сторінками, і впадання у порожнє місце сторінки.
     }
-    let moved = false; // <--- 1. ДОДАЙТЕ ЦЕЙ РЯДОК
+	let moved = false; 
     const startPress = (ev) => {
       if (!isTouchDevice) return;
-      // ev.preventDefault(); <--- 2. ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ ЦЕЙ РЯДОК
       longPressFired = false;
-      moved = false; // <--- 3. СКИДАЄМО ПРАПОРЕЦЬ
+      moved = false; // <--- 3. ДОДАЙТЕ ЦЕ
       const startX = ev.clientX;
       const startY = ev.clientY;
-      // ...
+      
+      if (longPressMoveHandler) document.removeEventListener("touchmove", longPressMoveHandler);
       longPressMoveHandler = (mv) => {
         const t = mv.touches && mv.touches[0];
         if (!t) return;
         if (Math.abs(t.clientX - startX) > 8 || Math.abs(t.clientY - startY) > 8) {
-          moved = true; // <--- 4. ПОЗНАЧАЄМО, ЩО ЦЕ БУВ СКРОЛ
+          moved = true; 
           clearTimeout(longPressTimer);
           if (longPressMoveHandler) {
             document.removeEventListener("touchmove", longPressMoveHandler);
@@ -4870,8 +4871,8 @@ function renderStations() {
       if (isTouchDevice) return;
       openEditModal(i, false);
     });
-    btn.addEventListener("click", (e) => {
-      if (moved) { // <--- 5. ЯКЩО БУВ СКРОЛ, ІГНОРУЄМО КЛІК
+    btn.addEventListener("click", () => {
+      if (moved) { 
         moved = false;
         return;
       }
