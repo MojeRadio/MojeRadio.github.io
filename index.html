@@ -806,7 +806,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 
 /* 2. Базовий вигляд кнопки */
 .tabs button {
-  flex: 1 1 0;
+  flex: 1 1 auto; /* ширина вкладки ~ довжина слова, щоб довгі назви не змушували ставити крихітний шрифт */
   min-width: 0;
   padding: 10px 6px;
   border: none;
@@ -1206,9 +1206,16 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.list-mode #stations.listStyle .stationBtn { white-space: normal; overflow: visible; text-overflow: clip; }
   #app.list-mode:not(.neumorphic) #headerBand {
     position: absolute; top: 0; left: 0; right: 0; z-index: 4;
-    background: color-mix(in srgb, var(--headerbg, var(--g1)) 85%, transparent) !important;
+    background: var(--headerbg, var(--g1));
     backdrop-filter: blur(13px) saturate(2.1);
     -webkit-backdrop-filter: blur(13px) saturate(2.1);
+  }
+  /* Напівпрозорість вмикається лише після того, як #app отримає клас .hdr-glass
+     (його ставить init після зняття theme-switching). Тоді перехід
+     solid → semi-transparent іде ПОВЕРХ уже готового backdrop-filter — без
+     «голого просвічування» контенту на першому кадрі після reload. */
+  #app.hdr-glass.list-mode:not(.neumorphic) #headerBand {
+    background: color-mix(in srgb, var(--headerbg, var(--g1)) 85%, transparent) !important;
   }
   /* Скролбар лишаємо нативним. */
   #app.list-mode:not(.neumorphic) #stations.listStyle { padding-top: calc(58px + env(safe-area-inset-top) + 14px); padding-bottom: calc(var(--volRowH, 42px) + 14px); scrollbar-gutter: stable both-edges; }
@@ -1334,7 +1341,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
     #trackInfo { font-size: 13px; padding: 12px 14px 0; }
     #vizWrap { height: 42px; }
     .modal { max-width: 340px; }
-    .tabs button { font-size: 11.5px; padding: 8px 2px; min-width: 56px; }
+    .tabs button { font-size: 11.5px; padding: 8px 2px; min-width: 0; }
     .swatchPicker .sw, .swatchPicker .customWrap { width: 22px; height: 22px; }
     .themeRow { grid-template-columns: repeat(10, 1fr); gap: 3px; }
     #stations.listStyle .stationBtn { font-size: 12px; min-height: 38px; padding: 6px 10px; }
@@ -2149,7 +2156,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.46</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.45</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2415,7 +2422,7 @@ html.lc .tabs button {
 // ===================== i18n =====================
 const I18N = {
   uk: { appName:"моє радіо", installBanner:"Встановити застосунок", installIosTitle:"Встановлення на iPhone / iPad", installIosText:"1. Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у браузері.\n2. Оберіть «Додати на головний екран».\n3. Натисніть «Додати».", installOk:"Зрозуміло", stationFilterPh:"Пошук серед моїх станцій", stationFilterEmpty:"Нічого не знайдено", versionChecking:"Перевіряю оновлення…", versionLatest:"У вас остання актуальна версія", versionCheckFail:"Не вдалося перевірити оновлення", versionNewBtn:"Доступна нова версія {v} — натисни, щоб оновити", pipWord:"Міні-плеєр поверх вікон",copyTip:"Копіювати",pipHintToast:"Порада: кнопка в шапці відкриває міні-плеєр поверх вікон — музика завжди під рукою", colorAutoBtn:"Авто з іконки", colorAutoFailToast:"Не вдалось визначити колір з іконки", chooseStation:"Оберіть станцію знизу", buffering:"Буферизація...", playPrompt:"Натисни play, щоб продовжити", noUrl:"Немає посилання — додай його в меню", copied:"Скопійовано", copiedSongName:"Скопійовано назву пісні", linkCopiedToast:"Посилання скопійовано", stopped:"Оберіть станцію знизу", cantPlay:"Не вдалось відтворити потік", streamUrlPlaceholder:"Посилання на потік", stationIconAlt:"іконка станції", resetAllConfirmText:"Точно скинути все?", resetStatsConfirmText:"Точно скинути статистику?", historyExportedToast:"Історію експортовано", resetDoneToast:"Скинуто до заводських налаштувань — перезавантаження...", versionLabel:"Версія", bitrateLabel:"Бітрейт", kbUnit:"КБ", syncStatusOk:"успішно ", syncStatusFail:"помилка ", syncLoadFailToast:"Не вдалось завантажити файл — навіть через резервні проксі. Пробую далі у фоні.", syncNoStationsToast:"Файл завантажено, але станцій не знайдено — перевір формат", syncUpdatedToast:"Список станцій оновлено", syncParseErrorToast:"Помилка обробки файлу", addedStationsSummary:"Збережені станції", otherParamsSummary:"Інші параметри у файлі", cancelWord:"Скасувати", iconChangedToast:"Іконку змінено", clearHistoryConfirm:"Очистити всю історію пісень?", clearFavoritesConfirm:"Очистити всі улюблені пісні?", favoritesCleared:"Улюблені очищено", deleteStationConfirm:"Видалити станцію «{name}»?", messageUnderTitleLabel:"Текст під назвою пісні", manualTrackTitleLabel:"Ручна назва треку", stopWordsLabel:"Стоп-слова в назві пісні", manualWord:"вручну", stopWordsPlaceholder:"реклама, autopromocja, ...", backupSearchLabel:"Резервний пошук", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Оберіть іконку для станції:", copyFailedToast:"Не вдалось скопіювати", historyCleared:"Історію очищено", statsResetToast:"Статистику прослуховування скинуто", connOffline:"Немає з'єднання з інтернетом", connRetrying:"Зв'язок зі станцією втрачено · спроба {n}/{max}", connSlow:"Станція не відповідає · спроба {n}/{max}", connFailed:"Не вдалося відновити потік — натисніть ⟳, щоб спробувати знову", streamLostRetrying:"Втрата потоку — спроба відновлення ", offlineToast:"Немає мережі — відновлю потік, щойно зʼявиться звʼязок", onlineToast:"Мережу відновлено — підключаюсь знову", devErrLogTitle:"Збережені помилки", recoverFailedToast:"Не вдалось відновити потік", storageFullToast:"Не вдається зберегти налаштування — сховище браузера переповнене", sleepTimerStoppedToast:"Сон-таймер: зупинено", openSystemSoundSettingsToast:"Відкрийте системні налаштування звуку вручну", deletedToast:"Видалено", enterNameUrlToast:"Введіть назву та посилання", simDropSentToast:"Симуляція обриву відправлена", stationsFileLoadedToast:"Файл станцій завантажено", noStationsInFileToast:"У файлі не знайдено станцій", addedToast:"Додано: ", cantReadFileToast:"Не вдалось прочитати файл — перевір формат", searchingIconToast:"Шукаю іконку...", iconUploadedToast:"Іконку завантажено", iconRemovedToast:"Іконку видалено", noSuccessfulSyncToast:"Ще немає жодної успішної синхронізації для відновлення", stationNotInSyncToast:"Станцію не знайдено в останній синхронізації", restoredFromSyncToast:"Відновлено з останньої успішної синхронізації", noSourceToast:"Немає джерела для визначення", titleNotFoundToast:"Не вдалось знайти назву пісні", savedToast:"Збережено: ", sessionUsageResetToast:"Використання за сесію скинуто", updatingToast:"Оновлення...", updatedWord:"оновлено", stationExistsToast:"Така станція вже є у списку", chooseThemeTitle:"Оберіть тему кольору", confirmWord:"Готово", exportHistoryQ:"Що експортувати?", exportFavOnlyOpt:"Тільки улюблені (зі зірочкою)", exportAllOpt:"Усю історію", searchingSongTitleToast:"Шукаю назву пісні...", messagePlaceholder:"текст повідомлення", manualTrackPlaceholder:"назва треку вручну", lastSuccessLabel:"востаннє вдало", iconNotFoundToast:"Не вдалось знайти іконку", iconWord:"Іконка", chooseOptionToast:"Оберіть варіант", iconUrlPromptLabel:"Адреса іконки:", iconFetchShort:"знайти", iconUrlApply:"Вставити адресу іконки", httpsFirstLabel:"Спершу пробувати http → https напряму замість проксі", prevNextLabel:"Показувати кнопки перемикання станції", refreshWord:"оновити", menuWord:"меню", shareWord:"поділитись", muteWord:"звук", prevStationWord:"попередня станція", playWord:"грати", nextStationWord:"наступна станція", stopWord:"стоп", resetWord:"скинути", prevPageWord:"Попередня сторінка", nextPageWord:"Наступна сторінка", uploadWord:"Завантажити", removeWord:"Видалити", tooltipReload:"Перезапустити потік", tooltipMenu:"Меню: станції та налаштування", tooltipStop:"Зупинити і скинути", tooltipPrevStation:"Попередня станція", tooltipNextStation:"Наступна станція", tooltipShare:"Поділитись станцією", tooltipMute:"Увімкнути / вимкнути звук", iconManualSearchPlaceholder:"або впишіть назву станції вручну",
-    tabOptions:"Опції", sortDefault:"Довільний порядок", sortAsc:"За алфавітом (А-Я)", sortDesc:"За алфавітом (Я-А)", tabStations:"Станції", tabSync:"Синхронізація", tabSyncLong:"Синхронізація", tabStats:"Статистика", tabStatsShort:"Статистика", tabAdvanced:"Ще", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Трансляція на «{name}»", castEndedToast:"Трансляцію завершено", castFailToast:"Chromecast не зміг відтворити цей потік", newIconLabel:"Іконка", desktopStationHint:"Права кнопка миші по станції — редагування; перетягніть станцію, щоб змінити порядок.", autoSwitchTitle:"Автоперемикання станції", autoSwitchLabel:"Перемикатись на іншу станцію в разі помилки", autoSwitchToast:"Станція не відповідає — перемикаю на «{name}»", autoSwitchBackToast:"Станція «{name}» знову працює — повертаюсь", foldersTitle:"Папки станцій", foldersLabel:"Групувати станції в папки", newFolderBtn:"Нова папка", folderNamePh:"Назва папки", folderDefaultName:"Папка", noFolderWord:"Без папки", folderFieldLabel:"Папка", renameFolderTip:"Перейменувати папку", deleteFolderTip:"Видалити папку (станції лишаться)", folderDragTip:"Перетягніть станцію на папку", scaleTitle:"Масштаб інтерфейсу", scaleHint:"Розмір кнопок і шрифтів на головному екрані", stationListExportSummary:"Експорт/Імпорт станцій", search:"Шукати", longPressHint:"Довге утримання станції — перетягніть, щоб змінити порядок.", longPressHintReorder:"Довге утримання станції — редагування (перетягування вимкнено).", gridLongPressEditLabel:"Довге утримування для редагування станції",
+    tabOptions:"Опції", sortDefault:"Довільний порядок", sortAsc:"За алфавітом (А-Я)", sortDesc:"За алфавітом (Я-А)", tabStations:"Станції", tabSync:"Синхр.", tabSyncLong:"Синхронізація", tabStats:"Статистика", tabStatsShort:"Статистика", tabAdvanced:"Ще", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Трансляція на «{name}»", castEndedToast:"Трансляцію завершено", castFailToast:"Chromecast не зміг відтворити цей потік", newIconLabel:"Іконка", desktopStationHint:"Права кнопка миші по станції — редагування; перетягніть станцію, щоб змінити порядок.", autoSwitchTitle:"Автоперемикання станції", autoSwitchLabel:"Перемикатись на іншу станцію в разі помилки", autoSwitchToast:"Станція не відповідає — перемикаю на «{name}»", autoSwitchBackToast:"Станція «{name}» знову працює — повертаюсь", foldersTitle:"Папки станцій", foldersLabel:"Групувати станції в папки", newFolderBtn:"Нова папка", folderNamePh:"Назва папки", folderDefaultName:"Папка", noFolderWord:"Без папки", folderFieldLabel:"Папка", renameFolderTip:"Перейменувати папку", deleteFolderTip:"Видалити папку (станції лишаться)", folderDragTip:"Перетягніть станцію на папку", scaleTitle:"Масштаб інтерфейсу", scaleHint:"Розмір кнопок і шрифтів на головному екрані", stationListExportSummary:"Експорт/Імпорт станцій", search:"Шукати", longPressHint:"Довге утримання станції — перетягніть, щоб змінити порядок.", longPressHintReorder:"Довге утримання станції — редагування (перетягування вимкнено).", gridLongPressEditLabel:"Довге утримування для редагування станції",
     syncEnableLabel:"Зв'язок додатку з сервером", syncFileDesc:"Посилання на файл, звідки береться список станцій і налаштування нижче, з сервера.", notSynced:"ще не синхронізовано",
     langTitle:"Мова (Language)", themeTitle:"Тема", centerElementTitle:"Елемент по центру", vizShowLabel:"Аудіовізуалізатор", vizLogoLabel:"Показувати лого", pulseShowLabel:"Пульсуючий круг", logoShowLabel:"Лого станції", streamTitle:"Потік",
     wakeLockLabel:"Не вимикати екран під час гри", orientationTitle:"Орієнтація", landscapeLabel:"Компактний горизонтальний вигляд", landscapeLabelTouch:"Ввімкнути автоповорот екрану", devForceLandscapeLabel:"Примусовий горизонтальний вид", devForcePortraitLabel:"Примусовий вертикальний вид", forceTouchModeLabel:"Бокова панель налаштувань", forceDesktopModeLabel:"Компактне вікно налаштувань", swipeLabel:"Перемикати станції свайпом",
@@ -2745,7 +2752,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.46";
+const APP_VERSION = "3.45";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -11284,7 +11291,12 @@ function fitSettingsTabs() {
     btns.forEach(b => { b.style.removeProperty("font-size"); b.style.setProperty("font-weight", "800", "important"); });
     const base = parseFloat(getComputedStyle(btns[0]).fontSize) || 11;
     const MIN = 6;
-    const overflows = () => btns.some(b => b.scrollWidth > b.clientWidth + 0.5);
+    const textW = b => { const n = b.firstChild; if (!n) return 0; const r = document.createRange(); r.selectNodeContents(b); return r.getBoundingClientRect().width; };
+    const overflows = () => btns.some(b => {
+      const cs = getComputedStyle(b);
+      const avail = b.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      return b.scrollWidth > b.clientWidth + 0.5 || textW(b) > avail + 0.5;
+    });
     let fs = base;
     if (overflows()) {
       while (fs > MIN) {
@@ -11315,6 +11327,10 @@ function scheduleFitSettingsTabs() {
     let lastW = 0;
     new ResizeObserver(() => { const w = box.clientWidth; if (w !== lastW) { lastW = w; scheduleFitSettingsTabs(); } }).observe(box);
   }
+  const later = () => { scheduleFitSettingsTabs(); [150, 450, 1000].forEach(ms => setTimeout(scheduleFitSettingsTabs, ms)); };
+  const mb = document.getElementById("modalBg"), ap = document.getElementById("app");
+  if (mb) new MutationObserver(later).observe(mb, { attributes: true, attributeFilter: ["class"] });
+  if (ap) new MutationObserver(later).observe(ap, { attributes: true, attributeFilter: ["class"] });
   window.addEventListener("resize", scheduleFitSettingsTabs);
   window.addEventListener("orientationchange", () => setTimeout(scheduleFitSettingsTabs, 250));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFitSettingsTabs);
@@ -15137,6 +15153,15 @@ document.getElementById("scaleValue").onclick = () => {
   applyTouchMode();
   setVolume(state.settings.volume);
   applyTheme();
+  // На старті 700 мс блокування transition зайві — змінні теми встановлюються
+  // миттєво і без них. Скорочуємо до 250 мс і на виході плавно вмикаємо
+  // напівпрозорість шапки (клас .hdr-glass) — саме тоді, коли blur уже готовий.
+  clearTimeout(window.__themeSwitchTimer);
+  setTimeout(() => {
+    const appEl = document.getElementById("app");
+    appEl.classList.remove("theme-switching");
+    requestAnimationFrame(() => appEl.classList.add("hdr-glass"));
+  }, 250);
   applyAppScale(getAppScaleCur());
   if (state.settings.autoThemeEnabled) {
     if (state.settings.autoThemeMode === "time") fetchWarsawSunTimes().then(applyAutoThemeIfNeeded);
