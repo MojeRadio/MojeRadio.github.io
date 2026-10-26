@@ -996,6 +996,15 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .manualChev { display: inline-block; vertical-align: middle; margin: 0 0 1px 7px; opacity: 0.7; transition: transform 0.2s ease; }
   #manualAddToggleBtn.open .manualChev { transform: rotate(180deg); opacity: 1; }
   #app #manualAddToggleBtn.open { opacity: 1; }
+  #langToggleBtn .langIcon { display: inline-block; vertical-align: middle; margin: 0 8px 1px 0; opacity: 0.8; }
+  /* Експорт/Імпорт: стрілочка справа (як біля ручного пошуку) і виділений фон, коли спойлер відкритий. */
+  #exportDetails[open] > summary { opacity: 1 !important; }
+  #exportDetails[open] .exportChev { transform: rotate(180deg); opacity: 1; }
+  .exportBody { padding: 2px 0 0; }
+  #exportDetails > summary { padding-left: 2px; }
+  #exportDetails[open] { background: rgba(128,128,128,0.14); border-radius: 10px; padding: 4px 10px 10px; }
+  #langToggleBtn.open .manualChev { transform: rotate(180deg); opacity: 1; }
+  #langFields { background: rgba(128,128,128,0.14); border-radius: 10px; padding: 6px 10px; margin-top: 6px; }
   #manualAddFields { background: rgba(128,128,128,0.14); border-radius: 10px; padding: 10px; margin-top: 6px; }
   .exportSummary { list-style: none; }
   .exportSummary::-webkit-details-marker { display: none; }
@@ -1725,7 +1734,7 @@ html.lc .tabs button {
   html.ios.pwa #app.list-mode:not(.neumorphic) > #stationsWrap { will-change: transform; }
 
   /* Рядки з іконкою зліва та тумблером справа (Потік, Сон-таймер). */
-  .switchRow { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; }
+  .switchRow { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; max-width: 390px; }
   .switchRow .swIcon { flex: 0 0 auto; opacity: 0.8; }
   .switchRow > label { flex: 1 1 auto; min-width: 0; cursor: pointer; }
   .switchRow .swBody { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -1765,6 +1774,12 @@ html.lc .tabs button {
   .tabs button.devNew { box-shadow: inset 0 3px 0 #e0973d; }
   #app #airplayBtn.castOn { color: var(--accent); }
   .switchRow label[for="powerSaveToggle"], .switchRow label[for="eqToggle"], .switchRow label[for="loudnessToggle"] { font-weight: 700; }
+  /* Відкритий спойлер виділяється разом із назвою опції: заголовок і вміст — один суцільний блок. */
+  #app #manualAddToggleBtn.open { width: 100%; box-sizing: border-box; padding: 6px 10px; background: rgba(128,128,128,0.14) !important; border-radius: 10px 10px 0 0 !important; }
+  #app.panel-side #manualAddToggleBtn.open { align-self: stretch; }
+  #manualAddFields { margin-top: -8px; border-radius: 0 0 10px 10px; padding-top: 4px; }
+  #langToggleBtn.open { background: rgba(128,128,128,0.14) !important; border-color: transparent !important; border-radius: 10px 10px 0 0 !important; box-shadow: none !important; }
+  #langFields { margin-top: 0; border-radius: 0 0 10px 10px; }
 </style>
 </head>
 <body>
@@ -1877,14 +1892,16 @@ html.lc .tabs button {
       <button type="button" class="primaryBtn" id="folderNewOk" style="padding:5px 12px;">OK</button>
     </div>
   <div id="stationList"></div>
-  <details style="margin-top:10px;">
-    <summary class="exportSummary" style="cursor:pointer; font-size:15px; opacity:0.85; padding:6px 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 6px 2px 2px;" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 14 12 11 15 14"/><line x1="12" y1="11" x2="12" y2="18"/></svg><span data-i18n="stationListExportSummary" style="vertical-align:middle;">Експорт/Імпорт станцій</span></summary>
-    <div style="display:flex; gap:8px; margin-top:6px;">
+  <details id="exportDetails" style="margin-top:6px; margin-bottom:6px;">
+    <summary class="exportSummary" style="cursor:pointer; font-size:15px; opacity:0.85; padding:4px 0;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin:0 6px 2px 2px;" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 14 12 11 15 14"/><line x1="12" y1="11" x2="12" y2="18"/></svg><span data-i18n="stationListExportSummary" style="vertical-align:middle;">Експорт/Імпорт станцій</span><svg class="manualChev exportChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary>
+    <div class="exportBody">
+    <div style="display:flex; gap:8px; margin-top:0;">
       <button class="ghostBtn" id="exportBtn" style="flex:1; padding:12px 4px; font-size:13.5px; margin-top:0; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span data-i18n="exportBtn">Експортувати станції</span></button>
       <button class="ghostBtn" id="importBtn" style="flex:1; padding:12px 4px; font-size:13.5px; margin-top:0; display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-i18n="importBtn">Імпортувати станції</span></button>
     </div>
     <div class="hint" id="lastExportHint" style="margin-top:6px;"></div>
     <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+    </div>
   </details>
 </div>
           <hr class="stationsDivider">
@@ -1986,7 +2003,7 @@ html.lc .tabs button {
           </div>
           <div class="settingBlock" style="text-align:center; background:rgba(128,128,128,0.12); border-radius:10px; padding:7px 12px; position:relative;">
             <button id="clearUsageBtn" style="position:absolute; top:8px; right:8px; background:none; border:none; color:var(--modaltext); opacity:0.6; cursor:pointer; padding:4px;" aria-label="скинути" data-i18n-aria="resetWord">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
             <div style="font-size:11px; opacity:0.7; text-transform:uppercase; letter-spacing:0.5px;" data-i18n="usedThisSession">Використано за сесію</div>
             <div id="extraInfoBlock" style="font-size:18px; font-weight:700; margin-top:0; line-height:1.2; text-align:center;">~0.0 MB</div>
@@ -1995,15 +2012,6 @@ html.lc .tabs button {
         </div>
 
         <div id="tabSettings" class="tabPane">
-          <div class="settingBlock">
-            <span class="title" data-i18n="langTitle">Мова</span>
-            <div class="langRow">
-              <button data-lang="pl" class="flag-pl">Polski</button>
-              <button data-lang="uk" class="flag-uk">Українська</button>
-              <button data-lang="en" class="active flag-en">English</button>
-            </div>
-          </div>
-
           <div class="settingBlock" id="installBlock" style="display:none;">
             <button type="button" class="primaryBtn" id="installBigBtn" style="display:flex; align-items:center; justify-content:center; gap:10px; padding:15px 12px; font-size:15.5px; font-weight:600; margin-top:0;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg><span data-i18n="installBanner">Встановити застосунок</span></button>
           </div>
@@ -2058,13 +2066,24 @@ html.lc .tabs button {
           </div>
 
           <div class="settingBlock">
+            <button type="button" class="ghostBtn" id="langToggleBtn" aria-expanded="false" style="margin-top:0;"><svg class="langIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="langTitle">Мова (Language)</span><svg class="manualChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div id="langFields" style="display:none;">
+              <div class="langRow">
+                <button data-lang="pl" class="flag-pl">Polski</button>
+                <button data-lang="uk" class="flag-uk">Українська</button>
+                <button data-lang="en" class="active flag-en">English</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settingBlock">
             <button class="ghostBtn" id="resetDefaultsBtn" style="padding:12px; font-size:15px; display:flex; align-items:center; justify-content:center; gap:8px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg><span data-i18n="resetDefaultsLabel">Скинути до заводських налаштувань</span></button>
             <div class="hint" id="cacheSizeHint"></div>
           </div>
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.40</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.41</div>
           <div class="authorLine">ATsuAnd (c) 2026</div>
         </div>
 
@@ -2129,8 +2148,7 @@ html.lc .tabs button {
           </div>
 
           <div class="settingBlock">
-            <span class="title" data-i18n="devTitle">Розробнику</span>
-            <div class="checkLine"><input type="checkbox" id="devMode"><label for="devMode" data-i18n="devModeLabel">Режим розробника</label></div>
+            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><label for="devMode" data-i18n="devModeLabel">Режим розробника</label><input type="checkbox" id="devMode" class="switch"></div>
             <div id="devExtra" style="display:none;">
               <div class="checkLine"><input type="checkbox" id="forceLandscapeToggle"><label for="forceLandscapeToggle" data-i18n="devForceLandscapeLabel">Примусовий горизонтальний вид</label></div>
               <div class="checkLine"><input type="checkbox" id="forcePortraitToggle"><label for="forcePortraitToggle" data-i18n="devForcePortraitLabel">Примусовий вертикальний вид</label></div>
@@ -2333,7 +2351,7 @@ const I18N = {
   uk: { appName:"моє радіо", installBanner:"Встановити застосунок", installIosTitle:"Встановлення на iPhone / iPad", installIosText:"1. Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у браузері.\\n2. Оберіть «Додати на головний екран».\\n3. Натисніть «Додати».", installOk:"Зрозуміло", stationFilterPh:"Пошук серед моїх станцій", stationFilterEmpty:"Нічого не знайдено", versionChecking:"Перевіряю оновлення…", versionLatest:"У вас остання актуальна версія", versionCheckFail:"Не вдалося перевірити оновлення", versionNewBtn:"Доступна нова версія {v} — натисни, щоб оновити", pipWord:"Міні-плеєр поверх вікон",copyTip:"Копіювати",pipHintToast:"Порада: кнопка в шапці відкриває міні-плеєр поверх вікон — музика завжди під рукою", colorAutoBtn:"Авто з іконки", colorAutoFailToast:"Не вдалось визначити колір з іконки", chooseStation:"Оберіть станцію знизу", buffering:"Буферизація...", playPrompt:"Натисни play, щоб продовжити", noUrl:"Немає посилання — додай його в меню", copied:"Скопійовано", copiedSongName:"Скопійовано назву пісні", linkCopiedToast:"Посилання скопійовано", stopped:"Оберіть станцію знизу", cantPlay:"Не вдалось відтворити потік", streamUrlPlaceholder:"Посилання на потік", stationIconAlt:"іконка станції", resetAllConfirmText:"Точно скинути все?", resetStatsConfirmText:"Точно скинути статистику?", historyExportedToast:"Історію експортовано", resetDoneToast:"Скинуто до заводських налаштувань — перезавантаження...", versionLabel:"Версія", bitrateLabel:"Бітрейт", kbUnit:"КБ", syncStatusOk:"успішно ", syncStatusFail:"помилка ", syncLoadFailToast:"Не вдалось завантажити файл — навіть через резервні проксі. Пробую далі у фоні.", syncNoStationsToast:"Файл завантажено, але станцій не знайдено — перевір формат", syncUpdatedToast:"Список станцій оновлено", syncParseErrorToast:"Помилка обробки файлу", addedStationsSummary:"Збережені станції", otherParamsSummary:"Інші параметри у файлі", cancelWord:"Скасувати", iconChangedToast:"Іконку змінено", clearHistoryConfirm:"Очистити всю історію пісень?", clearFavoritesConfirm:"Очистити всі улюблені пісні?", favoritesCleared:"Улюблені очищено", deleteStationConfirm:"Видалити станцію «{name}»?", messageUnderTitleLabel:"Текст під назвою пісні", manualTrackTitleLabel:"Ручна назва треку", stopWordsLabel:"Стоп-слова в назві пісні", manualWord:"вручну", stopWordsPlaceholder:"реклама, autopromocja, ...", backupSearchLabel:"Резервний пошук", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Оберіть іконку для станції:", copyFailedToast:"Не вдалось скопіювати", historyCleared:"Історію очищено", statsResetToast:"Статистику прослуховування скинуто", connOffline:"Немає з'єднання з інтернетом", connRetrying:"Зв'язок зі станцією втрачено · спроба {n}/{max}", connSlow:"Станція не відповідає · спроба {n}/{max}", connFailed:"Не вдалося відновити потік — натисніть ⟳, щоб спробувати знову", streamLostRetrying:"Втрата потоку — спроба відновлення ", offlineToast:"Немає мережі — відновлю потік, щойно зʼявиться звʼязок", onlineToast:"Мережу відновлено — підключаюсь знову", devErrLogTitle:"Збережені помилки", recoverFailedToast:"Не вдалось відновити потік", storageFullToast:"Не вдається зберегти налаштування — сховище браузера переповнене", sleepTimerStoppedToast:"Сон-таймер: зупинено", openSystemSoundSettingsToast:"Відкрийте системні налаштування звуку вручну", deletedToast:"Видалено", enterNameUrlToast:"Введіть назву та посилання", simDropSentToast:"Симуляція обриву відправлена", stationsFileLoadedToast:"Файл станцій завантажено", noStationsInFileToast:"У файлі не знайдено станцій", addedToast:"Додано: ", cantReadFileToast:"Не вдалось прочитати файл — перевір формат", searchingIconToast:"Шукаю іконку...", iconUploadedToast:"Іконку завантажено", iconRemovedToast:"Іконку видалено", noSuccessfulSyncToast:"Ще немає жодної успішної синхронізації для відновлення", stationNotInSyncToast:"Станцію не знайдено в останній синхронізації", restoredFromSyncToast:"Відновлено з останньої успішної синхронізації", noSourceToast:"Немає джерела для визначення", titleNotFoundToast:"Не вдалось знайти назву пісні", savedToast:"Збережено: ", sessionUsageResetToast:"Використання за сесію скинуто", updatingToast:"Оновлення...", updatedWord:"оновлено", stationExistsToast:"Така станція вже є у списку", chooseThemeTitle:"Оберіть тему кольору", confirmWord:"Готово", exportHistoryQ:"Що експортувати?", exportFavOnlyOpt:"Тільки улюблені (зі зірочкою)", exportAllOpt:"Усю історію", searchingSongTitleToast:"Шукаю назву пісні...", messagePlaceholder:"текст повідомлення", manualTrackPlaceholder:"назва треку вручну", lastSuccessLabel:"востаннє вдало", iconNotFoundToast:"Не вдалось знайти іконку", iconWord:"Іконка", chooseOptionToast:"Оберіть варіант", iconUrlPromptLabel:"Адреса іконки:", iconFetchShort:"знайти", iconUrlApply:"Вставити адресу іконки", httpsFirstLabel:"Спершу пробувати http → https напряму замість проксі", prevNextLabel:"Показувати кнопки перемикання станції", refreshWord:"оновити", menuWord:"меню", shareWord:"поділитись", muteWord:"звук", prevStationWord:"попередня станція", playWord:"грати", nextStationWord:"наступна станція", stopWord:"стоп", resetWord:"скинути", prevPageWord:"Попередня сторінка", nextPageWord:"Наступна сторінка", uploadWord:"Завантажити", removeWord:"Видалити", tooltipReload:"Перезапустити потік", tooltipMenu:"Меню: станції та налаштування", tooltipStop:"Зупинити і скинути", tooltipPrevStation:"Попередня станція", tooltipNextStation:"Наступна станція", tooltipShare:"Поділитись станцією", tooltipMute:"Увімкнути / вимкнути звук", iconManualSearchPlaceholder:"або впишіть назву станції вручну",
     tabOptions:"Опції", sortDefault:"Довільний порядок", sortAsc:"За алфавітом (А-Я)", sortDesc:"За алфавітом (Я-А)", tabStations:"Станції", tabSync:"Синхр.", tabSyncLong:"Синхронізація", tabStats:"Статистика", tabStatsShort:"Статист.", tabAdvanced:"Ще", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Трансляція на «{name}»", castEndedToast:"Трансляцію завершено", castFailToast:"Chromecast не зміг відтворити цей потік", newIconLabel:"Іконка (необов'язково)", desktopStationHint:"Права кнопка миші по станції — редагування; перетягніть станцію, щоб змінити порядок.", autoSwitchTitle:"Автоперемикання станції", autoSwitchLabel:"Перемикатись на іншу станцію в разі помилки", autoSwitchToast:"Станція не відповідає — перемикаю на «{name}»", autoSwitchBackToast:"Станція «{name}» знову працює — повертаюсь", foldersTitle:"Папки станцій", foldersLabel:"Групувати станції в папки", newFolderBtn:"Нова папка", folderNamePh:"Назва папки", folderDefaultName:"Папка", noFolderWord:"Без папки", folderFieldLabel:"Папка", renameFolderTip:"Перейменувати папку", deleteFolderTip:"Видалити папку (станції лишаться)", folderDragTip:"Перетягніть станцію на папку", scaleTitle:"Масштаб інтерфейсу", scaleHint:"Розмір кнопок і шрифтів на головному екрані", stationListExportSummary:"Експорт/Імпорт станцій", search:"Шукати", longPressHint:"Довге утримання станції — перетягніть, щоб змінити порядок.", longPressHintReorder:"Довге утримання станції — редагування (перетягування вимкнено).", gridLongPressEditLabel:"Довге утримування для редагування станції",
     syncEnableLabel:"Зв'язок додатку з сервером", syncFileDesc:"Посилання на файл, звідки береться список станцій і налаштування нижче, з сервера.", notSynced:"ще не синхронізовано",
-    langTitle:"Мова", themeTitle:"Тема", centerElementTitle:"Елемент по центру", vizShowLabel:"Аудіовізуалізатор", vizLogoLabel:"Показувати лого", pulseShowLabel:"Пульсуючий круг", logoShowLabel:"Лого станції", streamTitle:"Потік",
+    langTitle:"Мова (Language)", themeTitle:"Тема", centerElementTitle:"Елемент по центру", vizShowLabel:"Аудіовізуалізатор", vizLogoLabel:"Показувати лого", pulseShowLabel:"Пульсуючий круг", logoShowLabel:"Лого станції", streamTitle:"Потік",
     wakeLockLabel:"Не вимикати екран під час гри", orientationTitle:"Орієнтація", landscapeLabel:"Компактний горизонтальний вигляд", landscapeLabelTouch:"Ввімкнути автоповорот екрану", devForceLandscapeLabel:"Примусовий горизонтальний вид", devForcePortraitLabel:"Примусовий вертикальний вид", forceTouchModeLabel:"Бокова панель налаштувань", forceDesktopModeLabel:"Компактне вікно налаштувань", swipeLabel:"Перемикати станції свайпом",
     timerTitle:"Сон-таймер", sleepLabel:"Сон-таймер",
     visualsTitle:"Візуалізація та вигляд", devTitle:"Розробнику", devLogsTitle:"Останні логи", devLogsCopy:"Копіювати", devLogsClear:"Очистити", devLogsEmpty:"Поки що порожньо", devLogsCopied:"Логи скопійовано", devModeLabel:"Режим розробника", devModeOnToast:"Режим розробника увімкнено", devModeOffToast:"Режим розробника вимкнено", visitorCounterLabel:"Рахувати відвідування (лічильник)", visitorLegacyCounterLabel:"Використовувати старий лічильник (countapi)", realVizLabel:"Вимкнути псевдо-візуалізатор", blackWhiteLabel:"Кольорові кнопки станцій", devToastsLabel:"Показувати спливаючі логи подій", hideCapsLabel:"Вимкнути додаткові ефекти візуалізатора", showVolIOSLabel:"Показувати слайдер гучності на iOS", forceProxyLabel:"Завжди через CORS-проксі", altStationStyleLabel:"Заокруглені кнопки станцій", powerSaveLabel:"Енергозбереження", simDropLabel:"Симулювати обрив потоку", autoThemeLabel:"Автоматична зміна теми ☀️/🌙", autoThemeDevice:"За темою пристрою", autoThemeTime:"За часом доби (схід/захід сонця, Варшава)", statsSpoiler:"Статистика прослуховування", resetStatsLabel:"Скинути статистику", session:"Сесія", totalAllStations:"Загалом годин", showMoreStats:"Показати ще {n}", newVersionAvailable:"Доступна нова версія додатку", updateNowBtn:"Оновити", updateHideBtn:"Приховати", reserveSearchHint:"Якщо станцію не вдалось знайти автоматично: перейди на {site}, знайди потрібну хвилю і скопіюй її назву та посилання у поля нижче.", findStationOn:"Знайти станцію на: {site} ↗",
@@ -2350,7 +2368,7 @@ const I18N = {
   pl: { appName:"moje radio", installBanner:"Zainstaluj aplikację", installIosTitle:"Instalacja na iPhonie / iPadzie", installIosText:"1. Naciśnij przycisk „Udostępnij” (kwadrat ze strzałką w górę) w przeglądarce.\\n2. Wybierz „Dodaj do ekranu początkowego”.\\n3. Naciśnij „Dodaj”.", installOk:"Rozumiem", stationFilterPh:"Szukaj wśród moich stacji", stationFilterEmpty:"Nic nie znaleziono", versionChecking:"Sprawdzam aktualizacje…", versionLatest:"Masz najnowszą wersję", versionCheckFail:"Nie udało się sprawdzić aktualizacji", versionNewBtn:"Dostępna nowa wersja {v} — naciśnij, aby zaktualizować", pipWord:"Mini odtwarzacz nad oknami",copyTip:"Kopiuj",pipHintToast:"Wskazówka: przycisk w nagłówku otwiera mini odtwarzacz nad oknami — muzyka zawsze pod ręką", colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", copiedSongName:"Skopiowano nazwę utworu", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry w pliku", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", stationsFileLoadedToast:"Plik stacji wczytany", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", exportHistoryQ:"Co wyeksportować?", exportFavOnlyOpt:"Tylko ulubione (z gwiazdką)", exportAllOpt:"Całą historię", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw próbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
     tabOptions:"Opcje", sortDefault:"Dowolna kolejność", sortAsc:"Alfabetycznie (A-Z)", sortDesc:"Alfabetycznie (Z-A)", tabStations:"Stacje", tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statyst.", tabAdvanced:"Więcej", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Transmisja na «{name}»", castEndedToast:"Transmisja zakończona", castFailToast:"Chromecast nie może odtworzyć tego strumienia", newIconLabel:"Ikona (opcjonalnie)", desktopStationHint:"Prawy przycisk myszy na stacji — edycja; przeciągnij stację, aby zmienić kolejność.", autoSwitchTitle:"Automatyczna zmiana stacji", autoSwitchLabel:"Przełączaj na inną stację w razie błędu", autoSwitchToast:"Stacja nie odpowiada — przełączam na «{name}»", autoSwitchBackToast:"Stacja «{name}» znów działa — wracam", foldersTitle:"Foldery stacji", foldersLabel:"Grupuj stacje w foldery", newFolderBtn:"Nowy folder", folderNamePh:"Nazwa folderu", folderDefaultName:"Folder", noFolderWord:"Bez folderu", folderFieldLabel:"Folder", renameFolderTip:"Zmień nazwę folderu", deleteFolderTip:"Usuń folder (stacje zostają)", folderDragTip:"Przeciągnij stację na folder", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", longPressHintReorder:"Długie przytrzymanie stacji — edycja (przeciąganie wyłączone).", gridLongPressEditLabel:"Długie przytrzymanie do edycji stacji",
     syncEnableLabel:"Powiązanie aplikacji z serwerem", syncFileDesc:"Link do pliku, z którego pobierane są stacje i poniższe ustawienia z serwera.", notSynced:"jeszcze nie zsynchronizowano",
-    langTitle:"Język", themeTitle:"Motyw", centerElementTitle:"Element na środku", vizShowLabel:"Wizualizator audio", vizLogoLabel:"Pokazuj logo", pulseShowLabel:"Pulsujące koło", logoShowLabel:"Logo stacji", streamTitle:"Strumień",
+    langTitle:"Język (Language)", themeTitle:"Motyw", centerElementTitle:"Element na środku", vizShowLabel:"Wizualizator audio", vizLogoLabel:"Pokazuj logo", pulseShowLabel:"Pulsujące koło", logoShowLabel:"Logo stacji", streamTitle:"Strumień",
     wakeLockLabel:"Nie wygaszaj ekranu podczas odtwarzania", orientationTitle:"Orientacja", landscapeLabel:"Kompaktowy widok poziomy", landscapeLabelTouch:"Włącz autoobrót ekranu", devForceLandscapeLabel:"Wymuszony widok poziomy", devForcePortraitLabel:"Wymuszony widok pionowy", forceTouchModeLabel:"Boczny panel ustawień", forceDesktopModeLabel:"Kompaktowe okno ustawień", swipeLabel:"Zmiana stacji przesunięciem",
     timerTitle:"Wyłącznik czasowy", sleepLabel:"Wyłącznik czasowy",
     visualsTitle:"Wizualizacja i wygląd", devTitle:"Dla programisty", devLogsTitle:"Ostatnie logi", devLogsCopy:"Kopiuj", devLogsClear:"Wyczyść", devLogsEmpty:"Na razie pusto", devLogsCopied:"Skopiowano logi", devModeLabel:"Tryb dewelopera", devModeOnToast:"Tryb dewelopera włączony", devModeOffToast:"Tryb dewelopera wyłączony", visitorCounterLabel:"Liczyć odwiedziny (licznik)", visitorLegacyCounterLabel:"Używać stary licznik (countapi)", realVizLabel:"Wyłącz pseudo-wizualizator", blackWhiteLabel:"Kolorowe przyciski stacji", devToastsLabel:"Pokazuj wyskakujące logi zdarzeń", hideCapsLabel:"Wyłącz dodatkowe efekty wizualizatora", showVolIOSLabel:"Pokazuj suwak głośności na iOS", forceProxyLabel:"Zawsze przez proxy CORS", altStationStyleLabel:"Zaokrąglone przyciski stacji", powerSaveLabel:"Oszczędzanie energii", simDropLabel:"Symuluj zerwanie strumienia", autoThemeLabel:"Automatyczna zmiana motywu ☀️/🌙", autoThemeDevice:"Wg motywu urządzenia", autoThemeTime:"Wg pory dnia (Warszawa)", statsSpoiler:"Statystyki odsłuchu", resetStatsLabel:"Zresetuj statystyki", session:"Sesja", totalAllStations:"Razem wszystkie stacje", showMoreStats:"Pokaż jeszcze {n}", newVersionAvailable:"Dostępna nowa wersja aplikacji", updateNowBtn:"Aktualizuj", updateHideBtn:"Ukryj", reserveSearchHint:"Jeśli stacji nie udało się znaleźć automatycznie: przejdź na {site}, znajdź stację i wklej jej nazwę oraz link poniżej.", findStationOn:"Znajdź stację na: {site} ↗",
@@ -2649,7 +2667,7 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.40";
+const APP_VERSION = "3.41";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -3155,6 +3173,9 @@ function isAppleMediaPlatform() {
   return /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) || (/Safari/.test(ua) && !/Chrome|Chromium|Android|CriOS|FxiOS|Edg/.test(ua));
 }
 let recoverTimer = null;
+let lastDropSignalAt = 0;     // коли востаннє були ознаки обриву потоку (waiting/stalled/error/ended/offline)
+let lastInternalPauseAt = 0;  // коли сам застосунок ставив елемент на паузу (перезапуск потоку)
+let lastStuckKickAt = 0;     // страховка heartbeat: коли востаннє запускала відновлення
 let recoverTimerToken = 0;
 // ---- Надійність відтворення (2.03) ----
 const RECOVER_FAST_ATTEMPTS = 5;
@@ -6760,6 +6781,7 @@ async function startPlaybackAttempt(url, isRetry) {
   stopStationGainSetup();
   const prevIntentional = intentionalDisconnect;
   intentionalDisconnect = true;
+  lastInternalPauseAt = Date.now();
   try { audioEl.pause(); } catch (e) {}
   try { audioEl.removeAttribute("src"); audioEl.load(); } catch (e) {}
   intentionalDisconnect = prevIntentional;
@@ -7098,6 +7120,23 @@ function heartbeatTick() {
     return;
   }
   stableSince = 0;
+  // Страховка від зависання без плану: слухач хоче звук, його вже >10с нема, а жодної спроби відновлення не заплановано
+  // (браузер сам поставив елемент на паузу, або подія обриву не дійшла). Це покриває й тунель, де navigator.onLine лишається true.
+  if (state.settings.autoRecover && !intentionalDisconnect && !isPlaybackError && hasPlayedOnceForCurrent &&
+      (audioState === AUDIO_STATE.PLAYING || audioState === AUDIO_STATE.CONNECTING || audioState === AUDIO_STATE.RECOVERING) &&
+      !recoverTimer && !connectTimeoutTimer && !stallRecoveryTimer &&
+      now - lastProgressAt > 10000 && now - lastStuckKickAt > 20000) {
+    const kickUrl = isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
+    if (kickUrl) {
+      lastStuckKickAt = now;
+      lastProgressAt = now;
+      if (waitForNetwork()) return;
+      errLogPush("WATCHDOG: звук не йде >10с без запланованого відновлення (стан " + audioState + ", paused " + audioEl.paused + ") — відновлюю");
+      setAudioState(AUDIO_STATE.RECOVERING);
+      scheduleAutoRecover(currentStationToken, kickUrl);
+      return;
+    }
+  }
   const watch = !audioEl.paused && !intentionalDisconnect && !isPlaybackError && hasPlayedOnceForCurrent &&
     (audioState === AUDIO_STATE.PLAYING || audioState === AUDIO_STATE.CONNECTING);
   const wdUrl = isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
@@ -7312,6 +7351,7 @@ let suppressPauseVizHide = false;
 
 function onAudioWaiting() {
   if (castActive) return;
+  lastDropSignalAt = Date.now();
   if (isPlaybackError) return;
   if (audioState !== AUDIO_STATE.PLAYING) return;
   setAudioState(AUDIO_STATE.CONNECTING);
@@ -7346,6 +7386,7 @@ function onAudioPlaying() {
 
 function onAudioEnded() {
   if (castActive) return;
+  lastDropSignalAt = Date.now();
   // Живий потік не має "закінчуватись" — якщо це сталось, сервер закрив з'єднання.
   if (isPlaybackError) return;
   if (!isPlaying && audioState === AUDIO_STATE.IDLE) return;
@@ -7363,6 +7404,7 @@ function onAudioEnded() {
 
 window.addEventListener("offline", () => {
   wentOfflineDuringSession = true;
+  lastDropSignalAt = Date.now();
   devLog("Мережа зникла (offline)");
   errLogPush("NETWORK: offline");
   updateConnStatus();
@@ -7394,6 +7436,19 @@ function onAudioPause() {
   accumulatePlayTime();
   if (!suppressPauseVizHide) stopFakeVisualizer();
   if (audioState === AUDIO_STATE.PLAYING) {
+    // Браузер/Android сам ставить <audio> на паузу, коли живий потік обірвався (тунель, слабка мережа). Якщо
+    // є ознаки обриву — це розрив: лишаємось у "відновленні", а не вважаємо це паузою користувача.
+    const rs = audioEl.readyState, ended = audioEl.ended, hadErr = !!audioEl.error;
+    const dropLike = isPlaying && !intentionalDisconnect && !isPlaybackError && state.settings.autoRecover &&
+      Date.now() - lastInternalPauseAt > 1500 &&
+      (ended || hadErr || rs < 3 || navigator.onLine === false || Date.now() - lastDropSignalAt < 20000);
+    const dropUrl = isSearchPlayback ? searchPlaybackUrl : (activeIndex !== -1 ? state.stations[activeIndex].url : null);
+    if (dropLike && dropUrl) {
+      errLogPush("DROP: пауза без участі користувача (readyState " + rs + ", ended " + ended + ", error " + hadErr + ") — відновлюю");
+      setAudioState(AUDIO_STATE.RECOVERING);
+      scheduleAutoRecover(currentStationToken, dropUrl);
+      return;
+    }
     setAudioState(AUDIO_STATE.PAUSED);
   }
   // Коли пауза сталась не через doUserPause (сон-таймер, стоп) — теж
@@ -7428,6 +7483,7 @@ function scheduleStallRecoveryCheck() {
 
 function onAudioStalled() {
   if (castActive) return;
+  lastDropSignalAt = Date.now();
   // Нативний HLS шле "stalled" кожні ~10с між сегментами, хоча буфер повний і звук іде —
   // це не проблема. Реагуємо лише коли даних реально не вистачає.
   if (!audioEl.paused && audioEl.readyState >= 3) return;
@@ -7439,6 +7495,7 @@ function onAudioStalled() {
 
 function onAudioError(e) {
   if (castActive) return;
+  lastDropSignalAt = Date.now();
   devLog("Помилка аудіо-елемента");
   if (isPlaybackError || intentionalDisconnect) return;
   const silentHlsFirst = state.settings.autoRecover && !hasPlayedOnceForCurrent && hlsQuickRetries < HLS_QUICK_RETRIES && isHlsUrl(currentStreamOriginalUrl || "");
@@ -10920,6 +10977,8 @@ function showCloseHint(bgEl) {
     btn = appEl.classList.contains("panel-side")
       ? document.querySelector("#topbarLeft > button:first-child")
       : document.getElementById("modalCloseX");
+  } else if (bgEl.id === "editBg") {
+    btn = document.getElementById("editCloseX");
   }
   if (!btn) return;
   activeCloseHintEl = btn;
@@ -11833,12 +11892,22 @@ function renderThemeRow() {
   }
 }
 
+function setLangSpoilerOpen(open) {
+  document.getElementById("langFields").style.display = open ? "" : "none";
+  const b = document.getElementById("langToggleBtn");
+  b.classList.toggle("open", open);
+  b.setAttribute("aria-expanded", open ? "true" : "false");
+}
+document.getElementById("langToggleBtn").onclick = () => {
+  setLangSpoilerOpen(document.getElementById("langFields").style.display === "none");
+};
 document.querySelectorAll("#tabSettings .langRow button").forEach(btn => {
   btn.onclick = () => {
     state.settings.language = btn.dataset.lang; saveState(); applyLanguage();
     refreshLanguageDependentUI();
     updateModalTabTitle();
     fillSettingsUI();
+    setLangSpoilerOpen(false);
   };
 });
 let starterLangHandled = false;
@@ -13021,10 +13090,14 @@ function openEditModal(i, fromSettings) {
   });
   editBg.querySelector(".modalScroll").scrollTop = 0;
 }
-function closeEditFn() { editBg.classList.remove("open"); }
+function closeEditFn() { clearCloseHint(); editBg.classList.remove("open"); }
 document.getElementById("editBackBtn").onclick = () => { closeEditFn(); openModal(); switchTab("stations"); };
 document.getElementById("editCloseX").onclick = closeEditFn;
-editBg.addEventListener("click", (e) => { if (!isTouchDevice) return; if (e.target === editBg) closeEditFn(); });
+editBg.addEventListener("click", (e) => {
+  if (e.target !== editBg) return;
+  if (isTouchDevice) closeEditFn();
+  else showCloseHint(editBg);
+});
 document.querySelectorAll('input[name="editTrackMode"]').forEach(r => r.onchange = () => {
   const s = state.stations[editingIndex];
   const isIcy = document.getElementById("etIcy").checked;
@@ -14557,7 +14630,7 @@ document.getElementById("clearUsageBtn").onclick = () => {
   if (!clearUsageConfirming) {
     clearUsageConfirming = true;
     document.getElementById("clearUsageBtn").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    setTimeout(() => { clearUsageConfirming = false; document.getElementById("clearUsageBtn").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>'; }, 3000);
+    setTimeout(() => { clearUsageConfirming = false; document.getElementById("clearUsageBtn").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'; }, 3000);
     return;
   }
   clearUsageConfirming = false;
@@ -14566,7 +14639,7 @@ document.getElementById("clearUsageBtn").onclick = () => {
     pollDataUsage();
     showToast(t("sessionUsageResetToast"));
   }
-  document.getElementById("clearUsageBtn").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+  document.getElementById("clearUsageBtn").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
 };
 
 function compareVersions(a, b) {
@@ -14882,11 +14955,12 @@ document.getElementById("scaleValue").onclick = () => {
   attachTooltip("prevBtn", "tooltipPrevStation");
   attachTooltip("nextBtn", "tooltipNextStation");
   attachTooltip("pipBtn", "pipWord");
-  // Кнопка #airplayBtn спільна: Safari/iOS — AirPlay, Chrome/Edge — Google Cast. З'являється лише коли поруч є пристрої.
+  // Кнопка #airplayBtn спільна: Safari на Mac — AirPlay, Chrome/Edge — Google Cast. З'являється лише коли поруч є пристрої.
+  // На iPhone/iPad її немає: там AirPlay вже є в системній шторці, а iOS завжди повідомляє «доступно» (навіть без інших пристроїв).
   try {
     const apBtn = document.getElementById("airplayBtn");
     if (apBtn) {
-      if (typeof audioEl.webkitShowPlaybackTargetPicker === "function") {
+      if (!isIOSDevice && typeof audioEl.webkitShowPlaybackTargetPicker === "function") {
         audioEl.setAttribute("x-webkit-airplay", "allow");
         audioEl.addEventListener("webkitplaybacktargetavailabilitychanged", (e) => {
           airplayAvail = (e.availability === "available");
