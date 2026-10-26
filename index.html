@@ -1735,6 +1735,9 @@ html.lc .tabs button {
   html.ios.pwa #app.list-mode:not(.neumorphic) > #headerBand {
     top: 0; padding-top: var(--statusZoneH) !important; min-height: calc(58px + var(--statusZoneH)) !important;
   }
+  html.ios #app.list-mode:not(.neumorphic) > #headerBand {
+    transition: background 0.28s ease;
+}
   html.ios.pwa #app.landscape.list-mode:not(.neumorphic) > #headerBand {
     min-height: calc(calc(27.5px * var(--app-scale, 1)) + var(--statusZoneH)) !important;
   }
@@ -10646,6 +10649,8 @@ function stopSearchButtonsInterval() {
   if (searchButtonsIntervalTimer) { clearInterval(searchButtonsIntervalTimer); searchButtonsIntervalTimer = null; }
 }
 function openModal() {
+ clearTimeout(drawerHdrTimer);
+  drawerHdrTimer = null;
   drawerPanelW = 0; // перерахувати ширину панелі та центрування кнопки-хрестика
   // Якщо попередній жест обірвався й лишив на панелі inline-transform —
   // прибираємо його, щоб панель керувалась виключно CSS-класом .open
@@ -11076,6 +11081,7 @@ function getDrawerShiftEls() {
   return DRAWER_SHIFT_IDS.concat(["sleepMainWarning"]).map(id => document.getElementById(id)).filter(Boolean);
 }
 let drawerPanelW = 0;
+let drawerHdrTimer = null;
 function applyMainShift(px) {
   window.__mainShiftPx = px;
   if (!drawerPanelW) {
@@ -11146,7 +11152,15 @@ function closeModalFn() {
   const appEl = document.getElementById("app");
   appEl.classList.remove("drawer-dragging");
   appEl.classList.remove("drawer-open");
-  appEl.classList.remove("drawer-active");
+  // Тримаємо drawer-active, поки панель доїжджає (0.28с) і поки iOS WebKit
+  // встигне повернути backdrop-filter шапки, який він скидає під час
+  // transform-анімацій. Інакше фон стає прозорим раніше, ніж з'являється blur
+  // ("спочатку прозорість, а з запізненням розмиття").
+  clearTimeout(drawerHdrTimer);
+  drawerHdrTimer = setTimeout(() => {
+    drawerHdrTimer = null;
+    appEl.classList.remove("drawer-active");
+  }, 320);
   const panelEl = document.querySelector("#modalBg .modal");
   if (panelEl) panelEl.style.setProperty("--panel-brightness", "0.4");
   setTimeout(() => { try { updateStationTitleSides(); } catch (e) {} }, 380);
