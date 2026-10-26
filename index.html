@@ -11146,6 +11146,7 @@ function closeModalFn() {
   const appEl = document.getElementById("app");
   appEl.classList.remove("drawer-dragging");
   appEl.classList.remove("drawer-open");
+  appEl.classList.remove("drawer-active");
   const panelEl = document.querySelector("#modalBg .modal");
   if (panelEl) panelEl.style.setProperty("--panel-brightness", "0.4");
   setTimeout(() => { try { updateStationTitleSides(); } catch (e) {} }, 380);
