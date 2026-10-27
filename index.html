@@ -1297,14 +1297,22 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .mouse-only { display: none; }
   .no-touch .mouse-only { display: flex; }
 
-  #sleepMinutes, #eqPresetSelect, #sunCitySelect { flex: none; box-sizing: border-box; width: 6.6em; max-width: 100%; padding: 6px 24px 6px 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); font-size: 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 10px 6px; }
-  #sleepMinutes option, #eqPresetSelect option, #sunCitySelect option { background-color: var(--modalbg); color: var(--modaltext); }
+  #sleepMinutes, #eqPresetSelect, #sunCityBtn { flex: none; box-sizing: border-box; width: 6.6em; max-width: 100%; padding: 6px 24px 6px 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); font-size: 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 10px 6px; }
+  #sleepMinutes option, #eqPresetSelect option, #sunCityBtn option { background-color: var(--modalbg); color: var(--modaltext); }
   #sleepCustomInput { padding: 6px 4px; text-align: center; -moz-appearance: textfield; appearance: textfield; }
   #sleepCustomInput::-webkit-inner-spin-button, #sleepCustomInput::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   html.lc #sleepCustomInput { padding: 4px; }
-  html.lc #sleepMinutes, html.lc #eqPresetSelect, html.lc #sunCitySelect { padding: 4px 22px 4px 6px; font-size: 12px; }
+  html.lc #sleepMinutes, html.lc #eqPresetSelect, html.lc #sunCityBtn { padding: 4px 22px 4px 6px; font-size: 12px; }
   #eqPresetSelect { width: auto; min-width: 7em; }
-  #sunCitySelect { width: 190px; max-width: 190px; text-overflow: ellipsis; }
+  #sunCityBtn { width: 190px; max-width: 190px; display: flex; align-items: center; gap: 6px; text-align: left; cursor: pointer; font-family: inherit; white-space: nowrap; overflow: hidden; }
+  #sunCityBtn .scTxt, #sunCityList .scTxt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #sunCityBox { flex: none; }
+  .scIco { flex: none; width: 14px; height: 14px; }
+  #sunCityList { position: fixed; z-index: 3000; box-sizing: border-box; width: 240px; max-width: calc(100vw - 16px); max-height: 280px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px; border-radius: 10px; border: 1px solid rgba(128,128,128,0.35); background-color: var(--modalbg); color: var(--modaltext); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+  #sunCityList[hidden] { display: none; }
+  #sunCityList .scItem { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 14px; }
+  #sunCityList .scItem:hover { background: rgba(128,128,128,0.18); }
+  #sunCityList .scItem.sel { background: rgba(128,128,128,0.28); font-weight: 600; }
 
   #eqControls { display: none; margin-top: 8px; padding: 8px 4px; background: rgba(128,128,128,0.08); border-radius: 10px; }
   #eqControls.visible { display: block; }
@@ -1803,7 +1811,7 @@ html.lc .tabs button {
   /* Кнопка-вкладка (Sync): оранжева смужка зверху, щоб не чіпати роздільники вкладок. */
   .tabs button.devNew { box-shadow: inset 0 3px 0 #e0973d; }
   #app #airplayBtn.castOn { color: var(--accent); }
-  .switchRow label[for="powerSaveToggle"], .switchRow label[for="eqToggle"], .switchRow label[for="loudnessToggle"], .switchRow label[for="sunCitySelect"] { font-weight: 700; }
+  .switchRow label[for="powerSaveToggle"], .switchRow label[for="eqToggle"], .switchRow label[for="loudnessToggle"], .switchRow label[for="sunCityBtn"] { font-weight: 700; }
   /* Відкритий спойлер виділяється разом із назвою опції: заголовок і вміст — один суцільний блок. */
   #app #manualAddToggleBtn.open { width: 100%; box-sizing: border-box; padding: 6px 10px; background: rgba(128,128,128,0.14) !important; border-radius: 10px 10px 0 0 !important; }
   #app.panel-side #manualAddToggleBtn.open { align-self: stretch; }
@@ -2170,8 +2178,8 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.47</div>
-          <div class="authorLine">ATsuAnd (c) 2026</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.49</div>
+          <div class="authorLine">ATsuAnd © 2026</div>
         </div>
 
         <div id="tabAdvanced" class="tabPane">
@@ -2211,7 +2219,7 @@ html.lc .tabs button {
             <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg><label for="loudnessToggle" data-i18n="loudnessTitle">Вирівнювання гучності</label><input type="checkbox" id="loudnessToggle" class="switch"></div>
           </div>
           <div class="settingBlock">
-            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><label for="sunCitySelect" data-i18n="sunCityLabel">Часовий пояс</label><select id="sunCitySelect"></select></div>
+            <div class="switchRow"><svg class="swIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><label for="sunCityBtn" data-i18n="sunCityLabel">Часовий пояс</label><div id="sunCityBox"><button type="button" id="sunCityBtn" aria-haspopup="listbox" aria-expanded="false"></button><div id="sunCityList" role="listbox" hidden></div></div></div>
           </div>
           <div class="settingBlock">
             <span class="title" data-i18n="foldersTitle">Папки станцій</span>
@@ -2562,19 +2570,36 @@ const SWATCHES = ["#4a8a4a","#c0562e","#3d6d94","#6b7d3d","#c99a2e","#4a5b94","#
 // після доби роботи застосунку (раніше вчорашній «захід» вранці вмикав темну тему).
 // Місто для розрахунку вибирається у вкладці «Ще» (поле sunCity, за замовчуванням Варшава).
 const SUN_CITIES = [
-  { id:"warsaw",  name:{uk:"Варшава",pl:"Warszawa",en:"Warsaw"},     tz:"Europe/Warsaw",        lat:52.2297,  lng:21.0122 },
-  { id:"kyiv",    name:{uk:"Київ",pl:"Kijów",en:"Kyiv"},        tz:"Europe/Kyiv",          lat:50.4501,  lng:30.5234 },
-  { id:"london",  name:{uk:"Лондон",pl:"Londyn",en:"London"},      tz:"Europe/London",        lat:51.5074,  lng:-0.1278 },
-  { id:"lisbon",  name:{uk:"Лісабон",pl:"Lizbona",en:"Lisbon"},     tz:"Europe/Lisbon",        lat:38.7223,  lng:-9.1393 },
-  { id:"athens",  name:{uk:"Афіни",pl:"Ateny",en:"Athens"},       tz:"Europe/Athens",        lat:37.9838,  lng:23.7275 },
-  { id:"dubai",   name:{uk:"Дубай",pl:"Dubaj",en:"Dubai"},       tz:"Asia/Dubai",           lat:25.2048,  lng:55.2708 },
-  { id:"tokyo",   name:{uk:"Токіо",pl:"Tokio",en:"Tokyo"},       tz:"Asia/Tokyo",           lat:35.6762,  lng:139.6503 },
-  { id:"sydney",  name:{uk:"Сідней",pl:"Sydney",en:"Sydney"},      tz:"Australia/Sydney",     lat:-33.8688, lng:151.2093 },
-  { id:"newyork", name:{uk:"Нью-Йорк",pl:"Nowy Jork",en:"New York"},    tz:"America/New_York",     lat:40.7128,  lng:-74.0060 },
-  { id:"chicago", name:{uk:"Чикаго",pl:"Chicago",en:"Chicago"},      tz:"America/Chicago",      lat:41.8781,  lng:-87.6298 },
-  { id:"la",      name:{uk:"Лос-Анджелес",pl:"Los Angeles",en:"Los Angeles"}, tz:"America/Los_Angeles", lat:34.0522,  lng:-118.2437 },
-  { id:"reykjavik",name:{uk:"Рейк'явік",pl:"Reykjavik",en:"Reykjavik"},  tz:"Atlantic/Reykjavik",   lat:64.1466,  lng:-21.9426 }
+  { id:"warsaw", name:{uk:"Варшава",pl:"Warszawa",en:"Warsaw"}, tz:"Europe/Warsaw", lat:52.2297, lng:21.0122 },
+  { id:"kyiv", name:{uk:"Київ",pl:"Kijów",en:"Kyiv"}, tz:"Europe/Kyiv", lat:50.4501, lng:30.5234 },
+  { id:"istanbul", name:{uk:"Стамбул",pl:"Stambuł",en:"Istanbul"}, tz:"Europe/Istanbul", lat:41.0082, lng:28.9784 },
+  { id:"dubai", name:{uk:"Дубай",pl:"Dubaj",en:"Dubai"}, tz:"Asia/Dubai", lat:25.2048, lng:55.2708 },
+  { id:"tashkent", name:{uk:"Ташкент",pl:"Taszkent",en:"Tashkent"}, tz:"Asia/Tashkent", lat:41.2995, lng:69.2401 },
+  { id:"dhaka", name:{uk:"Дака",pl:"Dhaka",en:"Dhaka"}, tz:"Asia/Dhaka", lat:23.8103, lng:90.4125 },
+  { id:"bangkok", name:{uk:"Бангкок",pl:"Bangkok",en:"Bangkok"}, tz:"Asia/Bangkok", lat:13.7563, lng:100.5018 },
+  { id:"singapore", name:{uk:"Сінгапур",pl:"Singapur",en:"Singapore"}, tz:"Asia/Singapore", lat:1.3521, lng:103.8198 },
+  { id:"tokyo", name:{uk:"Токіо",pl:"Tokio",en:"Tokyo"}, tz:"Asia/Tokyo", lat:35.6762, lng:139.6503 },
+  { id:"sydney", name:{uk:"Сідней",pl:"Sydney",en:"Sydney"}, tz:"Australia/Sydney", lat:-33.8688, lng:151.2093 },
+  { id:"noumea", name:{uk:"Нумеа",pl:"Numea",en:"Nouméa"}, tz:"Pacific/Noumea", lat:-22.2558, lng:166.4505 },
+  { id:"auckland", name:{uk:"Окленд",pl:"Auckland",en:"Auckland"}, tz:"Pacific/Auckland", lat:-36.8485, lng:174.7633 },
+  { id:"tongatapu", name:{uk:"Нукуалофа",pl:"Nukuʻalofa",en:"Nukuʻalofa"}, tz:"Pacific/Tongatapu", lat:-21.1394, lng:-175.2018 },
+  { id:"kiritimati", name:{uk:"Кірітіматі",pl:"Kiritimati",en:"Kiritimati"}, tz:"Pacific/Kiritimati", lat:1.8721, lng:-157.4278 },
+  { id:"bakerisland", name:{uk:"Острів Бейкер",pl:"Wyspa Baker",en:"Baker Island"}, tz:"Etc/GMT+12", lat:0.1936, lng:-176.4769 },
+  { id:"pagopago", name:{uk:"Паго-Паго",pl:"Pago Pago",en:"Pago Pago"}, tz:"Pacific/Pago_Pago", lat:-14.2756, lng:-170.702 },
+  { id:"honolulu", name:{uk:"Гонолулу",pl:"Honolulu",en:"Honolulu"}, tz:"Pacific/Honolulu", lat:21.3069, lng:-157.8583 },
+  { id:"anchorage", name:{uk:"Аляска",pl:"Alaska",en:"Alaska"}, tz:"America/Anchorage", lat:61.2181, lng:-149.9003 },
+  { id:"la", name:{uk:"Лос-Анджелес",pl:"Los Angeles",en:"Los Angeles"}, tz:"America/Los_Angeles", lat:34.0522, lng:-118.2437 },
+  { id:"denver", name:{uk:"Денвер",pl:"Denver",en:"Denver"}, tz:"America/Denver", lat:39.7392, lng:-104.9903 },
+  { id:"chicago", name:{uk:"Чикаго",pl:"Chicago",en:"Chicago"}, tz:"America/Chicago", lat:41.8781, lng:-87.6298 },
+  { id:"newyork", name:{uk:"Нью-Йорк",pl:"Nowy Jork",en:"New York"}, tz:"America/New_York", lat:40.7128, lng:-74.006 },
+  { id:"caracas", name:{uk:"Каракас",pl:"Caracas",en:"Caracas"}, tz:"America/Caracas", lat:10.4806, lng:-66.9036 },
+  { id:"saopaulo", name:{uk:"Сан-Паулу",pl:"São Paulo",en:"São Paulo"}, tz:"America/Sao_Paulo", lat:-23.5505, lng:-46.6333 },
+  { id:"southgeorgia", name:{uk:"Південна Джорджія",pl:"Georgia Południowa",en:"South Georgia"}, tz:"Atlantic/South_Georgia", lat:-54.2811, lng:-36.5092 },
+  { id:"azores", name:{uk:"Азорські острови",pl:"Azory",en:"Azores"}, tz:"Atlantic/Azores", lat:37.7412, lng:-25.6756 },
+  { id:"london", name:{uk:"Лондон",pl:"Londyn",en:"London"}, tz:"Europe/London", lat:51.5074, lng:-0.1278 }
 ];
+// Старі id, які вже могли бути збережені у налаштуваннях → нові міста (щоб вибір не збивався)
+const SUN_CITY_LEGACY = { lisbon:"london", athens:"kyiv", reykjavik:"london" };
 // Автовизначення за часовим поясом пристрою (як мова): точний збіг, інакше найближчий за зсувом UTC
 // (при рівності — з того ж континенту). Працює і для нових, і для старих користувачів, поки вибір не збережено.
 let detectedSunCityId = null;
@@ -2605,7 +2630,8 @@ function detectSunCityId() {
   return id;
 }
 function getSunCity() {
-  const id = (state && state.settings && state.settings.sunCity) || detectSunCityId();
+  let id = (state && state.settings && state.settings.sunCity) || detectSunCityId();
+  if (SUN_CITY_LEGACY[id]) id = SUN_CITY_LEGACY[id];
   return SUN_CITIES.find(c => c.id === id) || SUN_CITIES[0];
 }
 function calcSunMinutesUTC(lat, lng, noonUtcMs) {
@@ -2863,10 +2889,10 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
-// Сторінка, що відкривається кліком на «ATsuAnd (c) 2026»; можна замінити тегом <author_site> у Google-файлі.
+// Сторінка, що відкривається кліком на підпис автора; можна замінити тегом <author_site> у Google-файлі.
 const DEFAULT_AUTHOR_SITE = "https://github.com/MojeRadio/MojeRadio.github.io";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.47";
+const APP_VERSION = "3.49";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -9138,35 +9164,92 @@ document.getElementById("autoThemeTime").onchange = () => {
   state.settings.autoThemeMode = "time"; saveState();
   applyAutoThemeIfNeeded();
 };
+// Значок біля міста: сонце вдень, місяць вночі (ті самі SVG, що й в опції автоматичної теми)
+const SC_SUN = '<svg class="scIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>';
+const SC_MOON = '<svg class="scIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>';
+function sunCityIsNight(c) {
+  try {
+    const now = new Date(), t = sunTimesFor(c, now);
+    if (t.polar) return t.polar === "night";
+    return now < t.sunrise || now > t.sunset;
+  } catch (e) { return false; }
+}
+function sunCityIcon(c) { return sunCityIsNight(c) ? SC_MOON : SC_SUN; }
+function sunCityOffset(c) {
+  try { return new Intl.DateTimeFormat("en", { timeZone: c.tz, timeZoneName: "shortOffset" }).formatToParts(new Date()).find(x => x.type === "timeZoneName").value; } catch (e) { return ""; }
+}
 function sunCityName(c) { const l = (state.settings && state.settings.language) || "uk"; return c.name[l] || c.name.en; }
 // Список міст і назва режиму «За часом доби» залежать від мови та вибраного міста
+function closeSunCityList() {
+  const l = document.getElementById("sunCityList"), b = document.getElementById("sunCityBtn");
+  if (l) l.hidden = true;
+  if (b) b.setAttribute("aria-expanded", "false");
+}
 function refreshSunCityUI() {
-  const sel = document.getElementById("sunCitySelect");
+  const btn = document.getElementById("sunCityBtn");
+  const list = document.getElementById("sunCityList");
   const cur = getSunCity();
-  if (sel) {
-    sel.innerHTML = "";
+  const label = (c) => { const off = sunCityOffset(c); return sunCityName(c) + (off ? " (" + off + ")" : ""); };
+  if (btn) {
+    btn.innerHTML = sunCityIcon(cur) + '<span class="scTxt"></span>';
+    btn.querySelector(".scTxt").textContent = label(cur);
+  }
+  if (list) {
+    list.innerHTML = "";
     SUN_CITIES.forEach(c => {
-      let off = "";
-      try { off = new Intl.DateTimeFormat("en", { timeZone: c.tz, timeZoneName: "shortOffset" }).formatToParts(new Date()).find(x => x.type === "timeZoneName").value; } catch (e) {}
-      const o = document.createElement("option");
-      o.value = c.id; o.textContent = sunCityName(c) + (off ? " (" + off + ")" : "");
-      sel.appendChild(o);
+      const it = document.createElement("div");
+      it.className = "scItem" + (c.id === cur.id ? " sel" : "");
+      it.setAttribute("role", "option");
+      it.dataset.id = c.id;
+      it.innerHTML = sunCityIcon(c) + '<span class="scTxt"></span>';
+      it.querySelector(".scTxt").textContent = label(c);
+      list.appendChild(it);
     });
-    sel.value = cur.id;
   }
   const lab = document.querySelector('label[for="autoThemeTime"]');
   if (lab) lab.textContent = t("autoThemeTime").replace(/Варшава|Warszawa|Warsaw/, sunCityName(cur));
 }
 (function initSunCitySelect() {
-  const sel = document.getElementById("sunCitySelect");
-  if (!sel) return;
-  sel.onchange = () => { state.settings.sunCity = sel.value; saveState(); refreshSunCityUI(); applyAutoThemeIfNeeded(); };
+  const btn = document.getElementById("sunCityBtn"), list = document.getElementById("sunCityList");
+  if (!btn || !list) return;
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    if (!list.hidden) { closeSunCityList(); return; }
+    refreshSunCityUI();
+    if (list.parentNode !== document.body) document.body.appendChild(list);
+    { const cs = getComputedStyle(document.getElementById("app") || document.documentElement);
+      const mb = cs.getPropertyValue("--modalbg").trim(), mt = cs.getPropertyValue("--modaltext").trim();
+      if (mb) list.style.setProperty("--modalbg", mb);
+      if (mt) list.style.setProperty("--modaltext", mt);
+      list.style.backgroundColor = mb || "#1c2340"; list.style.color = mt || "#fff"; }
+    list.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    const r = btn.getBoundingClientRect(), h = Math.min(280, list.scrollHeight + 10), w = list.offsetWidth;
+    const below = window.innerHeight - r.bottom - 8, above = r.top - 8;
+    const top = (below >= h || below >= above) ? r.bottom + 4 : Math.max(8, r.top - h - 4);
+    list.style.maxHeight = Math.max(120, Math.min(280, (below >= h || below >= above) ? below : above)) + "px";
+    list.style.top = top + "px";
+    list.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.right - w)) + "px";
+    const sel = list.querySelector(".scItem.sel");
+    if (sel) list.scrollTop = Math.max(0, sel.offsetTop - list.clientHeight / 2 + sel.offsetHeight / 2);
+  };
+  list.onclick = (e) => {
+    e.stopPropagation();
+    const it = e.target.closest(".scItem");
+    if (!it) return;
+    state.settings.sunCity = it.dataset.id; saveState(); closeSunCityList(); refreshSunCityUI(); applyAutoThemeIfNeeded();
+  };
+  document.addEventListener("click", (e) => { if (!list.hidden && !list.contains(e.target)) closeSunCityList(); });
+  window.addEventListener("resize", closeSunCityList);
+  window.addEventListener("scroll", (e) => { if (!list.hidden && !list.contains(e.target)) closeSunCityList(); }, true);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSunCityList(); });
   refreshSunCityUI();
 })();
 // Після сну/згортання таймери можуть не спрацювати — перевіряємо тему одразу при поверненні
 document.addEventListener("visibilitychange", () => { if (!document.hidden) applyAutoThemeIfNeeded(); });
 if (window.matchMedia) { try { window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyAutoThemeIfNeeded); } catch (e) {} }
 setInterval(applyAutoThemeIfNeeded, 5 * 60000);
+setInterval(() => { try { refreshSunCityUI(); } catch (e) {} }, 5 * 60000);
 
 let sleepTimeoutHandle = null;
 let sleepEndTs = null;          // момент закінчення, поки відлік іде (грає музика)
@@ -14841,7 +14924,7 @@ function tag(text, name) {
   return inner.trim();
 }
 function extractOtherParams(text) {
-  const knownPattern = /^stantion\d+_(button|path|name|song)$|^clock_song$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^title_remove_words$|^title_remove_symbols$|^pwa_site$|^pwa_site_backup$|^author_site$|^worker_url$|^backup_search_url$/;
+  const knownPattern = /^stantion\d+_(button|path|name|song)$|^clock_song$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^title_remove_words$|^title_remove_symbols$|^pwa_site$|^pwa_site_backup$|^author_site$|^author_text$|^worker_url$|^backup_search_url$/;
   const results = [];
   const seen = new Set();
   const re = /(?:#\s*([^\n<#]*?)\s*(?:\n|(?=<)))?<([a-zA-Z0-9_]+)>([\s\S]*?)<\/\2>/g;
@@ -14880,6 +14963,7 @@ function parseStationsText(rawText) {
     result.pwaSite = tag(trimmed, "pwa_site");
     result.pwaSiteBackup = tag(trimmed, "pwa_site_backup");
     result.authorSite = tag(trimmed, "author_site");
+    result.authorText = tag(trimmed, "author_text");
     result.workerUrl = tag(trimmed, "worker_url");
     result.backupSearchUrl = tag(trimmed, "backup_search_url");
     // Секції з замінами станцій під конкретну мову — див. шаблон у Google-файлі.
@@ -14983,6 +15067,7 @@ async function syncStationsFromFile(manual) {
       const a = normalizeAuthorSite(parsed.authorSite);
       if (a) state.settings.authorSite = a;
     }
+    if (parsed.authorText) { state.settings.authorText = String(parsed.authorText).slice(0, 80); applyAuthorLine(); }
     if (parsed.workerUrl) {
       const w = normalizeWorkerBase(parsed.workerUrl);
       if (w) { state.settings.workerFromFile = w; applyWorkerBase(resolveWorkerBase()); }
@@ -15780,6 +15865,17 @@ document.getElementById("scaleValue").onclick = () => {
   applyAppScale(100);
   saveState();
 };
+
+// Підпис автора внизу налаштувань. Текст можна задати тегом <author_text> у Google-файлі;
+// %year замінюється на поточний рік (за годинником пристрою). Без тегу — стандартний підпис.
+const DEFAULT_AUTHOR_TEXT = "ATsuAnd © %year";
+function applyAuthorLine() {
+  const el = document.querySelector(".authorLine");
+  if (!el) return;
+  const raw = (state && state.settings && state.settings.authorText) || DEFAULT_AUTHOR_TEXT;
+  el.textContent = String(raw).replace(/%year/gi, String(new Date().getFullYear()));
+}
+applyAuthorLine();
 
 // ===================== Пасхалка =====================
 (function setupEasterEgg() {
