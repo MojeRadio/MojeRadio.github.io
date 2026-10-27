@@ -15901,7 +15901,15 @@ applyAuthorLine();
     openTimer = setTimeout(() => {
       const single = burst === 1; burst = 0;
       if (!single) return;
-      try { if (!window.open(getAuthorSite(), "_blank", "noopener,noreferrer")) location.href = getAuthorSite(); } catch (e) {}
+      try {
+        const a = document.createElement("a");
+        a.href = getAuthorSite();
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (e) {}
     }, 600);
   });
   function showEasterEgg() {
