@@ -646,8 +646,13 @@
 /* Міні-вікно «Історія пісень» — трохи вужче за стандартні модалки,
    щоб виглядало як оверлей у міні-плеєрі. */
 #fullHistBg .modal { max-width: 340px; }
-#fullHistList .history-item { padding: 6px 8px; }
-#fullHistList .history-item.current { background: rgba(var(--ring), 0.14); border-radius: 6px; }
+#fullHistList .history-item { padding: 8px 8px; position: relative; }
+#fullHistList .history-item.current { background: transparent; border-bottom-color: transparent; }
+#fullHistList .history-item:has(+ .history-item.current) { border-bottom-color: transparent; }
+#fullHistList .history-item.current::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -4px; right: -4px;
+    background: rgba(var(--ring), 0.14); border-radius: 6px; z-index: -1;
+}
   @keyframes playPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 @keyframes playSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 #playBtn.is-loading #playIcon { animation: playSpin 0.9s linear infinite; transform-origin: center; }
@@ -781,7 +786,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #app.panel-side #trackOptionsBg .modalHead {
     background: transparent;
   }
-  #app.panel-side #modalBg .modalHead { padding: 6px 20px 6px 16px; }
+  #app.panel-side #modalBg .modalHead { padding: 6px 20px 6px 16px; overflow: hidden; }
   #app.panel-side #modalBg .modalCloseX {
     top: 50%;
     transform: translateY(-50%);
@@ -808,11 +813,11 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   }
   .modalScroll { 
     overflow-y: auto; 
+    overflow-x: hidden; /* Запобігає появі горизонтальної прокрутки під час анімації */
     padding: 0 18px 18px; 
     flex: 1 1 auto; 
     min-height: 0; 
     display: grid; 
-    /* minmax(0, 1fr) забороняє вмісту розтягувати колонку ширше за екран */
     grid-template-columns: minmax(0, 1fr); 
     align-items: start;
   }
@@ -919,31 +924,38 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .tabPane { 
     grid-area: 1 / 1; 
     min-width: 0; 
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: scale(0.98); /* Легке зменшення для ефекту появи */
+    display: none; /* Повністю ховаємо з макету */
     will-change: opacity, transform;
   }
   .tabPane.active { 
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+    display: block; /* Показуємо лише активну */
     z-index: 2;
-    transform: scale(1);
-    /* Анімація з'являється лише для активної вкладки. 
-       Стара вкладка зникає миттєво, тому накладання немає */
-    animation: tabFadeIn 0.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
-  @keyframes tabFadeIn {
-    from { 
-      opacity: 0; 
-      transform: scale(0.98); 
-    }
-    to { 
-      opacity: 1; 
-      transform: scale(1); 
-    }
+  
+  /* Анімація в'їзду з правого боку (швидка та коротка) */
+  .tabPane.slide-from-right {
+    animation: slideInRight 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+  /* Анімація в'їзду з лівого боку */
+  .tabPane.slide-from-left {
+    animation: slideInLeft 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  /* Анімація для великого заголовка в шапці панелі */
+  #modalTabTitle.title-slide-right {
+    animation: slideInRight 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+  #modalTabTitle.title-slide-left {
+    animation: slideInLeft 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-24px); }
+    to { opacity: 1; transform: translateX(0); }
   }
   .folderHead { display: flex; align-items: center; gap: 6px; padding: 7px 6px; margin-top: 8px; border-radius: 10px; background: rgba(128,128,128,0.14); cursor: pointer; user-select: none; -webkit-user-select: none; font-size: 14px; font-weight: 600; }
   .folderHead .chev { flex-shrink: 0; display: flex; transition: transform 0.15s; }
@@ -956,7 +968,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .folderHead.noFolder { font-weight: 500; opacity: 0.8; background: transparent; border-bottom: 1px dashed rgba(128,128,128,0.35); border-radius: 0; }
   .folderHead.drop-into { box-shadow: 0 0 0 2px var(--accent); }
   .folderHead .folderRenameInput { flex: 1; min-width: 0; padding: 3px 8px !important; font-size: 14px !important; }
-  .folderBody { padding-left: 10px; }
+  .folderBody { padding-left: 10px; padding-top: 6px; }
   .noFolderBlock > .folderBody { padding-left: 0; }
   .stationRow.drop-before { box-shadow: inset 0 2px 0 var(--accent); }
   .stationRow.drop-after { box-shadow: inset 0 -2px 0 var(--accent); }
@@ -965,7 +977,49 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   #folderNewRow { display: none; gap: 6px; margin: 0 0 6px; }
   #folderNewRow.open { display: flex; }
   .stationRow { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.2); }
-  .stationRow.current { background: rgba(128,128,128,0.16); border-radius: 8px; margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-bottom-color: transparent; }
+  /* Зменшуємо вертикальний padding з 8px до 4px, щоб рядок станції був нижчим за папку */
+  .stationRow { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 4px 0; 
+    border-bottom: 1px solid rgba(128,128,128,0.2); 
+    position: relative; /* Потрібно для позиціонування фону активної станції */
+  }
+  
+  /* Ховаємо роздільну лінію між активною станцією та тією, що над нею */
+  .stationRow:has(+ .stationRow.current) {
+    border-bottom-color: transparent;
+  }
+
+  .stationRow.current { 
+    border-bottom-color: transparent; /* Ховаємо лінію під активною станцією */
+  }
+
+  /* Малюємо фон та кольорову смужку через псевдоелемент */
+  .stationRow.current::before {
+    content: "";
+    position: absolute;
+    top: 0;       /* Повертаємо від верхньої лінії */
+    bottom: 0;    /* Повертаємо до нижньої лінії */
+    left: -4px;
+    right: -4px;
+    background: rgba(128,128,128,0.2);
+    border-radius: 6px;
+    box-shadow: inset 3px 0 0 var(--station-color, var(--accent));
+    z-index: -1;
+  }
+
+  /* Піднімаємо вміст рядка над фоном */
+  .stationRow > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Ізолюємо контейнери, щоб z-index: -1 не пішов за головний фон */
+  .folderBody, #stationList {
+    isolation: isolate;
+  }
   .stationRow .stationRowIcon { width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0; object-fit: contain; background: rgba(128,128,128,0.18); cursor: pointer; }
   .stationRow .dragHandle { flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: grab; color: var(--fg); padding: 2px; }
   .stationRow .dragHandle:active { cursor: grabbing; }
@@ -1250,8 +1304,8 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .paramBlock .prow label { display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 11px; opacity: 0.85; }
   .langPickModal .modal { text-align: center; padding: 24px 20px; }
 
-  .history-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(128,128,128,0.12); }
-  .history-item .h-title { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+  .history-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(128,128,128,0.12); position: relative; }
+  .history-item .h-title { flex: 1; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; padding-left: 4px; }
   .history-item .h-title:hover { opacity: 0.8; }
   /* Стан очікування підтвердження видалення (як у кошика збережених станцій):
      на 3,5 с у рядку замість назви показується червоне питання. Повторний
@@ -1276,7 +1330,18 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   .history-item .h-actions button { background: none; border: none; color: var(--modaltext); opacity: 0.5; cursor: pointer; padding: 2px 4px; transition: opacity 0.2s; }
   .history-item .h-actions button:hover { opacity: 1; }
   .history-item .h-actions button.favorited { color: #ffd700; opacity: 1; }
-  .history-item.current, .stats-item.current { background: rgba(61,79,181,0.2); border-radius: 6px; padding: 6px 8px; }
+.stats-item { position: relative; }
+  .stats-item .stat-name { padding-left: 4px; }
+  
+  /* Ховаємо лінії навколо активної станції, щоб фон виглядав цілісно */
+  .history-item.current, .stats-item.current { background: transparent; border-bottom-color: transparent; }
+  .history-item:has(+ .history-item.current), .stats-item:has(+ .stats-item.current) { border-bottom-color: transparent; }
+
+  /* Малюємо фон через псевдоелемент. Він ширший за рядок, щоб тексту було просторіше */
+  .history-item.current::before, .stats-item.current::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -6px; right: -6px;
+    background: rgba(61,79,181,0.25); border-radius: 6px; z-index: -1;
+	}
   .history-empty { text-align: center; color: rgba(128,128,140,0.6); font-size: 13px; padding: 16px 0; }
 
   #anthemBanner {
@@ -5718,6 +5783,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
   // «ще жодного разу» — потрібно, щоб при першому рендері список одразу
   // став на активній станції, а не на початку.
   let lastScrolledActiveIndex = -2;
+  let lastPlayingState = null; // <--- ДОДАНО: для відстеження Play/Pause
   // Прапорець відновлення розміру/позиції: поки true, trackRect не перезаписує
   // збережений розмір тимчасовим дефолтним, який Chrome виставляє одразу після відкриття.
   let restoringRect = false;
@@ -5746,8 +5812,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     button:active { transform:scale(.95); }
     /* Обводка трьох кнопок керування: росте разом із кнопками, але не тонша за 1.7px і не товща за 2px. */
     #mpPrev, #mpPlay, #mpNext { border-width:clamp(1.7px, 0.09rem, 2px); }
-    #mpPrev, #mpNext { width:2.2rem; height:2.2rem; }
-    #mpPlay { width:3rem; height:3rem; }
+    #mpPrev, #mpNext { width:2.2rem; height:2.2rem; aspect-ratio: 1 / 1; flex-shrink: 0; }
+    #mpPlay { width:3rem; height:3rem; aspect-ratio: 1 / 1; flex-shrink: 0; }
     #mpPlay svg { width:1.5rem; height:1.5rem; }
     #mpPrev svg, #mpNext svg { width:1rem; height:1rem; }
     /* Розкладка кнопок. Рівно три стани + приховування. Жодних іконок,
@@ -5846,10 +5912,25 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpOv { position:fixed; inset:0; display:none; flex-direction:column;
       background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 45%, var(--g3) 100%); }
     .mpOv.open { display:flex; }
-    .mpOvHead { display:flex; align-items:center; justify-content:center; position:relative; padding:0.35rem 2.5rem 0.25rem; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+    .mpOvHead { display:flex; align-items:center; justify-content:center; position:relative; padding:0.3rem 2.5rem; font-size:0.7rem; font-weight:700; line-height: 1.2; text-transform:uppercase; letter-spacing:.4px; }
     .mpOvHead span { white-space: nowrap; display: inline-block; }
     .mpOvHead .mpX { position:absolute; left:0.5rem; top:50%; transform:translateY(-50%); }
-    .mpList { flex:1; overflow-y:auto; padding:0 0.5rem 0.5rem; scrollbar-width:thin; scrollbar-color: rgba(var(--ring,255,255,255), 0.18) transparent; }
+    .mpOvHead .mpHeaderLogo {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.3rem;
+      height: 1.3rem;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .mpOvHead .mpHeaderLogo svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+     .mpList { flex:1; overflow-y:auto; padding:0 0.5rem 0.5rem; scrollbar-width:thin; scrollbar-color: rgba(var(--ring,255,255,255), 0.18) transparent; isolation: isolate; }
     .mpList::-webkit-scrollbar { width:0.35rem; height:0.35rem; }
     .mpList::-webkit-scrollbar-track { background:transparent; }
     .mpList::-webkit-scrollbar-thumb { background: rgba(var(--ring,255,255,255), 0.18); border-radius:3px; transition: background .2s; }
@@ -5925,17 +6006,19 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
          Менше вже не буде — інакше ellipsis наїде на зірочку. */
       padding-right: calc(18px - 0.4rem);
     }
-    .mpRow.cur { background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; padding-left:0.4rem; padding-right:0.4rem; }
+    .mpRow.cur { background: transparent; }
+    .mpRow.cur::before { content: ""; position: absolute; top: 0; bottom: 0; left: -0.15rem; right: -0.15rem; background: rgba(var(--ring, 255,255,255), 0.18); border-radius:0.35rem; z-index: -1; }
     .mpRow.cur .t { font-weight:700; }
-    .mpRow.cur::before {
+    .mpRow.cur::after {
       content: "";
       /* order: 99 ставить крапку ПІСЛЯ .t (назви станції), тобто в кінці рядка.
          margin-left: 0.35rem — маленький відступ від тексту; .t має flex:1,
          тож крапка природно притискається до правого краю. */
-      order: 99;
+	  order: 99;
       flex: 0 0 6px;
       width: 6px; min-width: 6px; max-width: 6px;
       height: 6px; min-height: 6px; max-height: 6px;
+      aspect-ratio: 1 / 1; /* <--- ДОДАНО: завжди ідеальне коло */
       align-self: center;
       padding: 0;
       margin: 0 0 0 0.35rem;
@@ -5945,8 +6028,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       background-position: center;
       border-radius: 50%;
     }
-    #mpNarrowHistList > .mpRow.cur::before,
-    #mpHistList > .mpRow.cur::before { display: none; }	
+    #mpNarrowHistList > .mpRow.cur::after,
+    #mpHistList > .mpRow.cur::after { display: none; }
     body > * { transition: opacity .35s ease; }
     /* компактні режими: коли вікно зовсім низьке, ховаємо зайве */
     @media (max-height:135px) {
@@ -5961,10 +6044,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
         @media (max-width:270px) and (max-height:135px) {
       #mpFav, #mpHistBtn { display:none; }
     }
-    .mpRow.cur.state-playing::before   { background: #4caf50; box-shadow: 0 0 0.2rem #4caf50; }
-    .mpRow.cur.state-connecting::before{ background: #e0973d; animation: mpBlink 1s ease-in-out infinite; }
-    .mpRow.cur.state-paused::before    { background: #b9c9d8; }
-    .mpRow.cur.state-error::before     { background: #e0433a; animation: mpBlink 0.5s ease-in-out infinite; }
+    .mpRow.cur.state-playing::after   { background: #4caf50; box-shadow: 0 0 0.2rem #4caf50; }
+    .mpRow.cur.state-connecting::after{ background: #e0973d; animation: mpBlink 1s ease-in-out infinite; }
+    .mpRow.cur.state-paused::after    { background: #b9c9d8; }
+    .mpRow.cur.state-error::after     { background: #e0433a; animation: mpBlink 0.5s ease-in-out infinite; }
     @keyframes mpBlink { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
     #mpNarrowTop, #mpNarrowBottom { display: none; }
     body.mp-narrow { padding: 0.6rem 0.5rem; gap: 0; }
@@ -6028,21 +6111,21 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       overflow-y: auto; overflow-x: hidden;
     }
     body.mp-narrow #mpNarrowStList .mpRow,
-    body.mp-narrow #mpNarrowHistList .mpRow,
-    body.mp-narrow #mpNarrowStList .mpRow.cur,
-    body.mp-narrow #mpNarrowHistList .mpRow.cur {
+    body.mp-narrow #mpNarrowHistList .mpRow {
       padding-left: 0.4rem;
       padding-right: 0.4rem;
     }
-    /* У списку історії прибираємо padding-right рядка: зірочка там
-       абсолютна (right: 0), і саме цей padding створював між текстом і
-       зірочкою зайвий порожній «хвіст» ~10–14px. Тепер .t розтягнутий
-       аж до правого краю рядка, а зазор між «…» і зірочкою задає лише
-       padding-right самого .t. */
-    body.mp-narrow #mpNarrowHistList .mpRow,
-    body.mp-narrow #mpNarrowHistList .mpRow.cur {
-	  padding-left: 0.3rem;
+    body.mp-narrow #mpNarrowHistList .mpRow {
+      padding-left: 0.3rem;
       padding-right: 0.3rem;
+    }
+    body.mp-narrow #mpNarrowStList .mpRow.cur::before {
+      left: -0.4rem;
+      right: -0.4rem;
+    }
+    body.mp-narrow #mpNarrowHistList .mpRow.cur::before {
+      left: -0.3rem;
+      right: -0.3rem;
     }
     body.mp-narrow #mpNarrowStList .mpRow.cur,
     body.mp-narrow #mpNarrowHistList .mpRow.cur {
@@ -6069,7 +6152,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpNarrowScroll button {
       flex: 1; height: 1.3rem; padding: 0;
       border-radius: 0.3rem;
-      border: 0.07rem solid var(--ctrlborder, rgba(255,255,255,.5));
+      border: none; /* <--- ПРИБРАЛИ РАМКУ */
       background: var(--ctrlbg, rgba(255,255,255,.1));
       color: var(--ctrlfg, #fff);
       display: flex; align-items: center; justify-content: center;
@@ -6111,6 +6194,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     } catch (e) {}
   }
   const BACK_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+  const LOGO_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M 8 16 A 4 4 0 1 1 16 16" opacity="1"/><path d="M 5 18.5 A 7.5 7.5 0 1 1 19 18.5" opacity="0.6"/><path d="M 2 21 A 11 11 0 1 1 22 21" opacity="0.3"/></svg>';
   const STAR_SVG = (on) => '<svg viewBox="0 0 24 24" fill="' + (on ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   function buildHistoryRow(h, curTrack) {
     const d = pipWin.document;
@@ -6240,10 +6324,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     if (b._mpKey === key) return;
     b._mpKey = key;
     inn.classList.remove("scr");
-    // Додаємо +24px (по 12px з кожного боку), щоб текст не прилипав до країв
     const over = Math.ceil(inn.offsetWidth - avail);
     if (avail > 0 && over > 1) {
-      inn.style.setProperty("--mp-dist", (over + 24) + "px");
+      // Ділимо навпіл, бо текст центрований і вилазить з обох боків
+      inn.style.setProperty("--mp-dist", Math.ceil(over / 2) + "px");
       inn.style.setProperty("--mp-dur", Math.max(7, over / 22 / 0.35) + "s");
       void inn.offsetWidth;
       inn.classList.add("scr");
@@ -6341,12 +6425,15 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
       + "@@" + DEFAULT_STATION_ICON
       + "@@" + state.stations.map(x => x.name + "|" + (x.favicon || "")).join("|");
     if (!force && sig === lastStSig) return;
-    // Прокручуємо список тільки коли активна станція реально змінилась
-    // (перемикання кнопками ⏮/⏭, вибір у списку, авто-перехід при обриві)
-    // або коли renderStations викликано примусово (відкриття overlay).
-    // Інакше при кожному оновленні audioState список стрибав би назад до
-    // активної станції, навіть якщо користувач щойно прогорнув його вручну.
-    const scrollNeeded = (activeIndex !== lastScrolledActiveIndex) || force;
+    
+    // <--- ДОДАНО: перевіряємо, чи змінився стан Play/Pause
+    const currentPlayState = isPlaying && !isPlaybackError;
+    const playStateChanged = currentPlayState !== lastPlayingState;
+    if (playStateChanged) lastPlayingState = currentPlayState;
+
+    // Прокручуємо список, якщо змінилася станція, якщо це примусовий рендер,
+    // або якщо користувач натиснув Play/Pause.
+    const scrollNeeded = (activeIndex !== lastScrolledActiveIndex) || force || playStateChanged;
     lastScrolledActiveIndex = activeIndex;
     lastStSig = sig;
     const fill = (container) => {
@@ -6522,8 +6609,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
           '<button data-scroll="down" data-target="mpNarrowHistList" aria-label="down">' + ARROW_DOWN_SVG + '</button>' +
         '</div>' +
       '</div>' +
-      '<div id="mpHist" class="mpOv"><div class="mpOvHead"><button id="mpHistClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpHistTitle"></span></div><div id="mpHistList" class="mpList"></div></div>' +
-      '<div id="mpSt" class="mpOv"><div class="mpOvHead"><button id="mpStClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpStTitle"></span></div><div id="mpStList" class="mpList"></div></div>';
+      '<div id="mpHist" class="mpOv"><div class="mpOvHead"><button id="mpHistClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpHistTitle"></span><div class="mpHeaderLogo">' + LOGO_SVG + '</div></div><div id="mpHistList" class="mpList"></div></div>' +
+      '<div id="mpSt" class="mpOv"><div class="mpOvHead"><button id="mpStClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpStTitle"></span><div class="mpHeaderLogo">' + LOGO_SVG + '</div></div><div id="mpStList" class="mpList"></div></div>';
     d.getElementById("mpHistTitle").textContent = t("recentSongsTitle");
     d.getElementById("mpStTitle").textContent = t("tabStations");
     setTimeout(() => {
@@ -6655,7 +6742,7 @@ function renderStats() {
     const station = state.stations.find(s => s.name === name);
     const icon = station && station.favicon ? station.favicon : DEFAULT_STATION_ICON;
     const isCurrent = isPlaying && name === currentName;
-    return `<div class="stats-item${isCurrent ? ' current' : ''}" data-station="${escapeHtml(name)}" style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(128,128,128,0.12); font-size:13.5px; gap:6px;">
+    return `<div class="stats-item${isCurrent ? ' current' : ''}" data-station="${escapeHtml(name)}" style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(128,128,128,0.12); font-size:14px; gap:6px;">
       <span style="display:flex; align-items:center; gap:7px; overflow:hidden;">
         <img src="${escapeHtml(proxifyIconUrl(icon))}" alt="" style="width:20px; height:20px; border-radius:5px; flex-shrink:0; object-fit:cover;" onerror="this.src='${DEFAULT_STATION_ICON}'">
         <span class="stat-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(name)}</span>
@@ -11885,10 +11972,49 @@ function updateModalTabTitle() {
   titleEl.textContent = t(key);
 }
 function switchTab(name) {
+  const oldName = state.settings.lastTab || "settings";
+  
+  // Візуальний порядок вкладок (зліва направо)
+  const tabOrder = ["stats", "stations", "settings", "advanced", "sync"];
+  const oldIndex = tabOrder.indexOf(oldName);
+  const newIndex = tabOrder.indexOf(name);
+
+  // Визначаємо напрямок анімації
+  let animClass = "";
+  let titleAnimClass = "";
+  if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+    const isRight = newIndex > oldIndex;
+    animClass = isRight ? "slide-from-right" : "slide-from-left";
+    titleAnimClass = isRight ? "title-slide-right" : "title-slide-left";
+  }
+
   ["stations","sync","settings","advanced","stats"].forEach(n => {
-    document.getElementById("tab" + n[0].toUpperCase() + n.slice(1) + "Btn").classList.toggle("active", n === name);
-    document.getElementById("tab" + n[0].toUpperCase() + n.slice(1)).classList.toggle("active", n === name);
+    const btn = document.getElementById("tab" + n[0].toUpperCase() + n.slice(1) + "Btn");
+    const pane = document.getElementById("tab" + n[0].toUpperCase() + n.slice(1));
+    
+    // Спочатку знімаємо всі класи анімації
+    pane.classList.remove("slide-from-right", "slide-from-left");
+    
+    btn.classList.toggle("active", n === name);
+    pane.classList.toggle("active", n === name);
+
+    // Додаємо клас анімації лише до нової активної вкладки
+    if (n === name && animClass) {
+      void pane.offsetWidth; // Перезапуск анімації
+      pane.classList.add(animClass);
+    }
   });
+
+  // Анімація для великого заголовка в шапці
+  const titleEl = document.getElementById("modalTabTitle");
+  if (titleEl) {
+    titleEl.classList.remove("title-slide-right", "title-slide-left");
+    if (titleAnimClass) {
+      void titleEl.offsetWidth; // Перезапуск анімації
+      titleEl.classList.add(titleAnimClass);
+    }
+  }
+
   updateModalTabTitle();
   state.settings.lastTab = name;
   saveState();
@@ -12024,6 +12150,8 @@ function renderModalList() {
     const row = document.createElement("div");
     row.className = "stationRow" + ((i === activeIndex && !isSearchPlayback) ? " current" : "");
     row.dataset.index = i;
+    // Передаємо колір станції у CSS-змінну для смужки виділення
+    row.style.setProperty("--station-color", s.color || "#ffffff");
     const isDefault = defaultStations.some(d => d.name === s.name);
     const isEdited = !!s.manuallyEdited;
     
