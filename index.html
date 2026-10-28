@@ -1162,27 +1162,31 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 /* Сітка/Список залишаємо по центру */
 #viewToggle button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
-/* Елемент по центру: ширина залежить від довжини тексту */
+/* Елемент по центру: всі 3 кнопки в один рядок */
 #centerModeToggle {
-  flex-wrap: wrap; /* Дозволяємо перенос кнопок на новий рядок, якщо екран занадто вузький */
+  flex-wrap: nowrap; /* Забороняємо перенос кнопок на новий рядок */
+  gap: 6px; /* Трохи зменшуємо проміжок між кнопками, щоб всі влізли */
 }
 
 #centerModeToggle button {
-  flex: 1 1 auto; /* Ширина базується на довжині тексту, але кнопки розтягуються, щоб заповнити рядок */
-  display: inline-flex; 
+  flex: 1 1 0%; /* Рівномірно ділимо ширину між трьома кнопками */
+  display: flex; 
   align-items: center; 
-  justify-content: center; /* Центруємо текст та іконку всередині кнопки */
-  gap: 6px;
-  text-align: center;
-  padding: 8px 12px;
-  line-height: 1.25;
+  justify-content: flex-start; /* Притискаємо іконку і текст до лівого краю */
+  gap: 6px; /* Відступ між іконкою та текстом */
+  text-align: left; /* Вирівнювання тексту по лівому краю */
+  padding: 6px 8px; /* Трохи збільшуємо бічні відступи для охайного вигляду */
+  line-height: 1.15;
   min-width: 0;
-  min-height: 48px; /* Запобігає обрізанню тексту, якщо він все ж перенесеться на 2 рядки */
+  min-height: 56px; /* Фіксуємо висоту, щоб всі кнопки були однакові */
 }
 
 #centerModeToggle button span {
-  white-space: normal; /* Дозволяємо переносити текст, якщо екран зовсім маленький */
+  white-space: normal; /* Дозволяємо переносити текст на два рядки */
   overflow-wrap: break-word;
+  word-break: break-word;
+  font-size: 12px; /* Трохи зменшуємо шрифт для кращого вміщення */
+  text-align: left; /* Додатково фіксуємо вирівнювання тексту по лівому краю */
 }
 
 #viewToggle button svg,
@@ -2283,7 +2287,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.51</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.52</div>
           <div class="authorLine">ATsuAnd © 2026</div>
         </div>
 
@@ -2589,7 +2593,7 @@ const I18N = {
     searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", recentSongsTitle:"Останні пісні", clearHistory:"Очистити історію", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewTitle:"Вигляд станцій",
     loadMore:"Завантажити ще...",
     iconFetch:"Взяти з пошуку", country:"Країна", notDefined:"не визначено", addBtnWord:"+",
-    eqTitle:"Еквалайзер", loudnessTitle:"Вирівнювання гучності", sunCityLabel:"Часовий пояс", eqSystemLink:"Системний еквалайзер", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", shareSyncBtn:"Швидка синхронізація збережених станцій", shareSyncTitle:"Швидка синхронізація між пристроями", shareSyncDesc:"Відскануйте QR-код або надішліть посилання на інший пристрій. Дані передаються лише через QR-код і посилання, без сервера.", shareSyncTooBig:"Список завеликий для QR-коду. Скористайтеся посиланням нижче.", shareSyncCopied:"Посилання скопійовано", shareSyncEmpty:"Немає даних для перенесення", shareSyncBadFormat:"Не вдалося розпізнати дані", shareSyncQrError:"Не вдалося створити QR-код. Перевірте з'єднання з інтернетом.", shareSyncQrLoading:"Готую QR-код…", shareSyncTapHint:"Натисніть на QR-код, щоб збільшити", syncQrFileHint:"QR-код — швидке перенесення станцій та улюблених треків. ЕКспорт/Імпорт — для перенесення всього, включаючи налаштування, статистику та еквалайзер.", importSyncTitle:"Імпортувати станції?", importSyncYes:"Імпортувати", importSyncSummary:"Буде додано нових: {n}. Оновлено існуючих: {u}. Улюблених пісень: {f}.", importSyncDone:"Імпортовано: {n} нових, {u} оновлено", importSyncNoStations:"У посиланні немає станцій", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
+    eqTitle:"Еквалайзер", loudnessTitle:"Вирівнювання гучності", sunCityLabel:"Часовий пояс", eqSystemLink:"Системний еквалайзер", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", shareSyncBtn:"Швидка синхронізація збережених станцій", shareSyncTitle:"Швидка синхронізація між пристроями",     shareSyncDesc:"Відскануйте QR-код або надішліть посилання на інший пристрій. Якщо станцій багато, перенесення відбудеться частинами (кількома QR-кодами) або одним посиланням. Дані передаються без сервера.", shareSyncTooBig:"Список завеликий для QR-коду. Скористайтеся посиланням нижче.", shareSyncCopied:"Посилання скопійовано", shareSyncEmpty:"Немає даних для перенесення", shareSyncBadFormat:"Не вдалося розпізнати дані", shareSyncQrError:"Не вдалося створити QR-код. Перевірте з'єднання з інтернетом.", shareSyncQrLoading:"Готую QR-код…", shareSyncTapHint:"Натисніть на QR-код, щоб збільшити", syncQrFileHint:"QR-код — швидке перенесення станцій та улюблених треків. ЕКспорт/Імпорт — для перенесення всього, включаючи налаштування, статистику та еквалайзер.", importSyncTitle:"Імпортувати станції?", importSyncYes:"Імпортувати", importSyncSummary:"Буде додано нових: {n}. Оновлено існуючих: {u}. Улюблених пісень: {f}.", importSyncDone:"Імпортовано: {n} нових, {u} оновлено", importSyncNoStations:"У посиланні немає станцій", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
   pl: { moreWord:"Więcej", appName:"moje radio", installBanner:"Zainstaluj aplikację", installIosTitle:"Instalacja na iPhonie / iPadzie", installIosText:"1. Naciśnij przycisk „Udostępnij” (kwadrat ze strzałką w górę) w przeglądarce.\n2. Wybierz „Dodaj do ekranu początkowego”.\n3. Naciśnij „Dodaj”.", installOk:"Rozumiem", stationFilterPh:"Szukaj wśród moich stacji", stationFilterEmpty:"Nic nie znaleziono", versionChecking:"Sprawdzam aktualizacje…", versionLatest:"Masz najnowszą wersję", versionCheckFail:"Nie udało się sprawdzić aktualizacji", versionNewBtn:"Dostępna nowa wersja {v} — naciśnij, aby zaktualizować", pipWord:"Mini odtwarzacz nad oknami",copyTip:"Kopiuj",colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", copiedSongName:"Skopiowano nazwę utworu", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry w pliku", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw próbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"Udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
     tabOptions:"Opcje", sortDefault:"Dowolna kolejność", sortAsc:"Alfabetycznie (A-Z)", sortDesc:"Alfabetycznie (Z-A)", tabStations:"Stacje", tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statystyki", tabAdvanced:"Więcej", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Transmisja na «{name}»", castEndedToast:"Transmisja zakończona", castFailToast:"Chromecast nie może odtworzyć tego strumienia", newIconLabel:"Ikona", desktopStationHint:"Prawy przycisk myszy na stacji — edycja; przeciągnij stację, aby zmienić kolejność.", autoSwitchTitle:"Automatyczna zmiana stacji", autoSwitchLabel:"Przełączaj na inną stację w razie błędu", autoSwitchToast:"Stacja «{from}» nie odpowiada (internet działa) — przełączono na «{name}»", autoSwitchBackToast:"Stacja «{name}» znów działa — wracam", foldersTitle:"Foldery stacji", foldersLabel:"Grupuj stacje w foldery", newFolderBtn:"Nowy folder", folderNamePh:"Nazwa folderu", folderDefaultName:"Folder", noFolderWord:"Bez folderu", folderFieldLabel:"Folder", renameFolderTip:"Zmień nazwę folderu", deleteFolderTip:"Usuń folder (stacje zostają)", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", longPressHintReorder:"Długie przytrzymanie stacji — edycja (przeciąganie wyłączone).", gridLongPressEditLabel:"Długie przytrzymanie do edycji stacji",
     syncEnableLabel:"Powiązanie aplikacji z serwerem", syncFileDesc:"Link do pliku, z którego pobierane są stacje i poniższe ustawienia z serwera.", notSynced:"jeszcze nie zsynchronizowano",
@@ -2606,7 +2610,7 @@ const I18N = {
     searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", recentSongsTitle:"Ostatnie utwory", clearHistory:"Wyczyść historię", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewTitle:"Widok stacji",
     loadMore:"Załaduj więcej...",
     iconFetch:"Pobierz z wyszukiwania", country:"Kraj", notDefined:"nie określono", addBtnWord:"+",
-    eqTitle:"Equalizer", loudnessTitle:"Wyrównanie głośności", sunCityLabel:"Strefa czasowa", eqSystemLink:"Systemowy equalizer", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", shareSyncBtn:"Szybka synchronizacja zapisanych stacji", shareSyncTitle:"Szybka synchronizacja między urządzeniami", shareSyncDesc:"Zeskanuj kod QR lub wyślij link na inne urządzenie. Dane są przekazywane wyłącznie przez kod QR i link, bez serwera.", shareSyncTooBig:"Lista jest za duża dla kodu QR. Użyj linku poniżej.", shareSyncCopied:"Link skopiowany", shareSyncEmpty:"Brak danych do przeniesienia", shareSyncBadFormat:"Nie udało się rozpoznać danych", shareSyncQrError:"Nie udało się utworzyć kodu QR. Sprawdź połączenie z internetem.", shareSyncQrLoading:"Przygotowuję kod QR…", shareSyncTapHint:"Naciśnij kod QR, aby powiększyć", syncQrFileHint:"Kod QR — szybkie przeniesienie stacji i ulubionych utworów. Eksport/Import — dla przeniesienia wszystkiego, w tym ustawień, statystyk, equalizera.", importSyncTitle:"Zaimportować stacje?", importSyncYes:"Importuj", importSyncSummary:"Nowe: {n}. Zaktualizowane: {u}. Ulubione utwory: {f}.", importSyncDone:"Zaimportowano: {n} nowych, {u} zaktualizowanych", importSyncNoStations:"Link nie zawiera stacji", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
+    eqTitle:"Equalizer", loudnessTitle:"Wyrównanie głośności", sunCityLabel:"Strefa czasowa", eqSystemLink:"Systemowy equalizer", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", shareSyncBtn:"Szybka synchronizacja zapisanych stacji", shareSyncTitle:"Szybka synchronizacja między urządzeniami",     shareSyncDesc:"Zeskanuj kod QR lub wyślij link na inne urządzenie. Jeśli stacji jest dużo, transfer odbędzie się w częściach (kilka kodów QR) lub jednym linkiem. Dane są przekazywane bez serwera.", shareSyncTooBig:"Lista jest za duża dla kodu QR. Użyj linku poniżej.", shareSyncCopied:"Link skopiowany", shareSyncEmpty:"Brak danych do przeniesienia", shareSyncBadFormat:"Nie udało się rozpoznać danych", shareSyncQrError:"Nie udało się utworzyć kodu QR. Sprawdź połączenie z internetem.", shareSyncQrLoading:"Przygotowuję kod QR…", shareSyncTapHint:"Naciśnij kod QR, aby powiększyć", syncQrFileHint:"Kod QR — szybkie przeniesienie stacji i ulubionych utworów. Eksport/Import — dla przeniesienia wszystkiego, w tym ustawień, statystyk, equalizera.", importSyncTitle:"Zaimportować stacje?", importSyncYes:"Importuj", importSyncSummary:"Nowe: {n}. Zaktualizowane: {u}. Ulubione utwory: {f}.", importSyncDone:"Zaimportowano: {n} nowych, {u} zaktualizowanych", importSyncNoStations:"Link nie zawiera stacji", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
   en: { moreWord:"More", appName:"my radio", installBanner:"Install the app", installIosTitle:"Install on iPhone / iPad", installIosText:"1. Tap the Share button (square with an up arrow) in your browser.\n2. Choose “Add to Home Screen”.\n3. Tap “Add”.", installOk:"Got it", stationFilterPh:"Search my stations", stationFilterEmpty:"Nothing found", versionChecking:"Checking for updates…", versionLatest:"You have the latest version", versionCheckFail:"Couldn't check for updates", versionNewBtn:"New version {v} available — tap to update", pipWord:"Always-on-top mini player",copyTip:"Copy",colorAutoBtn:"Auto from icon", colorAutoFailToast:"Couldn't detect a color from the icon", chooseStation:"Choose a station below", buffering:"Buffering...", playPrompt:"Press play to continue", noUrl:"No link yet — add it in the menu", copied:"Copied", copiedSongName:"Song name copied", linkCopiedToast:"Link copied", stopped:"Choose a station below", cantPlay:"Could not play the stream", streamUrlPlaceholder:"Stream link", stationIconAlt:"station icon", resetAllConfirmText:"Really reset everything?", resetStatsConfirmText:"Really reset statistics?", historyExportedToast:"History exported", resetDoneToast:"Reset to factory settings — reloading...", versionLabel:"Version", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"success ", syncStatusFail:"error ", syncLoadFailToast:"Couldn't load the file — even via backup proxies. Still retrying in the background.", syncNoStationsToast:"File loaded, but no stations found — check the format", syncUpdatedToast:"Station list updated", syncParseErrorToast:"Error processing the file", addedStationsSummary:"Saved stations", otherParamsSummary:"Other parameters in the file", cancelWord:"Cancel", iconChangedToast:"Icon changed", clearHistoryConfirm:"Clear the entire song history?", clearFavoritesConfirm:"Clear all liked songs?", favoritesCleared:"Favorites cleared", deleteStationConfirm:"Delete station «{name}»?", messageUnderTitleLabel:"Text under the song title", manualTrackTitleLabel:"Manual track title", stopWordsLabel:"Stop-words in the song title", manualWord:"manually", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Backup search", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Choose an icon for the station:", copyFailedToast:"Couldn't copy", historyCleared:"History cleared", statsResetToast:"Listening stats reset", connOffline:"No internet connection", connRetrying:"Station connection lost · attempt {n}/{max}", connSlow:"Station not responding · attempt {n}/{max}", connFailed:"Couldn't restore the stream — press ⟳ to try again", streamLostRetrying:"Stream lost — attempting to reconnect ", offlineToast:"No network — I will resume the stream as soon as it is back", onlineToast:"Network is back — reconnecting", devErrLogTitle:"Saved errors", recoverFailedToast:"Couldn't recover the stream", storageFullToast:"Can't save settings — browser storage is full", sleepTimerStoppedToast:"Sleep timer: stopped", openSystemSoundSettingsToast:"Open your system sound settings manually", deletedToast:"Deleted", enterNameUrlToast:"Enter a name and link", simDropSentToast:"Dropout simulation sent", noStationsInFileToast:"No stations found in the file", addedToast:"Added: ", cantReadFileToast:"Couldn't read the file — check the format", searchingIconToast:"Searching for icon...", iconUploadedToast:"Icon uploaded", iconRemovedToast:"Icon removed", noSuccessfulSyncToast:"No successful sync yet to restore from", stationNotInSyncToast:"Station not found in the last sync", restoredFromSyncToast:"Restored from the last successful sync", noSourceToast:"No source to detect from", titleNotFoundToast:"Couldn't find the song title", savedToast:"Saved: ", sessionUsageResetToast:"Session usage reset", updatingToast:"Updating...", updatedWord:"updated", stationExistsToast:"This station is already in the list", chooseThemeTitle:"Choose a color theme", confirmWord:"Done", searchingSongTitleToast:"Searching for the song title...", messagePlaceholder:"message text", manualTrackPlaceholder:"manual track title", lastSuccessLabel:"last succeeded", iconNotFoundToast:"Couldn't find an icon", iconWord:"Icon", chooseOptionToast:"Choose an option", iconUrlPromptLabel:"Icon address:", iconFetchShort:"find", iconUrlApply:"Paste icon URL", httpsFirstLabel:"Try http → https directly first, instead of the proxy", prevNextLabel:"Show station switch buttons", refreshWord:"refresh", menuWord:"menu", shareWord:"Share", muteWord:"sound", prevStationWord:"previous station", playWord:"play", nextStationWord:"next station", stopWord:"stop", resetWord:"reset", prevPageWord:"Previous page", nextPageWord:"Next page", uploadWord:"Upload", removeWord:"Remove", tooltipReload:"Restart the stream", tooltipMenu:"Menu: stations and settings", tooltipStop:"Stop and reset", tooltipPrevStation:"Previous station", tooltipNextStation:"Next station", tooltipShare:"Share the station", tooltipMute:"Turn sound on / off", iconManualSearchPlaceholder:"or type a station name manually",
     tabOptions:"Options", sortDefault:"Custom order", sortAsc:"Alphabetical (A-Z)", sortDesc:"Alphabetical (Z-A)", tabStations:"Stations", tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsShort:"Statistics", tabAdvanced:"Advanced", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Casting to «{name}»", castEndedToast:"Casting stopped", castFailToast:"Chromecast could not play this stream", newIconLabel:"Icon", desktopStationHint:"Right-click a station to edit; drag a station to reorder.", autoSwitchTitle:"Automatic station switch", autoSwitchLabel:"Switch to another station on error", autoSwitchToast:"Station «{from}» is not responding (internet is fine) — switched to «{name}»", autoSwitchBackToast:"Station «{name}» works again — switching back", foldersTitle:"Station folders", foldersLabel:"Group stations into folders", newFolderBtn:"New folder", folderNamePh:"Folder name", folderDefaultName:"Folder", noFolderWord:"No folder", folderFieldLabel:"Folder", renameFolderTip:"Rename folder", deleteFolderTip:"Delete folder (stations are kept)", stationListExportSummary:"Export/Import stations", search:"Search", longPressHint:"Long-press a station and drag to reorder.", longPressHintReorder:"Long-press a station to edit (dragging is off).", gridLongPressEditLabel:"Long-press to edit station",
     syncEnableLabel:"Link between the app and the server", syncFileDesc:"Link to the file that stations and the settings below are pulled from the server.", notSynced:"not synced yet",
@@ -2623,7 +2627,7 @@ const I18N = {
     searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", recentSongsTitle:"Recent songs", clearHistory:"Clear history", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewTitle:"Station view",
     loadMore:"Load more...",
     iconFetch:"Get from search", country:"Country", notDefined:"not defined", addBtnWord:"+",
-    eqTitle:"Equalizer", loudnessTitle:"Loudness equalization", sunCityLabel:"Time zone", eqSystemLink:"System equalizer", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", shareSyncBtn:"Quick sync of stations", shareSyncTitle:"Quick sync between devices", shareSyncDesc:"Scan the QR code or send the link to another device. Data is transferred only via QR code and link, without a server.", shareSyncTooBig:"The list is too big for a QR code. Use the link below.", shareSyncCopied:"Link copied", shareSyncEmpty:"No data to transfer", shareSyncBadFormat:"Could not recognize the data", shareSyncQrError:"Could not create QR code. Check your internet connection.", shareSyncQrLoading:"Preparing QR code…", shareSyncTapHint:"Tap the QR code to enlarge", syncQrFileHint:"QR code — quickly transfer your stations and favorite songs. Export/Import — to transfer everything, including settings, statistics, and the equalizer.", importSyncTitle:"Import stations?", importSyncYes:"Import", importSyncSummary:"New: {n}. Updated: {u}. Favorite songs: {f}.", importSyncDone:"Imported: {n} new, {u} updated", importSyncNoStations:"The link contains no stations", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
+    eqTitle:"Equalizer", loudnessTitle:"Loudness equalization", sunCityLabel:"Time zone", eqSystemLink:"System equalizer", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", shareSyncBtn:"Quick sync of stations", shareSyncTitle:"Quick sync between devices",     shareSyncDesc:"Scan the QR code or send the link to another device. If there are many stations, the transfer will be split into parts (multiple QR codes) or a single link. Data is transferred without a server.", shareSyncTooBig:"The list is too big for a QR code. Use the link below.", shareSyncCopied:"Link copied", shareSyncEmpty:"No data to transfer", shareSyncBadFormat:"Could not recognize the data", shareSyncQrError:"Could not create QR code. Check your internet connection.", shareSyncQrLoading:"Preparing QR code…", shareSyncTapHint:"Tap the QR code to enlarge", syncQrFileHint:"QR code — quickly transfer your stations and favorite songs. Export/Import — to transfer everything, including settings, statistics, and the equalizer.", importSyncTitle:"Import stations?", importSyncYes:"Import", importSyncSummary:"New: {n}. Updated: {u}. Favorite songs: {f}.", importSyncDone:"Imported: {n} new, {u} updated", importSyncNoStations:"The link contains no stations", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
 };
 function t(key) { const lang = state.settings.language || "uk"; return (I18N[lang] && I18N[lang][key]) || I18N.uk[key] || key; }
 function applyI18nDom() {
@@ -2997,7 +3001,7 @@ const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // Сторінка, що відкривається кліком на підпис автора; можна замінити тегом <author_site> у Google-файлі.
 const DEFAULT_AUTHOR_SITE = "https://github.com/MojeRadio/MojeRadio.github.io";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.51";
+const APP_VERSION = "3.52";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -5784,7 +5788,7 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     #mpStation:hover #mpStationArrow { opacity:1; }
     #mpTrack { cursor:pointer; }
     /* Довга назва пісні не обрізається, а повільно й плавно їздить вліво-вправо. */
-    .mpTrackIn { display:inline-block; white-space:nowrap; }
+    .mpTrackIn { display:inline-block; white-space:nowrap; padding: 0 12px; }
     .mpTrackIn.scr { animation: mpTrackScroll var(--mp-dur, 10s) ease-in-out infinite; will-change: transform; }
     @keyframes mpTrackScroll { 0%, 14% { transform: translateX(0); } 50%, 64% { transform: translateX(calc(-1 * var(--mp-dist, 0px))); } 100% { transform: translateX(0); } }
     @media (prefers-reduced-motion: reduce) { .mpTrackIn.scr { animation: none; } #mpTrack { text-overflow: ellipsis; } }
@@ -6192,9 +6196,10 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     if (b._mpKey === key) return;
     b._mpKey = key;
     inn.classList.remove("scr");
+    // Додаємо +24px (по 12px з кожного боку), щоб текст не прилипав до країв
     const over = Math.ceil(inn.offsetWidth - avail);
     if (avail > 0 && over > 1) {
-      inn.style.setProperty("--mp-dist", over + "px");
+      inn.style.setProperty("--mp-dist", (over + 24) + "px");
       inn.style.setProperty("--mp-dur", Math.max(7, over / 22 / 0.35) + "s");
       void inn.offsetWidth;
       inn.classList.add("scr");
@@ -13613,14 +13618,73 @@ function buildSyncPayloadText() {
   return lines.join("\n");
 }
 
-async function buildSyncLink() {
-  const text = buildSyncPayloadText();
-  const bytes = new TextEncoder().encode(text);
-  const compressed = await compressSyncBytes(bytes);
-  const b64 = toBase64Url(compressed);
-  const rawBase = (typeof getShareBase === "function" ? getShareBase() : "") || DEFAULT_PWA_SITE;
-  const base = String(rawBase).split("#")[0].replace(/\/+$/, "");
-  return { link: base + "#s=" + b64, dataSize: b64.length };
+async function buildAllSyncLinks() {
+  const links = [];
+  const totalStations = state.stations.length;
+  
+  const processChunk = async (stationsInChunk, isFirst) => {
+    const lines = ["V1"];
+    if (isFirst) {
+      getFolders().forEach(f => {
+        if (f && f.id && f.name) lines.push("DF\t" + f.id + "\t" + String(f.name).replace(/[\t\r\n]/g, " ").trim());
+      });
+    }
+    stationsInChunk.forEach(s => {
+      if (!s.url) return;
+      const isHttps = /^https:\/\//i.test(s.url);
+      const isHttp = /^http:\/\//i.test(s.url);
+      if (!isHttps && !isHttp) return;
+      const prefix = isHttps ? "s:" : "p:";
+      const strippedUrl = s.url.replace(/^https?:\/\//i, "").trim();
+      if (!strippedUrl) return;
+      const fullName = String(s.fullName || s.name || "").replace(/[\t\r\n]/g, " ").trim();
+      if (!fullName) return;
+      const folderId = (s.folder && getFolders().some(f=>f.id === s.folder)) ? s.folder : "";
+      lines.push(prefix + strippedUrl + "\t" + fullName + "\t" + folderId);
+    });
+    if (isFirst) {
+      (state.songFavorites || []).slice(-20).forEach(f => { if (f) lines.push("F\t" + String(f).replace(/[\r\n]/g, " ")); });
+      (state.deletedDefaultNames || []).forEach(n => { if (n) lines.push("DN\t" + String(n).replace(/[\r\n]/g, " ")); });
+      (state.deletedStationUrls || []).forEach(u => { if (u) lines.push("DU\t" + String(u).replace(/[\r\n]/g, " ")); });
+    }
+    const text = lines.join("\n");
+    const bytes = new TextEncoder().encode(text);
+    const compressed = await compressSyncBytes(bytes);
+    const b64 = toBase64Url(compressed);
+    const rawBase = (typeof getShareBase === "function" ? getShareBase() : "") || DEFAULT_PWA_SITE;
+    const base = String(rawBase).split("#")[0].replace(/\/+$/, "");
+    return { link: base + "#s=" + b64, dataSize: b64.length };
+  };
+
+  if (totalStations === 0) {
+    const res = await processChunk([], true);
+    return [res];
+  }
+
+  let i = 0;
+  let chunkIndex = 0;
+  while (i < totalStations) {
+    let chunk = [];
+    let res;
+    let isFirst = (chunkIndex === 0);
+    while (i < totalStations) {
+      chunk.push(state.stations[i]);
+      res = await processChunk(chunk, isFirst);
+      if (res.dataSize > 2000) {
+        if (chunk.length > 1) {
+          chunk.pop();
+          res = await processChunk(chunk, isFirst);
+        } else {
+          i++; // Якщо одна станція займає забагато місця, все одно додаємо її
+        }
+        break;
+      }
+      i++;
+    }
+    links.push(res);
+    chunkIndex++;
+  }
+  return links;
 }
 
 function parseSyncPayloadText(text) {
@@ -13689,66 +13753,126 @@ async function showShareSyncModal() {
   const qrContainer = document.getElementById("shareSyncQr");
   const qrNote = document.getElementById("shareSyncQrNote");
   const qrHint = document.getElementById("shareSyncQrHint");
+  
+  // Очищаємо старі елементи пагінації, якщо вони були
+  const oldPag = document.getElementById("shareSyncQrPagination");
+  if (oldPag) oldPag.remove();
+  const oldNote = document.getElementById("shareSyncChunkNote");
+  if (oldNote) oldNote.remove();
+
   qrWrap.style.display = "none";
   qrNote.style.display = "none";
   qrHint.style.display = "none";
   qrContainer.innerHTML = "";
-  let built;
+
+  let allLinks;
   try {
-    built = await buildSyncLink();
+    allLinks = await buildAllSyncLinks();
   } catch (e) {
     showToast(t("shareSyncEmpty"));
     return;
   }
-  if (!built || !built.link || built.dataSize === 0) {
+  if (!allLinks || !allLinks.length || allLinks[0].dataSize === 0) {
     showToast(t("shareSyncEmpty"));
     return;
   }
-      linkInput.value = built.link;
-      bg.classList.add("open");
-      // Збільшено ліміт з 2000 до 2900 символів. Це максимальна місткість QR-коду (версія 40, рівень L).
-      // На ПК працює стиснення CompressionStream, а на мобільних браузерах його часто немає, 
-      // тому дані не стискаються і довжина рядка перевищує старий ліміт.
-      if (built.dataSize > 2900) {
-        qrNote.style.display = "block";
-        qrNote.textContent = t("shareSyncTooBig");
-        return;
-      }
-  qrNote.style.display = "block";
-  qrNote.textContent = t("shareSyncQrLoading");
-  try {
-    await loadQrLibrary();
-  } catch (e) {
-    qrNote.textContent = t("shareSyncQrError");
-    return;
-  }
-  try {
-    const qr = window.qrcode(0, "L");
-    qr.addData(built.link);
-    qr.make();
-    qrContainer.innerHTML = qr.createSvgTag(4, 0);
-    const svg = qrContainer.querySelector("svg");
-    if (svg) {
-      const w = parseInt(svg.getAttribute("width"), 10) || 0;
-      const h = parseInt(svg.getAttribute("height"), 10) || 0;
-      if (w && h && !svg.getAttribute("viewBox")) {
-        svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-      }
-      svg.removeAttribute("width");
-      svg.removeAttribute("height");
-      svg.style.width = "100%";
-      svg.style.height = "auto";
-      svg.style.display = "block";
-      svg.setAttribute("shape-rendering", "crispEdges");
-    }
-    qrWrap.style.display = "flex";
-    qrNote.style.display = "none";
-    qrNote.textContent = "";
-    qrHint.style.display = "block";
-  } catch (e) {
-    qrWrap.style.display = "none";
+
+  bg.classList.add("open");
+
+  if (allLinks.length === 1) {
+    // ЗВИЧАЙНИЙ РЕЖИМ (якщо все влазить в один QR)
+    linkInput.value = allLinks[0].link;
     qrNote.style.display = "block";
-    qrNote.textContent = t("shareSyncQrError");
+    qrNote.textContent = t("shareSyncQrLoading");
+    try {
+      await loadQrLibrary();
+      const qr = window.qrcode(0, "L");
+      qr.addData(allLinks[0].link);
+      qr.make();
+      qrContainer.innerHTML = qr.createSvgTag(4, 0);
+      const svg = qrContainer.querySelector("svg");
+      if (svg) {
+        const w = parseInt(svg.getAttribute("width"), 10) || 0;
+        const h = parseInt(svg.getAttribute("height"), 10) || 0;
+        if (w && h && !svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.style.width = "100%";
+        svg.style.height = "auto";
+        svg.style.display = "block";
+        svg.setAttribute("shape-rendering", "crispEdges");
+      }
+      qrWrap.style.display = "flex";
+      qrNote.style.display = "none";
+      qrNote.textContent = "";
+      qrHint.style.display = "block";
+    } catch (e) {
+      qrWrap.style.display = "none";
+      qrNote.style.display = "block";
+      qrNote.textContent = t("shareSyncQrError");
+    }
+  } else {
+    // РЕЖИМ КІЛЬКОХ НЕЗАЛЕЖНИХ QR-КОДІВ
+    let currentChunk = 0;
+    const total = allLinks.length;
+
+    const pagDiv = document.createElement("div");
+    pagDiv.id = "shareSyncQrPagination";
+    pagDiv.style.cssText = "display:flex; justify-content:center; align-items:center; gap:12px; margin-top:12px;";
+    pagDiv.innerHTML = `
+      <button class="ghostBtn" id="syncQrPrev" style="margin:0; padding:8px 16px; width:auto;">←</button>
+      <span id="syncQrCounter" style="font-weight:700; font-size:15px; color:var(--modaltext);"></span>
+      <button class="ghostBtn" id="syncQrNext" style="margin:0; padding:8px 16px; width:auto;">→</button>
+    `;
+    qrWrap.parentNode.insertBefore(pagDiv, qrWrap.nextSibling);
+
+    const chunkNote = document.createElement("div");
+    chunkNote.id = "shareSyncChunkNote";
+    chunkNote.className = "hint";
+    chunkNote.style.cssText = "text-align:center; margin-top:8px; color:#e0973d; font-weight:600;";
+    chunkNote.textContent = "Список розділено на частини. Скануйте будь-який QR-код окремо, щоб додати ці станції.";
+    pagDiv.parentNode.insertBefore(chunkNote, pagDiv.nextSibling);
+
+    const drawQr = async (idx) => {
+      qrContainer.innerHTML = "";
+      linkInput.value = allLinks[idx].link;
+      qrNote.style.display = "block";
+      qrNote.textContent = t("shareSyncQrLoading");
+      try {
+        await loadQrLibrary();
+        const qr = window.qrcode(0, "L");
+        qr.addData(linkInput.value);
+        qr.make();
+        qrContainer.innerHTML = qr.createSvgTag(4, 0);
+        const svg = qrContainer.querySelector("svg");
+        if (svg) {
+          const w = parseInt(svg.getAttribute("width"), 10) || 0;
+          const h = parseInt(svg.getAttribute("height"), 10) || 0;
+          if (w && h && !svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+          svg.removeAttribute("width");
+          svg.removeAttribute("height");
+          svg.style.width = "100%";
+          svg.style.height = "auto";
+          svg.style.display = "block";
+          svg.setAttribute("shape-rendering", "crispEdges");
+        }
+        document.getElementById("syncQrCounter").textContent = "Частина " + (idx + 1) + " з " + total;
+        document.getElementById("syncQrPrev").disabled = idx === 0;
+        document.getElementById("syncQrNext").disabled = idx === total - 1;
+        qrWrap.style.display = "flex";
+        qrNote.style.display = "none";
+        qrHint.style.display = "block";
+      } catch (e) {
+        qrWrap.style.display = "none";
+        qrNote.style.display = "block";
+        qrNote.textContent = t("shareSyncQrError");
+      }
+    };
+
+    document.getElementById("syncQrPrev").onclick = () => { if (currentChunk > 0) { currentChunk--; drawQr(currentChunk); } };
+    document.getElementById("syncQrNext").onclick = () => { if (currentChunk < total - 1) { currentChunk++; drawQr(currentChunk); } };
+
+    drawQr(0);
   }
 }
 
@@ -13875,10 +13999,11 @@ function applySyncImport(parsed) {
 async function handleSyncFromUrl() {
   const hash = location.hash;
   if (!hash || !hash.startsWith("#s=")) return;
-  const encoded = hash.slice(3);
+  let encoded = hash.slice(3);
   try {
     history.replaceState(null, "", location.pathname + location.search);
   } catch (e) {}
+
   const parsed = await decodeSyncLink(encoded);
   if (!parsed) {
     showToast(t("shareSyncBadFormat"));
