@@ -1162,16 +1162,26 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 /* Сітка/Список залишаємо по центру */
 #viewToggle button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
-/* Елемент по центру: вирівнюємо іконку та текст по лівому краю */
-#centerModeToggle button {
-  display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px;
-  text-align: left;
-  padding: 8px 10px;
-  line-height: 1.25;
-  min-width: 0; /* Дозволяємо кнопкам стискатися рівномірно */
+/* Елемент по центру: ширина залежить від довжини тексту */
+#centerModeToggle {
+  flex-wrap: wrap; /* Дозволяємо перенос кнопок на новий рядок, якщо екран занадто вузький */
 }
+
+#centerModeToggle button {
+  flex: 1 1 auto; /* Ширина базується на довжині тексту, але кнопки розтягуються, щоб заповнити рядок */
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; /* Центруємо текст та іконку всередині кнопки */
+  gap: 6px;
+  text-align: center;
+  padding: 8px 12px;
+  line-height: 1.25;
+  min-width: 0;
+  min-height: 48px; /* Запобігає обрізанню тексту, якщо він все ж перенесеться на 2 рядки */
+}
+
 #centerModeToggle button span {
-  white-space: normal; /* Дозволяємо тексту переноситися на новий рядок */
+  white-space: normal; /* Дозволяємо переносити текст, якщо екран зовсім маленький */
   overflow-wrap: break-word;
 }
 
@@ -2273,7 +2283,7 @@ html.lc .tabs button {
 
           <a class="ghostBtn" id="contactLink" href="mailto:tsuand@gmail.com" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="contactLabel">Контакт з розробником</span></a>
           <!-- УВАГА: версія вказується у ДВОХ місцях — тут і в const APP_VERSION (JS). Міняти обидва. -->
-          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.50</div>
+          <div class="hint" id="versionLine" style="margin-top:12px;">Версія 3.51</div>
           <div class="authorLine">ATsuAnd © 2026</div>
         </div>
 
@@ -2987,7 +2997,7 @@ const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
 // Сторінка, що відкривається кліком на підпис автора; можна замінити тегом <author_site> у Google-файлі.
 const DEFAULT_AUTHOR_SITE = "https://github.com/MojeRadio/MojeRadio.github.io";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
-const APP_VERSION = "3.50";
+const APP_VERSION = "3.51";
 // Проксі для тексту/JSON (синк списку станцій, опитування назви треку тощо).
 // Твій воркер — завжди перший (швидший і стабільніший за публічні), решта — резервні.
 const DEFAULT_WORKER_BASE = "https://mojeradio-proxy.tsuand.workers.dev";
@@ -13507,20 +13517,6 @@ document.getElementById("importFileInput").onchange = (e) => {
 // ===================== Quick Sync (QR / Link) =====================
 
 const QR_LIB_SRC = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js";
-const PAKO_SRC = "https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js";
-let pakoPromise = null;
-function loadPako() {
-  if (window.pako) return Promise.resolve();
-  if (pakoPromise) return pakoPromise;
-  pakoPromise = new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = PAKO_SRC; s.async = true;
-    s.onload = () => resolve();
-    s.onerror = () => { pakoPromise = null; reject(new Error("Pako load failed")); };
-    document.head.appendChild(s);
-  });
-  return pakoPromise;
-}
 let qrLibPromise = null;
 
 function loadQrLibrary() {
@@ -13559,34 +13555,22 @@ function fromBase64Url(str) {
 }
 
 async function compressSyncBytes(bytes) {
-  // Спершу пробуємо рідну функцію браузера
-  if (typeof CompressionStream !== "undefined") {
-    try {
-      const cs = new CompressionStream("deflate");
-      const stream = new Blob([bytes]).stream().pipeThrough(cs);
-      return new Uint8Array(await new Response(stream).arrayBuffer());
-    } catch (e) {}
-  }
-  // Якщо браузер не вміє (Android) — завантажуємо pako і стискаємо нею
+  if (typeof CompressionStream === "undefined") return bytes;
   try {
-    await loadPako();
-    return window.pako.deflate(bytes);
+    const cs = new CompressionStream("deflate");
+    const stream = new Blob([bytes]).stream().pipeThrough(cs);
+    return new Uint8Array(await new Response(stream).arrayBuffer());
   } catch (e) {
-    return bytes; // Якщо навіть pako не завантажилась — відправляємо як є
+    return bytes;
   }
 }
 
 async function decompressSyncBytes(bytes) {
-  if (typeof DecompressionStream !== "undefined") {
-    try {
-      const ds = new DecompressionStream("deflate");
-      const stream = new Blob([bytes]).stream().pipeThrough(ds);
-      return new Uint8Array(await new Response(stream).arrayBuffer());
-    } catch (e) {}
-  }
+  if (typeof DecompressionStream === "undefined") return bytes;
   try {
-    await loadPako();
-    return window.pako.inflate(bytes);
+    const ds = new DecompressionStream("deflate");
+    const stream = new Blob([bytes]).stream().pipeThrough(ds);
+    return new Uint8Array(await new Response(stream).arrayBuffer());
   } catch (e) {
     return bytes;
   }
@@ -13720,13 +13704,16 @@ async function showShareSyncModal() {
     showToast(t("shareSyncEmpty"));
     return;
   }
-  linkInput.value = built.link;
-  bg.classList.add("open");
-  if (built.dataSize > 2000) {
-    qrNote.style.display = "block";
-    qrNote.textContent = t("shareSyncTooBig");
-    return;
-  }
+      linkInput.value = built.link;
+      bg.classList.add("open");
+      // Збільшено ліміт з 2000 до 2900 символів. Це максимальна місткість QR-коду (версія 40, рівень L).
+      // На ПК працює стиснення CompressionStream, а на мобільних браузерах його часто немає, 
+      // тому дані не стискаються і довжина рядка перевищує старий ліміт.
+      if (built.dataSize > 2900) {
+        qrNote.style.display = "block";
+        qrNote.textContent = t("shareSyncTooBig");
+        return;
+      }
   qrNote.style.display = "block";
   qrNote.textContent = t("shareSyncQrLoading");
   try {
