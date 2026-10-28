@@ -5915,21 +5915,6 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     .mpOvHead { display:flex; align-items:center; justify-content:center; position:relative; padding:0.3rem 2.5rem; font-size:0.7rem; font-weight:700; line-height: 1.2; text-transform:uppercase; letter-spacing:.4px; }
     .mpOvHead span { white-space: nowrap; display: inline-block; }
     .mpOvHead .mpX { position:absolute; left:0.5rem; top:50%; transform:translateY(-50%); }
-    .mpOvHead .mpHeaderLogo {
-      position: absolute;
-      right: 0.5rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1.3rem;
-      height: 1.3rem;
-      opacity: 0.8;
-      pointer-events: none;
-    }
-    .mpOvHead .mpHeaderLogo svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
      .mpList { flex:1; overflow-y:auto; padding:0 0.5rem 0.5rem; scrollbar-width:thin; scrollbar-color: rgba(var(--ring,255,255,255), 0.18) transparent; isolation: isolate; }
     .mpList::-webkit-scrollbar { width:0.35rem; height:0.35rem; }
     .mpList::-webkit-scrollbar-track { background:transparent; }
@@ -6194,7 +6179,6 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
     } catch (e) {}
   }
   const BACK_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
-  const LOGO_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M 8 16 A 4 4 0 1 1 16 16" opacity="1"/><path d="M 5 18.5 A 7.5 7.5 0 1 1 19 18.5" opacity="0.6"/><path d="M 2 21 A 11 11 0 1 1 22 21" opacity="0.3"/></svg>';
   const STAR_SVG = (on) => '<svg viewBox="0 0 24 24" fill="' + (on ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   function buildHistoryRow(h, curTrack) {
     const d = pipWin.document;
@@ -6609,8 +6593,8 @@ attachElasticStretch(stationsEl, () => state.settings.listViewEnabled ? "y" : "x
           '<button data-scroll="down" data-target="mpNarrowHistList" aria-label="down">' + ARROW_DOWN_SVG + '</button>' +
         '</div>' +
       '</div>' +
-      '<div id="mpHist" class="mpOv"><div class="mpOvHead"><button id="mpHistClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpHistTitle"></span><div class="mpHeaderLogo">' + LOGO_SVG + '</div></div><div id="mpHistList" class="mpList"></div></div>' +
-      '<div id="mpSt" class="mpOv"><div class="mpOvHead"><button id="mpStClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpStTitle"></span><div class="mpHeaderLogo">' + LOGO_SVG + '</div></div><div id="mpStList" class="mpList"></div></div>';
+      '<div id="mpHist" class="mpOv"><div class="mpOvHead"><button id="mpHistClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpHistTitle"></span></div><div id="mpHistList" class="mpList"></div></div>' +
+      '<div id="mpSt" class="mpOv"><div class="mpOvHead"><button id="mpStClose" class="mpX" aria-label="back">' + BACK_SVG + '</button><span id="mpStTitle"></span></div><div id="mpStList" class="mpList"></div></div>';
     d.getElementById("mpHistTitle").textContent = t("recentSongsTitle");
     d.getElementById("mpStTitle").textContent = t("tabStations");
     setTimeout(() => {
