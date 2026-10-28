@@ -1164,29 +1164,38 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
 
 /* Елемент по центру: всі 3 кнопки в один рядок */
 #centerModeToggle {
-  flex-wrap: nowrap; /* Забороняємо перенос кнопок на новий рядок */
-  gap: 6px; /* Трохи зменшуємо проміжок між кнопками, щоб всі влізли */
+  flex-wrap: nowrap;
+  gap: 4px; /* Проміжок між самими кнопками */
 }
 
 #centerModeToggle button {
-  flex: 1 1 0%; /* Рівномірно ділимо ширину між трьома кнопками */
+  flex: 1 1 auto; 
   display: flex; 
   align-items: center; 
-  justify-content: flex-start; /* Притискаємо іконку і текст до лівого краю */
-  gap: 6px; /* Відступ між іконкою та текстом */
-  text-align: left; /* Вирівнювання тексту по лівому краю */
-  padding: 6px 8px; /* Трохи збільшуємо бічні відступи для охайного вигляду */
+  justify-content: center; /* Центруємо іконку і текст як єдиний блок всередині кнопки */
+  gap: 8px; /* Збільшуємо відступ між іконкою та текстом */
+  text-align: left; 
+  padding: 6px 8px; 
   line-height: 1.15;
   min-width: 0;
-  min-height: 56px; /* Фіксуємо висоту, щоб всі кнопки були однакові */
+  min-height: 56px; 
+  overflow: hidden; 
+}
+
+#centerModeToggle button svg {
+  flex-shrink: 0; /* Забороняємо іконці стискатися, якщо текст довгий */
 }
 
 #centerModeToggle button span {
-  white-space: normal; /* Дозволяємо переносити текст на два рядки */
-  overflow-wrap: break-word;
-  word-break: break-word;
-  font-size: 12px; /* Трохи зменшуємо шрифт для кращого вміщення */
-  text-align: left; /* Додатково фіксуємо вирівнювання тексту по лівому краю */
+  white-space: normal; 
+  overflow-wrap: normal; 
+  word-break: normal;    
+  hyphens: manual;       
+  font-size: clamp(10px, 2.8vw, 12px); 
+  text-align: left; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Вертикальне центрування тексту, якщо він короткий */
 }
 
 #viewToggle button svg,
