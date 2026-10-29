@@ -3166,7 +3166,8 @@ function applyWorkerBase(base) {
 // Проксі для HTTPS-загортання HTTP-іконок (mixed content fix).
 // Той самий воркер уміє віддавати будь-який бінарний контент.
 function proxifyIconUrl(url) {
-  if (!url) return url;
+  // Якщо адреси немає, або вона записана як текст "null" чи "undefined" — ігноруємо
+  if (!url || url === "null" || url === "undefined") return ""; 
   if (url.startsWith("data:")) return url;
   if (!isHttpsPage()) return url;
   if (url.startsWith("https://")) return url;
