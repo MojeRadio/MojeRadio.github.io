@@ -8847,7 +8847,7 @@ function loadIconPixels(url) {
 }
 async function colorFromIconUrl(url) {
   if (!url || url === "null" || url === "undefined" || url === DEFAULT_STATION_ICON) return null;
-  if (isIconBroken(url)) return null; // <-- ДОДАТИ ЦЕЙ РЯДОК (якщо іконка бита, не намагаємось взяти колір)
+  if (isIconBroken(url)) return null; // <-- ДОДАТИ ЦЕЙ РЯДОК
   const tries = [];
   // Спочатку пробуємо через проксі (він віддає правильні CORS-заголовки), потім напряму
   if (!url.startsWith("data:")) tries.push(STREAM_PROXIES[0] + encodeURIComponent(url));
@@ -11208,7 +11208,7 @@ function pixelsAreWhiteLogo(px) {
 }
 async function detectWhiteLogo(src) {
   if (!src || src === "null" || src === "undefined" || src === DEFAULT_STATION_ICON) return false;
-  if (isIconBroken(url)) return null; // <-- ДОДАТИ ЦЕЙ РЯДОК (якщо іконка бита, не намагаємось взяти колір)
+  if (isIconBroken(src)) return false; // <-- ДОДАТИ ЦЕЙ РЯДОК
   const tries = [];
   // Спочатку пробуємо через проксі, щоб уникнути помилок CORS у консолі
   if (!src.startsWith("data:") && !isProxiedStreamUrl(src)) tries.push(STREAM_PROXIES[0] + encodeURIComponent(src));
@@ -15022,11 +15022,12 @@ async function fetchIconCandidatesFor(name, homepage, streamUrl) {
           if (res.ok) {
             const data = await res.json();
             if (data && data.length) {
-              for (const st of data) {
-                if (st.favicon && st.favicon.trim() && st.favicon !== DEFAULT_STATION_ICON) {
+            for (const st of data) {
+              if (st.favicon && st.favicon.trim() && st.favicon !== DEFAULT_STATION_ICON) {
+                // ДОДАНО ПЕРЕВІРКУ:
+                if (!isIconBroken(st.favicon)) {
                   rawIcons.push({ url: st.favicon, source: 'radio-browser', name: st.name });
                 }
-                if (!homepage && st.homepage && st.homepage.trim()) homepage = st.homepage.trim();
               }
             }
             break;
@@ -16078,7 +16079,8 @@ async function enrichExistingStations() {
               for (const cand of data) {
                 if (cand.favicon && cand.favicon.trim() && cand.favicon !== DEFAULT_STATION_ICON) {
                   registerFaviconUsage(cand.favicon);
-                  if (!isLikelyGenericFavicon(cand.favicon)) eligible.push(cand);
+                  // ДОДАНО ПЕРЕВІРКУ isIconBroken:
+                  if (!isLikelyGenericFavicon(cand.favicon) && !isIconBroken(cand.favicon)) eligible.push(cand);
                 }
               }
               if (eligible.length) {
