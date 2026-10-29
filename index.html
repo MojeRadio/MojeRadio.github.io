@@ -6,6 +6,9 @@
 <title>My Radio</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <meta name="theme-color" content="#23306e" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1c2044" media="(prefers-color-scheme: dark)">
 <meta name="google" content="notranslate">
@@ -3542,6 +3545,27 @@ function loadState() {
   try { migrateRealVizDefaultOn(); } catch (e) {}
   migrateCenterMode(hadRaw);
   syncCenterModeFlags();
+  migrateHistoryLimits();
+}
+
+// Одноразово обрізає вже збережені історію/улюблені до нових лімітів
+// (100 не-улюблених + 100 улюблених). Для нових користувачів нічого не робить.
+function migrateHistoryLimits() {
+  if (state.settings.historyLimitsMigrationDone) return;
+  if (Array.isArray(state.songFavorites) && state.songFavorites.length > 100) {
+    state.songFavorites = state.songFavorites.slice(-100);
+  }
+  if (Array.isArray(state.songHistory) && state.songHistory.length > 0) {
+    const favSet = new Set(state.songFavorites || []);
+    let nonFavCount = 0;
+    state.songHistory = state.songHistory.filter(h => {
+      if (favSet.has(h.title)) return true;
+      if (nonFavCount < 100) { nonFavCount++; return true; }
+      return false;
+    });
+  }
+  state.settings.historyLimitsMigrationDone = true;
+  saveStateImmediate();
 }
 // centerMode — єдине джерело істини; vizEnabled/pulseEnabled з нього похідні. Нормалізуємо
 // при кожному завантаженні, щоб лишити лише відповідний прапорець (виправляє й уже
@@ -4470,7 +4494,7 @@ function addSongToHistory(title) {
   let nonFavCount = 0;
   for (const h of merged) {
     if (state.songFavorites.includes(h.title)) { result.push(h); continue; }
-    if (nonFavCount < 200) { result.push(h); nonFavCount++; }
+    if (nonFavCount < 100) { result.push(h); nonFavCount++; }
   }
   state.songHistory = result;
   saveState();
@@ -4480,7 +4504,13 @@ function addSongToHistory(title) {
 function toggleFavorite(title) {
   const idx = state.songFavorites.indexOf(title);
   if (idx > -1) state.songFavorites.splice(idx, 1);
-  else state.songFavorites.push(title);
+  else {
+    state.songFavorites.push(title);
+    // Максимум 100 улюблених: якщо перевищили — прибираємо найстаріші (вони на початку масиву).
+    if (state.songFavorites.length > 100) {
+      state.songFavorites.splice(0, state.songFavorites.length - 100);
+    }
+  }
   saveState();
   renderSongHistory();
   renderSongFavorites();
@@ -8761,8 +8791,10 @@ function loadIconPixels(url) {
 }
 async function colorFromIconUrl(url) {
   if (!url || url === DEFAULT_STATION_ICON) return null;
-  const tries = [proxifyIconUrl(url)];
+  const tries = [];
+  // Спочатку пробуємо через проксі (він віддає правильні CORS-заголовки), потім напряму
   if (!url.startsWith("data:")) tries.push(STREAM_PROXIES[0] + encodeURIComponent(url));
+  tries.push(proxifyIconUrl(url));
   let px = null;
   for (const u of tries) { px = await loadIconPixels(u); if (px) break; }
   if (!px) return null;
@@ -11119,8 +11151,10 @@ function pixelsAreWhiteLogo(px) {
 }
 async function detectWhiteLogo(src) {
   if (!src || src === DEFAULT_STATION_ICON) return false;
-  const tries = [src];
+  const tries = [];
+  // Спочатку пробуємо через проксі, щоб уникнути помилок CORS у консолі
   if (!src.startsWith("data:") && !isProxiedStreamUrl(src)) tries.push(STREAM_PROXIES[0] + encodeURIComponent(src));
+  tries.push(src);
   for (const u of tries) {
     const px = await loadIconPixels(u);
     if (px) return pixelsAreWhiteLogo(px);
@@ -13887,9 +13921,24 @@ async function buildAllSyncLinks() {
     return { link: base + "#s=" + b64, dataSize: b64.length };
   };
 
+  // ОДНЕ повне посилання з усім списком — для копіювання/месенджера.
+  // (QR-код може не вмістити весь список, а посилання вмістить завжди.)
+  let combinedLink = null;
+  try {
+    const fullText = buildSyncPayloadText();
+    const fullBytes = new TextEncoder().encode(fullText);
+    const fullCompressed = await compressSyncBytes(fullBytes);
+    const fullB64 = toBase64Url(fullCompressed);
+    const rawBase = (typeof getShareBase === "function" ? getShareBase() : "") || DEFAULT_PWA_SITE;
+    const base = String(rawBase).split("#")[0].replace(/\/+$/, "");
+    combinedLink = base + "#s=" + fullB64;
+  } catch (e) {
+    combinedLink = null;
+  }
+
   if (totalStations === 0) {
     const res = await processChunk([], true);
-    return [res];
+    return { links: [res], combinedLink };
   }
 
   let i = 0;
@@ -13906,7 +13955,7 @@ async function buildAllSyncLinks() {
           chunk.pop();
           res = await processChunk(chunk, isFirst);
         } else {
-          i++; // Якщо одна станція займає забагато місця, все одно додаємо її
+          i++;
         }
         break;
       }
@@ -13915,7 +13964,7 @@ async function buildAllSyncLinks() {
     links.push(res);
     chunkIndex++;
   }
-  return links;
+  return { links, combinedLink };
 }
 
 function parseSyncPayloadText(text) {
@@ -13996,13 +14045,15 @@ async function showShareSyncModal() {
   qrHint.style.display = "none";
   qrContainer.innerHTML = "";
 
-  let allLinks;
+  let built;
   try {
-    allLinks = await buildAllSyncLinks();
+    built = await buildAllSyncLinks();
   } catch (e) {
     showToast(t("shareSyncEmpty"));
     return;
   }
+  const allLinks = built.links;
+  const combinedLink = built.combinedLink;
   if (!allLinks || !allLinks.length || allLinks[0].dataSize === 0) {
     showToast(t("shareSyncEmpty"));
     return;
@@ -14011,7 +14062,8 @@ async function showShareSyncModal() {
   bg.classList.add("open");
 
   if (allLinks.length === 1) {
-    // ЗВИЧАЙНИЙ РЕЖИМ (якщо все влазить в один QR)
+    // ЗВИЧАЙНИЙ РЕЖИМ (весь список вліз в один QR).
+    // Одне посилання = один QR.
     linkInput.value = allLinks[0].link;
     qrNote.style.display = "block";
     qrNote.textContent = t("shareSyncQrLoading");
@@ -14043,9 +14095,13 @@ async function showShareSyncModal() {
       qrNote.textContent = t("shareSyncQrError");
     }
   } else {
-    // РЕЖИМ КІЛЬКОХ НЕЗАЛЕЖНИХ QR-КОДІВ
+    // РЕЖИМ КІЛЬКОХ QR-КОДІВ (скануються по черзі), але посилання — ОДНЕ й містить увесь список.
     let currentChunk = 0;
     const total = allLinks.length;
+
+    // Одразу встановлюємо ОДНЕ повне посилання. Воно не змінюється при перемиканні QR.
+    // Якщо з якоїсь причини не вдалось зібрати combinedLink — fallback на перший чанк.
+    linkInput.value = combinedLink || allLinks[0].link;
 
     const pagDiv = document.createElement("div");
     pagDiv.id = "shareSyncQrPagination";
@@ -14061,18 +14117,18 @@ async function showShareSyncModal() {
     chunkNote.id = "shareSyncChunkNote";
     chunkNote.className = "hint";
     chunkNote.style.cssText = "text-align:center; margin-top:8px; color:#e0973d; font-weight:600;";
-    chunkNote.textContent = "Список розділено на частини. Скануйте будь-який QR-код окремо, щоб додати ці станції.";
+    chunkNote.textContent = "QR-коди — по одному на частину списку (скануйте по черзі). Посилання нижче містить усі станції одразу.";
     pagDiv.parentNode.insertBefore(chunkNote, pagDiv.nextSibling);
 
     const drawQr = async (idx) => {
       qrContainer.innerHTML = "";
-      linkInput.value = allLinks[idx].link;
+      // linkInput НЕ чіпаємо — там завжди повне посилання (див. вище).
       qrNote.style.display = "block";
       qrNote.textContent = t("shareSyncQrLoading");
       try {
         await loadQrLibrary();
         const qr = window.qrcode(0, "L");
-        qr.addData(linkInput.value);
+        qr.addData(allLinks[idx].link);
         qr.make();
         qrContainer.innerHTML = qr.createSvgTag(4, 0);
         const svg = qrContainer.querySelector("svg");
@@ -14106,7 +14162,6 @@ async function showShareSyncModal() {
     drawQr(0);
   }
 }
-
 function openSyncFullQr() {
   const srcSvg = document.querySelector("#shareSyncQr svg");
   if (!srcSvg) return;
@@ -15543,7 +15598,8 @@ async function fetchTextBounded(url, timeoutMs, maxBytes) {
   }
 }
 async function fetchTextSmartOnce(url) {
-  if (!state.settings.forceProxy) {
+  const isMixed = isHttpsPage() && url.startsWith("http://");
+  if (!state.settings.forceProxy && !isMixed) {
     try {
       const txt = await fetchTextBounded(url, 12000, 4194304);
       if (txt) return txt;
@@ -15604,8 +15660,11 @@ async function fetchTextLimited(url, timeoutMs, maxBytes) {
 }
 async function fetchTextFast(url) {
   if (!url) return null;
-  const direct = await fetchTextLimited(url, 3500);
-  if (direct && direct.trim()) return direct;
+  const isMixed = isHttpsPage() && url.startsWith("http://");
+  if (!isMixed) {
+    const direct = await fetchTextLimited(url, 3500);
+    if (direct && direct.trim()) return direct;
+  }
   const viaProxy = await fetchTextLimited(CORS_PROXIES[0] + encodeURIComponent(url), 4000);
   if (viaProxy && viaProxy.trim()) return viaProxy;
   return null;
