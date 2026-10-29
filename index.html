@@ -7223,6 +7223,101 @@ function teardownHls() {
     try { hlsInstance.destroy(); } catch (e) {}
     hlsInstance = null;
   }
+  hlsId3Reset();
+}
+
+// ---- Назва треку з ID3-тегів HLS-потоку (hls.js), без проксі ----
+// Деякі HLS-станції вкладають назву треку в потік як ID3 (TIT2/TPE1/TXXX). Коли грає hls.js, читаємо її
+// прямо з потоку: це не потребує Worker і не залежить від CORS. Нативний HLS (Safari/iOS) цього не дає.
+let hlsId3Title = "";        // остання назва, що вже «дозріла» (час відтворення дійшов до її мітки)
+let hlsId3Queue = [];        // назви, що прийшли наперед: { pts, title } — застосовуємо, коли currentTime дійде до pts
+let hlsId3Handler = null;    // обробник timeupdate для поточного hls-екземпляра
+let hlsId3Logged = false;
+function hlsId3Reset() {
+  hlsId3Title = ""; hlsId3Queue = []; hlsId3Logged = false;
+  if (hlsId3Handler) { try { audioEl.removeEventListener("timeupdate", hlsId3Handler); } catch (e) {} hlsId3Handler = null; }
+}
+function id3DecodeText(bytes, enc) {
+  try {
+    let out;
+    if (enc === 1) { // UTF-16 з BOM
+      const le = !(bytes[0] === 0xFE && bytes[1] === 0xFF);
+      const start = (bytes[0] === 0xFF && bytes[1] === 0xFE) || (bytes[0] === 0xFE && bytes[1] === 0xFF) ? 2 : 0;
+      out = new TextDecoder(le ? "utf-16le" : "utf-16be").decode(bytes.subarray(start));
+    } else if (enc === 2) out = new TextDecoder("utf-16be").decode(bytes);
+    else if (enc === 3) out = new TextDecoder("utf-8").decode(bytes);
+    else { // 0 = ISO-8859-1 за стандартом, але станції часто кладуть сюди UTF-8
+      try { out = new TextDecoder("utf-8", { fatal: true }).decode(bytes); }
+      catch (e) { out = new TextDecoder("windows-1252").decode(bytes); }
+    }
+    return out.replace(/\u0000+/g, " ").trim();
+  } catch (e) { return ""; }
+}
+// Розбирає один ID3v2-тег і повертає «Виконавець - Назва» (або просто назву); порожній рядок, якщо там немає тексту.
+function parseId3Title(data) {
+  if (!data || data.length < 10) return "";
+  let off = 0, ver = 3, end = data.length;
+  if (data[0] === 0x49 && data[1] === 0x44 && data[2] === 0x33) { // "ID3"
+    ver = data[3];
+    const size = ((data[6] & 0x7F) << 21) | ((data[7] & 0x7F) << 14) | ((data[8] & 0x7F) << 7) | (data[9] & 0x7F);
+    off = 10; end = Math.min(data.length, 10 + size);
+  }
+  let title = "", artist = "", txxxTitle = "";
+  while (off + 10 <= end) {
+    const id = String.fromCharCode(data[off], data[off + 1], data[off + 2], data[off + 3]);
+    if (!/^[A-Z0-9]{4}$/.test(id)) break;
+    let fsize;
+    if (ver >= 4) fsize = ((data[off + 4] & 0x7F) << 21) | ((data[off + 5] & 0x7F) << 14) | ((data[off + 6] & 0x7F) << 7) | (data[off + 7] & 0x7F);
+    else fsize = (data[off + 4] * 16777216) + (data[off + 5] << 16) + (data[off + 6] << 8) + data[off + 7];
+    const bodyStart = off + 10, bodyEnd = bodyStart + fsize;
+    if (fsize <= 0 || bodyEnd > data.length) break;
+    const body = data.subarray(bodyStart, bodyEnd);
+    if (id === "TIT2") title = id3DecodeText(body.subarray(1), body[0]);
+    else if (id === "TPE1") artist = id3DecodeText(body.subarray(1), body[0]);
+    else if (id === "TXXX") {
+      // TXXX = опис + значення, розділені нулем (у UTF-16 — подвійним). Беремо лише очевидні поля назви.
+      const enc = body[0], wide = enc === 1 || enc === 2;
+      let i = 1;
+      while (i < body.length && !(wide ? (body[i] === 0 && body[i + 1] === 0 && (i - 1) % 2 === 0) : body[i] === 0)) i += wide ? 2 : 1;
+      const desc = id3DecodeText(body.subarray(1, i), enc).toLowerCase();
+      const val = id3DecodeText(body.subarray(i + (wide ? 2 : 1)), enc);
+      if (val && /^(title|streamtitle|song|track)$/.test(desc)) txxxTitle = val;
+    }
+    off = bodyEnd;
+  }
+  const t = title || txxxTitle;
+  if (!t) return "";
+  return artist && t.indexOf(artist) === -1 ? artist + " - " + t : t;
+}
+function hlsId3Apply() {
+  // Застосовує всі назви з черги, час яких уже настав.
+  if (!hlsId3Queue.length) return false;
+  const now = audioEl.currentTime || 0;
+  let changed = false;
+  while (hlsId3Queue.length && (hlsId3Queue[0].pts <= now + 0.4 || hlsId3Queue[0].pts - now > 300)) {
+    const it = hlsId3Queue.shift();
+    if (it.title !== hlsId3Title) { hlsId3Title = it.title; changed = true; }
+  }
+  return changed;
+}
+function hlsId3Attach(hls) {
+  hlsId3Reset();
+  hls.on(window.Hls.Events.FRAG_PARSING_METADATA, (event, data) => {
+    if (hlsInstance !== hls || !data || !data.samples) return;
+    for (const sm of data.samples) {
+      const title = parseId3Title(sm && sm.data);
+      if (!title) continue;
+      const last = hlsId3Queue.length ? hlsId3Queue[hlsId3Queue.length - 1].title : hlsId3Title;
+      if (title === last) continue;
+      hlsId3Queue.push({ pts: isFinite(sm.pts) ? sm.pts : 0, title });
+      if (!hlsId3Logged) { hlsId3Logged = true; devLog("HLS: знайдено назву треку в ID3 потоку («" + title + "»)"); }
+    }
+    hlsId3Queue.sort((a, b) => a.pts - b.pts);
+    if (hlsId3Apply()) { try { pollTrackTick(); } catch (e) {} }
+  });
+  // Назва приходить з буфера наперед — показуємо її саме тоді, коли звучить відповідний момент.
+  hlsId3Handler = () => { if (hlsId3Queue.length && hlsId3Apply()) { try { pollTrackTick(); } catch (e) {} } };
+  audioEl.addEventListener("timeupdate", hlsId3Handler);
 }
 
 // ---- М'яка пауза: потік лишається «живим» ~PAUSE_GRACE_MS після паузи ----
@@ -7504,6 +7599,7 @@ if (needsCors) {
       }
       const hls = new window.Hls({ maxBufferLength: 60, maxMaxBufferLength: 120, liveSyncDurationCount: 5 });
       hlsInstance = hls;
+      hlsId3Attach(hls);
       let parsed = false, netRetries = 0, mediaRetries = 0;
       hls.on(window.Hls.Events.ERROR, (event, data) => {
         if (currentStationToken !== token) return;
@@ -16390,6 +16486,8 @@ function isBadTrackTitle(title) {
 // Дістає назву треку для станції за її режимом (без жодних змін в інтерфейсі) — спільне для головного оновлення і hover-підказки.
 async function fetchTrackTitleForStation(s, mode) {
   let result = null;
+  // HLS через hls.js: якщо потік сам несе назву в ID3 — беремо її без жодних запитів до Worker.
+  if (hlsInstance && hlsId3Title && (mode === "icy" || mode === "auto")) return hlsId3Title;
   if (mode === "adminfile" && s.adminSongUrl && s.adminSongUrl.match(/^https?:\/\//)) {
     result = await tryFetchTitleFromUrl(s.adminSongUrl);
     if (!result) {
