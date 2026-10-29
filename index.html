@@ -3166,14 +3166,43 @@ function applyWorkerBase(base) {
 // Проксі для HTTPS-загортання HTTP-іконок (mixed content fix).
 // Той самий воркер уміє віддавати будь-який бінарний контент.
 function proxifyIconUrl(url) {
-  // Якщо адреси немає, або вона записана як текст "null" чи "undefined" — ігноруємо
+  // Якщо адреси немає, вона "null/undefined", або вже відома як бита — ігноруємо
   if (!url || url === "null" || url === "undefined") return ""; 
+  if (isIconBroken(url)) return DEFAULT_STATION_ICON; // <-- ДОДАНО ЦЕЙ РЯДОК
   if (url.startsWith("data:")) return url;
   if (!isHttpsPage()) return url;
   if (url.startsWith("https://")) return url;
   if (url.startsWith(STREAM_PROXIES[0])) return url;
   return STREAM_PROXIES[0] + encodeURIComponent(url);
 }
+
+// ===================== Чорний список битих іконок =====================
+const BROKEN_ICONS_KEY = "radio_broken_icons_v1";
+let brokenIconsSet = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem(BROKEN_ICONS_KEY) || "[]");
+  if (Array.isArray(saved)) brokenIconsSet = new Set(saved);
+} catch (e) {}
+
+function markIconBroken(url) {
+  if (!url || url === DEFAULT_STATION_ICON) return;
+  if (!brokenIconsSet.has(url)) {
+    brokenIconsSet.add(url);
+    // Обмежуємо розмір списку, щоб не переповнити localStorage (зберігаємо останні 500)
+    let arr = Array.from(brokenIconsSet);
+    if (arr.length > 500) {
+      arr = arr.slice(arr.length - 500);
+      brokenIconsSet = new Set(arr);
+    }
+    try { localStorage.setItem(BROKEN_ICONS_KEY, JSON.stringify(arr)); } catch (e) {}
+  }
+}
+
+function isIconBroken(url) {
+  return url && brokenIconsSet.has(url);
+}
+// ========================================================================
+
 const isHttpsPage = () => (typeof location !== "undefined") && location.protocol === "https:";
 function isProxiedStreamUrl(url) {
   return !!url && STREAM_PROXIES.some(p => url.startsWith(p));
@@ -4811,7 +4840,15 @@ function updateStationButtonsActiveState(curTheme, isListView) {
       const favImg = btn.querySelector("img.favicon");
       if (favImg) {
         const favUrl = s.favicon && s.favicon !== DEFAULT_STATION_ICON ? s.favicon : DEFAULT_STATION_ICON;
-        if (favImg.src !== favUrl) { favImg.onerror = () => { favImg.src = DEFAULT_STATION_ICON; }; favImg.src = proxifyIconUrl(favUrl); }
+        if (favImg.src !== favUrl) { 
+          favImg.onerror = () => { 
+            markIconBroken(s.favicon); 
+            s.favicon = ""; 
+            saveState(); 
+            favImg.src = DEFAULT_STATION_ICON; 
+          }; 
+          favImg.src = proxifyIconUrl(favUrl); 
+        }
       }
       const nameWrapEl = btn.querySelector(".name-wrap");
       if (nameWrapEl) {
@@ -5174,7 +5211,12 @@ function renderStations() {
       fav.className = "favicon";
       const favUrl = s.favicon && s.favicon !== DEFAULT_STATION_ICON ? s.favicon : DEFAULT_STATION_ICON;
       fav.src = proxifyIconUrl(favUrl);
-      fav.onerror = () => { fav.src = DEFAULT_STATION_ICON; };
+      fav.onerror = () => { 
+        markIconBroken(s.favicon); // Записуємо в чорний список
+        s.favicon = "";            // Видаляємо зі станції
+        saveState();               // Зберігаємо
+        fav.src = DEFAULT_STATION_ICON; 
+      };
       btn.appendChild(fav);
       const nameWrap = document.createElement("span");
       nameWrap.className = "name-wrap";
@@ -14855,9 +14897,12 @@ function openEditModal(i, fromSettings) {
   document.getElementById("editCountryHint").textContent = t("country") + ": " + countryName;
   const iconImg = document.getElementById("editStationIcon");
   if (s.favicon && s.favicon !== DEFAULT_STATION_ICON) {
-    // proxifyIconUrl — як на головному екрані й у списку станцій: HTTP-іконки
-    // загортаються через воркер, бо на HTTPS-сторінці браузер їх блокує.
-    iconImg.onerror = () => { iconImg.style.display = 'none'; };
+    iconImg.onerror = () => { 
+      markIconBroken(s.favicon); 
+      s.favicon = ""; 
+      saveState(); 
+      iconImg.style.display = 'none'; 
+    }; 
     iconImg.onload = () => { iconImg.style.display = 'block'; };
     iconImg.src = proxifyIconUrl(s.favicon);
     iconImg.style.display = 'block';
