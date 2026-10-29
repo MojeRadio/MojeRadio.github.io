@@ -7082,7 +7082,7 @@ async function probeHlsOnce(src, timeoutMs) {
 }
 async function probeStation(rawUrl) {
   const url = String(rawUrl || "").trim();
-  if (!url) return false;
+  if (!url || url === "null" || url === "undefined") return false;
   const viaWorker = STREAM_PROXIES[0] + encodeURIComponent(url);
   const cands = [];
   if (getStreamRoute(url) === "worker" || (isHttpsPage() && url.startsWith("http://"))) cands.push(viaWorker);
@@ -7333,7 +7333,7 @@ function resumePausedStream(url) {
 }
 
 async function startPlaybackAttempt(url, isRetry) {
-  if (!url) return;
+  if (!url || url === "null" || url === "undefined") return;
   if (castActive) { castLoad(url); return; }
   flushPauseFade(false);
   if (isRetry && hasPlayedOnceForCurrent) armFadeIn();   // перепідключення після обриву — плавне наростання
@@ -8772,6 +8772,7 @@ function sharedUrlKey(u) { return String(u || "").replace(/^https?:\/\//i, "").r
 // станцій
 function loadIconPixels(url) {
   return new Promise((resolve) => {
+    if (!url || url === "null" || url === "undefined") { resolve(null); return; }
     const img = new Image();
     let done = false;
     const finish = (r) => { if (!done) { done = true; resolve(r); } };
@@ -8791,7 +8792,7 @@ function loadIconPixels(url) {
   });
 }
 async function colorFromIconUrl(url) {
-  if (!url || url === DEFAULT_STATION_ICON) return null;
+  if (!url || url === "null" || url === "undefined" || url === DEFAULT_STATION_ICON) return null;
   const tries = [];
   // Спочатку пробуємо через проксі (він віддає правильні CORS-заголовки), потім напряму
   if (!url.startsWith("data:")) tries.push(STREAM_PROXIES[0] + encodeURIComponent(url));
@@ -11151,7 +11152,7 @@ function pixelsAreWhiteLogo(px) {
   return vis >= 12 && clear >= n * 0.05 && light / vis >= 0.96;
 }
 async function detectWhiteLogo(src) {
-  if (!src || src === DEFAULT_STATION_ICON) return false;
+  if (!src || src === "null" || src === "undefined" || src === DEFAULT_STATION_ICON) return false;
   const tries = [];
   // Спочатку пробуємо через проксі, щоб уникнути помилок CORS у консолі
   if (!src.startsWith("data:") && !isProxiedStreamUrl(src)) tries.push(STREAM_PROXIES[0] + encodeURIComponent(src));
@@ -15599,6 +15600,7 @@ async function fetchTextBounded(url, timeoutMs, maxBytes) {
   }
 }
 async function fetchTextSmartOnce(url) {
+  if (!url || url === "null" || url === "undefined") return null;
   const isMixed = isHttpsPage() && url.startsWith("http://");
   if (!state.settings.forceProxy && !isMixed) {
     try {
@@ -15660,7 +15662,7 @@ async function fetchTextLimited(url, timeoutMs, maxBytes) {
   }
 }
 async function fetchTextFast(url) {
-  if (!url) return null;
+  if (!url || url === "null" || url === "undefined") return null;
   const isMixed = isHttpsPage() && url.startsWith("http://");
   if (!isMixed) {
     const direct = await fetchTextLimited(url, 3500);
@@ -15913,6 +15915,7 @@ function setupAutoSync() {
 // Відкидати варто лише перше: повільна картинка — ще не зламана.
 function probeImage(url, timeoutMs) {
   return new Promise((resolve) => {
+    if (!url || url === "null" || url === "undefined") { resolve("error"); return; }
     const img = new Image();
     let done = false;
     const finish = (r) => { if (!done) { done = true; resolve(r); } };
@@ -16104,7 +16107,7 @@ function findTitleInJson(obj, depth) {
   return null;
 }
 async function tryFetchIcyTitle(streamUrl) {
-  if (!streamUrl) return null;
+  if (!streamUrl || streamUrl === "null" || streamUrl === "undefined") return null;
   try {
     const res = await fetchWithTimeout(ICY_WORKER_URL + encodeURIComponent(streamUrl), 6000);
     if (!res || !res.ok) return null;
