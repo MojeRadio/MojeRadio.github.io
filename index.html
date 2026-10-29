@@ -2050,6 +2050,7 @@ html.lc .tabs button {
   #app.theme-switching, #app.theme-switching * { transition: none !important; }
   #app.theme-switching #headerBand { background: var(--headerbg, var(--g1)) !important; }
   html.ios #app.theme-switching #headerBand { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.ffOff { display: none !important; }
 </style>
 </head>
 <body>
@@ -2232,6 +2233,11 @@ html.lc .tabs button {
         </div>
 
         <div id="tabSync" class="tabPane">
+          <div style="display:flex; justify-content:flex-end; padding-top: 12px; margin-bottom: 4px;">
+            <button id="resetSyncParamsBtn" data-i18n-title="resetSyncParamsTitle" style="background:none; border:1px solid rgba(128,128,128,0.35); border-radius:50%; width:28px; height:28px; padding:0; color:var(--modaltext); cursor:pointer; display:flex; align-items:center; justify-content:center; opacity: 0.7; transition: opacity 0.2s, background 0.2s, border-color 0.2s;" onmouseover="if(!this.classList.contains('confirming')) {this.style.opacity='1'; this.style.background='rgba(128,128,128,0.1)';}" onmouseout="if(!this.classList.contains('confirming')) {this.style.opacity='0.7'; this.style.background='none';}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+          </div>
           <div class="checkLine"><input type="checkbox" id="syncToggle" checked><label for="syncToggle" data-i18n="syncEnableLabel">Зв'язок додатку з сервером</label> <span id="mainSyncIcon"></span></div>
           <div class="hint" style="margin-top:-4px;" data-i18n="syncFileDesc">Посилання на файл, звідки береться список станцій і налаштування нижче. Редагуй, якщо файл переїхав.</div>
           <input type="url" id="stationsFileUrlInput" aria-label="Посилання на файл синхронізації" placeholder="https://.../onair.txt">
@@ -2241,10 +2247,13 @@ html.lc .tabs button {
             <button class="iconBtnSmall" id="syncNowIconBtn" title="оновити" data-i18n-title="refreshWord"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></button>
           </div>
           <div class="hint" id="syncLastSuccessLine" style="margin-top:-2px;"></div>
-          <div class="paramBlock">
-            <div class="prow"><span data-i18n="syncIntervalLabel">Інтервал синхронізації (хвилин):</span></div>
-            <div class="prow"><input type="number" id="syncIntervalInput" aria-label="Інтервал синхронізації (хвилин)" min="1" max="1440" value="60" style="max-width:80px;"></div>
-          </div>
+<div class="paramBlock">
+  <div class="prow"><span data-i18n="syncIntervalLabel">Інтервал синхронізації (хвилин):</span></div>
+  <div class="prow">
+    <input type="number" id="syncIntervalInput" aria-label="Інтервал синхронізації (хвилин)" min="1" max="1440" value="60" style="max-width:80px;">
+    <label><input type="checkbox" id="syncIntervalFromFile"> <span data-i18n="fromFile">auto</span> <span id="syncIntervalSyncIcon"></span></label>
+  </div>
+</div>
           <div id="paramList"></div>
           <details style="margin-top:12px;">
             <summary style="cursor:pointer; font-size:12.5px; opacity:0.8;" data-i18n="otherParamsSummary">Інші параметри (read only)</summary>
@@ -2647,6 +2656,18 @@ html.lc .tabs button {
     </div>
   </div>
 
+  <div class="modalBg" id="healthStatsBg" style="z-index:13;">
+    <div class="modal" style="max-width:480px;">
+      <div class="modalHead">
+        <button class="modalCloseX" id="healthStatsCloseX"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <h3 class="modalHeaderTitle" style="font-size:17px;">Статистика користувачів</h3>
+      </div>
+      <div class="modalScroll" style="padding:8px 16px 16px;">
+        <div id="healthStatsBody"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="modalBg langPickModal" id="shareSyncBg" style="z-index:12;">
     <div class="modal" style="max-width:440px; padding:18px; overflow-y:auto; max-height:90vh;">
       <button class="modalCloseX" id="shareSyncCloseX" style="right:8px; top:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -2719,7 +2740,7 @@ tabSync:"Синхр.", tabSyncLong:"Синхронізація", tabStats:"Ст�
     searching:"Шукаю...", nothingFound:"Нічого не знайдено.", songHistoryTitle:"Історія пісень", recentSongsTitle:"Останні пісні", clearHistory:"Очистити історію", songFavoritesTitle:"Пісні, що сподобались", clearFavorites:"Очистити улюблені", exportFavorites:"Експортувати", viewTitle:"Вигляд станцій",
     loadMore:"Завантажити ще...",
     iconFetch:"Взяти з пошуку", country:"Країна", notDefined:"не визначено", addBtnWord:"+",
-    eqTitle:"Еквалайзер", loudnessTitle:"Вирівнювання гучності", sunCityLabel:"Часовий пояс", eqSystemLink:"Системний еквалайзер", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", shareSyncBtn:"Швидка синхронізація збережених станцій", shareSyncTitle:"Швидка синхронізація між пристроями",     shareSyncDesc:"Відскануйте QR-код або надішліть посилання на інший пристрій. Якщо станцій багато, перенесення відбудеться частинами (кількома QR-кодами) або одним посиланням. Дані передаються без сервера.", shareSyncTooBig:"Список завеликий для QR-коду. Скористайтеся посиланням нижче.", shareSyncCopied:"Посилання скопійовано", shareSyncEmpty:"Немає даних для перенесення", shareSyncBadFormat:"Не вдалося розпізнати дані", shareSyncQrError:"Не вдалося створити QR-код. Перевірте з'єднання з інтернетом.", shareSyncQrLoading:"Готую QR-код…", shareSyncTapHint:"Натисніть на QR-код, щоб збільшити", syncQrFileHint:"QR-код — швидке перенесення станцій та улюблених треків. Експорт/Імпорт — для перенесення всього, включаючи налаштування, статистику та еквалайзер.", importSyncTitle:"Імпортувати станції?", importOneTitle:"Додати станцію?", importOneDesc:"Додати станцію «{name}» до списку й увімкнути її?", importOneYes:"Додати й слухати", iconUrlShort:"лінк", iconUploadShort:"файл", syncImportPh:"Вставте посилання для імпорту", syncImportHint:"Імпорт: вставте посилання з кнопки «Поділитись» — додасться одна станція, або посилання швидкої синхронізації — усі станції одразу.", importSyncYes:"Імпортувати", importSyncSummary:"Буде додано нових: {n}. Оновлено існуючих: {u}. Улюблених пісень: {f}.", importSyncDone:"Імпортовано: {n} нових, {u} оновлено", importSyncNoStations:"У посиланні немає станцій", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики" },
+    eqTitle:"Еквалайзер", loudnessTitle:"Вирівнювання гучності", sunCityLabel:"Часовий пояс", eqSystemLink:"Системний еквалайзер", eqManualMode:"Ручний режим", eqPresetMine:"Мій", eqPresetFlat:"Плоский", eqPresetBass:"Більше баса", eqPresetTreble:"Більше високих", eqPresetVocal:"Вокал", eqPresetSpeech:"Розмова", eqPresetPop:"Поп", eqPresetRock:"Рок", eqPresetJazz:"Джаз", eqPresetClassical:"Класика", eqPresetElectronic:"Електроніка", eqPresetHiphop:"Хіп-хоп", eqPresetSoft:"М'який звук", confirmShortWord:"Точно?", dragWord:"Перетягнути", noLinkSuffix:" (нема посилання)", editedManuallyTitle:"редаговано вручну", favRemoveTitle:"Видалити з обраних", favAddTitle:"Додати пісню до обраних", lastExportLabel:"Останній експорт: ", exportDoneTitle:"Експорт виконано", importDoneTitle:"Імпорт виконано", ioStationsLbl:"Станції", ioHistoryLbl:"Історія пісень", ioStatsLbl:"Статистика прослуховування", ioAddedLc:"додано", ioStatsStations:"станцій", ioNotInFile:"немає у файлі", shareSyncBtn:"Швидка синхронізація збережених станцій", shareSyncTitle:"Швидка синхронізація між пристроями",     shareSyncDesc:"Відскануйте QR-код або надішліть посилання на інший пристрій. Якщо станцій багато, перенесення відбудеться частинами (кількома QR-кодами) або одним посиланням. Дані передаються без сервера.", shareSyncTooBig:"Список завеликий для QR-коду. Скористайтеся посиланням нижче.", shareSyncCopied:"Посилання скопійовано", shareSyncEmpty:"Немає даних для перенесення", shareSyncBadFormat:"Не вдалося розпізнати дані", shareSyncQrError:"Не вдалося створити QR-код. Перевірте з'єднання з інтернетом.", shareSyncQrLoading:"Готую QR-код…", shareSyncTapHint:"Натисніть на QR-код, щоб збільшити", syncQrFileHint:"QR-код — швидке перенесення станцій та улюблених треків. Експорт/Імпорт — для перенесення всього, включаючи налаштування, статистику та еквалайзер.", importSyncTitle:"Імпортувати станції?", importOneTitle:"Додати станцію?", importOneDesc:"Додати станцію «{name}» до списку й увімкнути її?", importOneYes:"Додати й слухати", iconUrlShort:"лінк", iconUploadShort:"файл", syncImportPh:"Вставте посилання для імпорту", syncImportHint:"Імпорт: вставте посилання з кнопки «Поділитись» — додасться одна станція, або посилання швидкої синхронізації — усі станції одразу.", importSyncYes:"Імпортувати", importSyncSummary:"Буде додано нових: {n}. Оновлено існуючих: {u}. Улюблених пісень: {f}.", importSyncDone:"Імпортовано: {n} нових, {u} оновлено", importSyncNoStations:"У посиланні немає станцій", defaultIconName:"Стандартна", emptyValueWord:"(порожньо)", stationWordNum:"Станція ", resetSessionConfirm:"Скинути лічильник сесії?", confirmDeleteSongHistory:"Видалити цю пісню з історії?", confirmDeleteSongFavorite:"Видалити цю пісню з улюблених?", confirmDeleteStationStats:"Видалити «{name}» зі статистики?", songRemovedToast:"Пісню видалено з історії", favoriteRemovedToast:"Видалено з улюблених", stationStatsRemovedToast:"Станцію видалено зі статистики", resetSyncParamsTitle: "Скинути налаштування до значень за умовчанням?", resetSyncParamsDone: "Налаштування скинуто до стандартних" },
   pl: { moreWord:"Więcej", appName:"moje radio", installBanner:"Zainstaluj aplikację", installIosTitle:"Instalacja na iPhonie / iPadzie", installIosText:"1. Naciśnij przycisk „Udostępnij” (kwadrat ze strzałką w górę) w przeglądarce.\n2. Wybierz „Dodaj do ekranu początkowego”.\n3. Naciśnij „Dodaj”.", installOk:"Rozumiem", stationFilterPh:"Szukaj wśród moich stacji", stationFilterEmpty:"Nic nie znaleziono", versionChecking:"Sprawdzam aktualizacje…", versionLatest:"Masz najnowszą wersję", versionCheckFail:"Nie udało się sprawdzić aktualizacji", versionNewBtn:"Dostępna nowa wersja {v} — naciśnij, aby zaktualizować", pipWord:"Mini odtwarzacz nad oknami",copyTip:"Kopiuj",colorAutoBtn:"Auto z ikony", colorAutoFailToast:"Nie udało się ustalić koloru z ikony", chooseStation:"Wybierz stację poniżej", buffering:"Buforowanie...", playPrompt:"Naciśnij play, aby kontynuować", noUrl:"Brak linku — dodaj go w menu", copied:"Skopiowano", copiedSongName:"Skopiowano nazwę utworu", linkCopiedToast:"Link skopiowany", stopped:"Wybierz stację poniżej", cantPlay:"Nie udało się odtworzyć strumienia", streamUrlPlaceholder:"Link do strumienia", stationIconAlt:"ikona stacji", resetAllConfirmText:"Na pewno zresetować wszystko?", resetStatsConfirmText:"Na pewno zresetować statystyki?", historyExportedToast:"Historia wyeksportowana", resetDoneToast:"Zresetowano do ustawień fabrycznych — ponowne ładowanie...", versionLabel:"Wersja", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"pomyślnie ", syncStatusFail:"błąd ", syncLoadFailToast:"Nie udało się pobrać pliku — nawet przez proxy zapasowe. Próbuję dalej w tle.", syncNoStationsToast:"Plik wczytany, ale nie znaleziono stacji — sprawdź format", syncUpdatedToast:"Lista stacji zaktualizowana", syncParseErrorToast:"Błąd przetwarzania pliku", addedStationsSummary:"Zapisane stacje", otherParamsSummary:"Inne parametry (read only)", cancelWord:"Anuluj", iconChangedToast:"Ikona zmieniona", clearHistoryConfirm:"Wyczyścić całą historię utworów?", scaleTitle:"Skala interfejsu", scaleHint:"Rozmiar przycisków i czcionek na ekranie głównym", clearFavoritesConfirm:"Wyczyścić wszystkie ulubione utwory?", favoritesCleared:"Ulubione wyczyszczone", deleteStationConfirm:"Usunąć stację «{name}»?", messageUnderTitleLabel:"Tekst pod tytułem utworu", manualTrackTitleLabel:"Ręczny tytuł utworu", stopWordsLabel:"Słowa stop w tytule utworu", manualWord:"ręcznie", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Wyszukiwanie zapasowe", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Wybierz ikonę dla stacji:", copyFailedToast:"Nie udało się skopiować", historyCleared:"Historia wyczyszczona", statsResetToast:"Statystyki odsłuchu zresetowane", connOffline:"Brak połączenia z internetem", connRetrying:"Utracono połączenie ze stacją · próba {n}/{max}", connSlow:"Stacja nie odpowiada · próba {n}/{max}", connFailed:"Nie udało się przywrócić strumienia — naciśnij ⟳, aby spróbować ponownie", streamLostRetrying:"Utrata strumienia — próba przywrócenia ", offlineToast:"Brak sieci — wznowię strumień, gdy tylko wróci połączenie", onlineToast:"Sieć wróciła — łączę ponownie", devErrLogTitle:"Zapisane błędy", recoverFailedToast:"Nie udało się przywrócić strumienia", storageFullToast:"Nie można zapisać ustawień — pamięć przeglądarki jest pełna", sleepTimerStoppedToast:"Wyłącznik czasowy: zatrzymany", openSystemSoundSettingsToast:"Otwórz ręcznie systemowe ustawienia dźwięku", deletedToast:"Usunięto", enterNameUrlToast:"Wpisz nazwę i link", simDropSentToast:"Symulacja zerwania wysłana", noStationsInFileToast:"Nie znaleziono stacji w pliku", addedToast:"Dodano: ", cantReadFileToast:"Nie udało się odczytać pliku — sprawdź format", searchingIconToast:"Szukam ikony...", iconUploadedToast:"Ikona przesłana", iconRemovedToast:"Ikona usunięta", noSuccessfulSyncToast:"Jeszcze nie było udanej synchronizacji do przywrócenia", stationNotInSyncToast:"Nie znaleziono stacji w ostatniej synchronizacji", restoredFromSyncToast:"Przywrócono z ostatniej udanej synchronizacji", noSourceToast:"Brak źródła do wykrycia", titleNotFoundToast:"Nie udało się znaleźć tytułu utworu", savedToast:"Zapisano: ", sessionUsageResetToast:"Zużycie w tej sesji zresetowane", updatingToast:"Aktualizowanie...", updatedWord:"zaktualizowano", stationExistsToast:"Taka stacja już jest na liście", chooseThemeTitle:"Wybierz kolorystykę", confirmWord:"Gotowe", searchingSongTitleToast:"Szukam tytułu utworu...", messagePlaceholder:"tekst wiadomości", manualTrackPlaceholder:"ręczny tytuł utworu", lastSuccessLabel:"ostatnio udało się", iconNotFoundToast:"Nie udało się znaleźć ikony", iconWord:"Ikona", chooseOptionToast:"Wybierz opcję", iconUrlPromptLabel:"Adres ikony:", iconFetchShort:"znajdź", iconUrlApply:"Wklej adres ikony", httpsFirstLabel:"Najpierw próbować http → https bezpośrednio, zamiast przez proxy", prevNextLabel:"Pokazuj przyciski przełączania stacji", refreshWord:"odśwież", menuWord:"menu", shareWord:"Udostępnij", muteWord:"dźwięk", prevStationWord:"poprzednia stacja", playWord:"odtwórz", nextStationWord:"następna stacja", stopWord:"stop", resetWord:"resetuj", prevPageWord:"Poprzednia strona", nextPageWord:"Następna strona", uploadWord:"Prześlij", removeWord:"Usuń", tooltipReload:"Uruchom strumień ponownie", tooltipMenu:"Menu: stacje i ustawienia", tooltipStop:"Zatrzymaj i zresetuj", tooltipPrevStation:"Poprzednia stacja", tooltipNextStation:"Następna stacja", tooltipShare:"Udostępnij stację", tooltipMute:"Włącz / wyłącz dźwięk", iconManualSearchPlaceholder:"lub wpisz nazwę stacji ręcznie",
     tabOptions:"Opcje", sortDefault:"Dowolna kolejność", sortAsc:"Alfabetycznie (A-Z)", sortDesc:"Alfabetycznie (Z-A)", tabStations:"Stacje", hoverPreviewLabel:"Podpowiedź z tytułem utworu po najechaniu",
 tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsShort:"Statystyki", tabAdvanced:"Więcej", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Transmisja na «{name}»", castEndedToast:"Transmisja zakończona", castFailToast:"Chromecast nie może odtworzyć tego strumienia", newIconLabel:"Ikona", desktopStationHint:"Prawy przycisk myszy na stacji — edycja; przeciągnij stację, aby zmienić kolejność.", autoSwitchTitle:"Automatyczna zmiana stacji", autoSwitchLabel:"Przełączaj na inną stację w razie błędu", autoSwitchToast:"Stacja «{from}» nie odpowiada (internet działa) — przełączono na «{name}»", autoSwitchBackToast:"Stacja «{name}» znów działa — wracam", foldersTitle:"Foldery stacji", foldersLabel:"Grupuj stacje w foldery", newFolderBtn:"Nowy folder", folderNamePh:"Nazwa folderu", folderDefaultName:"Folder", noFolderWord:"Bez folderu", folderFieldLabel:"Folder", renameFolderTip:"Zmień nazwę folderu", deleteFolderTip:"Usuń folder (stacje zostają)", stationListExportSummary:"Eksport/Import stacji", search:"Szukaj", longPressHint:"Długie przytrzymanie stacji — przeciągnij, aby zmienić kolejność.", longPressHintReorder:"Długie przytrzymanie stacji — edycja (przeciąganie wyłączone).", gridLongPressEditLabel:"Długie przytrzymanie do edycji stacji",
@@ -2737,7 +2758,7 @@ tabSync:"Sync", tabSyncLong:"Synchronizacja", tabStats:"Statystyki", tabStatsSho
     searching:"Szukam...", nothingFound:"Nic nie znaleziono.", songHistoryTitle:"Historia utworów", recentSongsTitle:"Ostatnie utwory", clearHistory:"Wyczyść historię", songFavoritesTitle:"Ulubione utwory", clearFavorites:"Wyczyść ulubione", exportFavorites:"Eksportuj", viewTitle:"Widok stacji",
     loadMore:"Załaduj więcej...",
     iconFetch:"Pobierz z wyszukiwania", country:"Kraj", notDefined:"nie określono", addBtnWord:"+",
-    eqTitle:"Equalizer", loudnessTitle:"Wyrównanie głośności", sunCityLabel:"Strefa czasowa", eqSystemLink:"Systemowy equalizer", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", shareSyncBtn:"Szybka synchronizacja zapisanych stacji", shareSyncTitle:"Szybka synchronizacja między urządzeniami",     shareSyncDesc:"Zeskanuj kod QR lub wyślij link na inne urządzenie. Jeśli stacji jest dużo, transfer odbędzie się w częściach (kilka kodów QR) lub jednym linkiem. Dane są przekazywane bez serwera.", shareSyncTooBig:"Lista jest za duża dla kodu QR. Użyj linku poniżej.", shareSyncCopied:"Link skopiowany", shareSyncEmpty:"Brak danych do przeniesienia", shareSyncBadFormat:"Nie udało się rozpoznać danych", shareSyncQrError:"Nie udało się utworzyć kodu QR. Sprawdź połączenie z internetem.", shareSyncQrLoading:"Przygotowuję kod QR…", shareSyncTapHint:"Naciśnij kod QR, aby powiększyć", syncQrFileHint:"Kod QR — szybkie przeniesienie stacji i ulubionych utworów. Eksport/Import — dla przeniesienia wszystkiego, w tym ustawień, statystyk, equalizera.", importSyncTitle:"Zaimportować stacje?", importOneTitle:"Dodać stację?", importOneDesc:"Dodać stację «{name}» do listy i ją włączyć?", importOneYes:"Dodaj i słuchaj", iconUrlShort:"link", iconUploadShort:"plik", syncImportPh:"Wklej link do importu", syncImportHint:"Import: wklej link z przycisku „Udostępnij” — doda jedną stację, albo link szybkiej synchronizacji — wszystkie stacje naraz.", importSyncYes:"Importuj", importSyncSummary:"Nowe: {n}. Zaktualizowane: {u}. Ulubione utwory: {f}.", importSyncDone:"Zaimportowano: {n} nowych, {u} zaktualizowanych", importSyncNoStations:"Link nie zawiera stacji", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk" },
+    eqTitle:"Equalizer", loudnessTitle:"Wyrównanie głośności", sunCityLabel:"Strefa czasowa", eqSystemLink:"Systemowy equalizer", eqManualMode:"Tryb ręczny", eqPresetMine:"Mój", eqPresetFlat:"Płaski", eqPresetBass:"Więcej basu", eqPresetTreble:"Więcej wysokich", eqPresetVocal:"Wokal", eqPresetSpeech:"Mowa", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Klasyka", eqPresetElectronic:"Elektronika", eqPresetHiphop:"Hip-hop", eqPresetSoft:"Łagodny dźwięk", confirmShortWord:"Na pewno?", dragWord:"Przeciągnij", noLinkSuffix:" (brak linku)", editedManuallyTitle:"edytowano ręcznie", favRemoveTitle:"Usuń z ulubionych", favAddTitle:"Dodaj utwór do ulubionych", lastExportLabel:"Ostatni eksport: ", exportDoneTitle:"Eksport zakończony", importDoneTitle:"Import zakończony", ioStationsLbl:"Stacje", ioHistoryLbl:"Historia utworów", ioStatsLbl:"Statystyki odsłuchu", ioAddedLc:"dodano", ioStatsStations:"stacji", ioNotInFile:"brak w pliku", shareSyncBtn:"Szybka synchronizacja zapisanych stacji", shareSyncTitle:"Szybka synchronizacja między urządzeniami",     shareSyncDesc:"Zeskanuj kod QR lub wyślij link na inne urządzenie. Jeśli stacji jest dużo, transfer odbędzie się w częściach (kilka kodów QR) lub jednym linkiem. Dane są przekazywane bez serwera.", shareSyncTooBig:"Lista jest za duża dla kodu QR. Użyj linku poniżej.", shareSyncCopied:"Link skopiowany", shareSyncEmpty:"Brak danych do przeniesienia", shareSyncBadFormat:"Nie udało się rozpoznać danych", shareSyncQrError:"Nie udało się utworzyć kodu QR. Sprawdź połączenie z internetem.", shareSyncQrLoading:"Przygotowuję kod QR…", shareSyncTapHint:"Naciśnij kod QR, aby powiększyć", syncQrFileHint:"Kod QR — szybkie przeniesienie stacji i ulubionych utworów. Eksport/Import — dla przeniesienia wszystkiego, w tym ustawień, statystyk, equalizera.", importSyncTitle:"Zaimportować stacje?", importOneTitle:"Dodać stację?", importOneDesc:"Dodać stację «{name}» do listy i ją włączyć?", importOneYes:"Dodaj i słuchaj", iconUrlShort:"link", iconUploadShort:"plik", syncImportPh:"Wklej link do importu", syncImportHint:"Import: wklej link z przycisku „Udostępnij” — doda jedną stację, albo link szybkiej synchronizacji — wszystkie stacje naraz.", importSyncYes:"Importuj", importSyncSummary:"Nowe: {n}. Zaktualizowane: {u}. Ulubione utwory: {f}.", importSyncDone:"Zaimportowano: {n} nowych, {u} zaktualizowanych", importSyncNoStations:"Link nie zawiera stacji", defaultIconName:"Domyślna", emptyValueWord:"(puste)", stationWordNum:"Stacja ", resetSessionConfirm:"Zresetować licznik sesji?", confirmDeleteSongHistory:"Usunąć ten utwór z historii?", confirmDeleteSongFavorite:"Usunąć ten utwór z ulubionych?", confirmDeleteStationStats:"Usunąć «{name}» ze statystyk?", songRemovedToast:"Utwór usunięty z historii", favoriteRemovedToast:"Usunięto z ulubionych", stationStatsRemovedToast:"Stacja usunięta ze statystyk", resetSyncParamsTitle: "Przywróć ustawienia do wartości domyślnych", resetSyncParamsDone: "Ustawienia przywrócone do domyślnych" },
   en: { moreWord:"More", appName:"my radio", installBanner:"Install the app", installIosTitle:"Install on iPhone / iPad", installIosText:"1. Tap the Share button (square with an up arrow) in your browser.\n2. Choose “Add to Home Screen”.\n3. Tap “Add”.", installOk:"Got it", stationFilterPh:"Search my stations", stationFilterEmpty:"Nothing found", versionChecking:"Checking for updates…", versionLatest:"You have the latest version", versionCheckFail:"Couldn't check for updates", versionNewBtn:"New version {v} available — tap to update", pipWord:"Always-on-top mini player",copyTip:"Copy",colorAutoBtn:"Auto from icon", colorAutoFailToast:"Couldn't detect a color from the icon", chooseStation:"Choose a station below", buffering:"Buffering...", playPrompt:"Press play to continue", noUrl:"No link yet — add it in the menu", copied:"Copied", copiedSongName:"Song name copied", linkCopiedToast:"Link copied", stopped:"Choose a station below", cantPlay:"Could not play the stream", streamUrlPlaceholder:"Stream link", stationIconAlt:"station icon", resetAllConfirmText:"Really reset everything?", resetStatsConfirmText:"Really reset statistics?", historyExportedToast:"History exported", resetDoneToast:"Reset to factory settings — reloading...", versionLabel:"Version", bitrateLabel:"Bitrate", kbUnit:"KB", syncStatusOk:"success ", syncStatusFail:"error ", syncLoadFailToast:"Couldn't load the file — even via backup proxies. Still retrying in the background.", syncNoStationsToast:"File loaded, but no stations found — check the format", syncUpdatedToast:"Station list updated", syncParseErrorToast:"Error processing the file", addedStationsSummary:"Saved stations", otherParamsSummary:"Other parameters (read only)", cancelWord:"Cancel", iconChangedToast:"Icon changed", clearHistoryConfirm:"Clear the entire song history?", clearFavoritesConfirm:"Clear all liked songs?", favoritesCleared:"Favorites cleared", deleteStationConfirm:"Delete station «{name}»?", messageUnderTitleLabel:"Text under the song title", manualTrackTitleLabel:"Manual track title", stopWordsLabel:"Stop-words in the song title", manualWord:"manually", stopWordsPlaceholder:"reklama, autopromocja, ...", backupSearchLabel:"Backup search", backupSearchPlaceholder:"https://streamurl.link/", chooseIconForStation:"Choose an icon for the station:", copyFailedToast:"Couldn't copy", historyCleared:"History cleared", statsResetToast:"Listening stats reset", connOffline:"No internet connection", connRetrying:"Station connection lost · attempt {n}/{max}", connSlow:"Station not responding · attempt {n}/{max}", connFailed:"Couldn't restore the stream — press ⟳ to try again", streamLostRetrying:"Stream lost — attempting to reconnect ", offlineToast:"No network — I will resume the stream as soon as it is back", onlineToast:"Network is back — reconnecting", devErrLogTitle:"Saved errors", recoverFailedToast:"Couldn't recover the stream", storageFullToast:"Can't save settings — browser storage is full", sleepTimerStoppedToast:"Sleep timer: stopped", openSystemSoundSettingsToast:"Open your system sound settings manually", deletedToast:"Deleted", enterNameUrlToast:"Enter a name and link", simDropSentToast:"Dropout simulation sent", noStationsInFileToast:"No stations found in the file", addedToast:"Added: ", cantReadFileToast:"Couldn't read the file — check the format", searchingIconToast:"Searching for icon...", iconUploadedToast:"Icon uploaded", iconRemovedToast:"Icon removed", noSuccessfulSyncToast:"No successful sync yet to restore from", stationNotInSyncToast:"Station not found in the last sync", restoredFromSyncToast:"Restored from the last successful sync", noSourceToast:"No source to detect from", titleNotFoundToast:"Couldn't find the song title", savedToast:"Saved: ", sessionUsageResetToast:"Session usage reset", updatingToast:"Updating...", updatedWord:"updated", stationExistsToast:"This station is already in the list", chooseThemeTitle:"Choose a color theme", confirmWord:"Done", searchingSongTitleToast:"Searching for the song title...", messagePlaceholder:"message text", manualTrackPlaceholder:"manual track title", lastSuccessLabel:"last succeeded", iconNotFoundToast:"Couldn't find an icon", iconWord:"Icon", chooseOptionToast:"Choose an option", iconUrlPromptLabel:"Icon address:", iconFetchShort:"find", iconUrlApply:"Paste icon URL", httpsFirstLabel:"Try http → https directly first, instead of the proxy", prevNextLabel:"Show station switch buttons", refreshWord:"refresh", menuWord:"menu", shareWord:"Share", muteWord:"sound", prevStationWord:"previous station", playWord:"play", nextStationWord:"next station", stopWord:"stop", resetWord:"reset", prevPageWord:"Previous page", nextPageWord:"Next page", uploadWord:"Upload", removeWord:"Remove", tooltipReload:"Restart the stream", tooltipMenu:"Menu: stations and settings", tooltipStop:"Stop and reset", tooltipPrevStation:"Previous station", tooltipNextStation:"Next station", tooltipShare:"Share the station", tooltipMute:"Turn sound on / off", iconManualSearchPlaceholder:"or type a station name manually",
     tabOptions:"Options", sortDefault:"Custom order", sortAsc:"Alphabetical (A-Z)", sortDesc:"Alphabetical (Z-A)", tabStations:"Stations", hoverPreviewLabel:"Hover tooltip with current song",
 tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsShort:"Statistics", tabAdvanced:"Advanced", airplayWord:"AirPlay", castWord:"Google Cast", castConnectedToast:"Casting to «{name}»", castEndedToast:"Casting stopped", castFailToast:"Chromecast could not play this stream", newIconLabel:"Icon", desktopStationHint:"Right-click a station to edit; drag a station to reorder.", autoSwitchTitle:"Automatic station switch", autoSwitchLabel:"Switch to another station on error", autoSwitchToast:"Station «{from}» is not responding (internet is fine) — switched to «{name}»", autoSwitchBackToast:"Station «{name}» works again — switching back", foldersTitle:"Station folders", foldersLabel:"Group stations into folders", newFolderBtn:"New folder", folderNamePh:"Folder name", folderDefaultName:"Folder", noFolderWord:"No folder", folderFieldLabel:"Folder", renameFolderTip:"Rename folder", deleteFolderTip:"Delete folder (stations are kept)", stationListExportSummary:"Export/Import stations", search:"Search", longPressHint:"Long-press a station and drag to reorder.", longPressHintReorder:"Long-press a station to edit (dragging is off).", gridLongPressEditLabel:"Long-press to edit station",
@@ -2755,7 +2776,7 @@ tabSync:"Sync", tabSyncLong:"Synchronization", tabStats:"Statistics", tabStatsSh
     searching:"Searching...", nothingFound:"Nothing found.", songHistoryTitle:"Song history", recentSongsTitle:"Recent songs", clearHistory:"Clear history", songFavoritesTitle:"Liked songs", clearFavorites:"Clear favorites", exportFavorites:"Export", viewTitle:"Station view",
     loadMore:"Load more...",
     iconFetch:"Get from search", country:"Country", notDefined:"not defined", addBtnWord:"+",
-    eqTitle:"Equalizer", loudnessTitle:"Loudness equalization", sunCityLabel:"Time zone", eqSystemLink:"System equalizer", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", shareSyncBtn:"Quick sync of stations", shareSyncTitle:"Quick sync between devices",     shareSyncDesc:"Scan the QR code or send the link to another device. If there are many stations, the transfer will be split into parts (multiple QR codes) or a single link. Data is transferred without a server.", shareSyncTooBig:"The list is too big for a QR code. Use the link below.", shareSyncCopied:"Link copied", shareSyncEmpty:"No data to transfer", shareSyncBadFormat:"Could not recognize the data", shareSyncQrError:"Could not create QR code. Check your internet connection.", shareSyncQrLoading:"Preparing QR code…", shareSyncTapHint:"Tap the QR code to enlarge", syncQrFileHint:"QR code — quickly transfer your stations and favorite songs. Export/Import — to transfer everything, including settings, statistics, and the equalizer.", importSyncTitle:"Import stations?", importOneTitle:"Add station?", importOneDesc:"Add station «{name}» to your list and start playing it?", importOneYes:"Add and listen", iconUrlShort:"link", iconUploadShort:"file", syncImportPh:"Paste a link to import", syncImportHint:"Import: paste a link from the Share button to add a single station, or a quick-sync link to add all stations at once.", importSyncYes:"Import", importSyncSummary:"New: {n}. Updated: {u}. Favorite songs: {f}.", importSyncDone:"Imported: {n} new, {u} updated", importSyncNoStations:"The link contains no stations", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics" }
+    eqTitle:"Equalizer", loudnessTitle:"Loudness equalization", sunCityLabel:"Time zone", eqSystemLink:"System equalizer", eqManualMode:"Manual mode", eqPresetMine:"Mine", eqPresetFlat:"Flat", eqPresetBass:"Bass boost", eqPresetTreble:"Treble boost", eqPresetVocal:"Vocal", eqPresetSpeech:"Speech", eqPresetPop:"Pop", eqPresetRock:"Rock", eqPresetJazz:"Jazz", eqPresetClassical:"Classical", eqPresetElectronic:"Electronic", eqPresetHiphop:"Hip hop", eqPresetSoft:"Soft sound", confirmShortWord:"Sure?", dragWord:"Drag", noLinkSuffix:" (no link)", editedManuallyTitle:"edited manually", favRemoveTitle:"Remove from favorites", favAddTitle:"Add this song to favorites", lastExportLabel:"Last export: ", exportDoneTitle:"Export completed", importDoneTitle:"Import completed", ioStationsLbl:"Stations", ioHistoryLbl:"Song history", ioStatsLbl:"Listening statistics", ioAddedLc:"added", ioStatsStations:"stations", ioNotInFile:"not in file", shareSyncBtn:"Quick sync of stations", shareSyncTitle:"Quick sync between devices",     shareSyncDesc:"Scan the QR code or send the link to another device. If there are many stations, the transfer will be split into parts (multiple QR codes) or a single link. Data is transferred without a server.", shareSyncTooBig:"The list is too big for a QR code. Use the link below.", shareSyncCopied:"Link copied", shareSyncEmpty:"No data to transfer", shareSyncBadFormat:"Could not recognize the data", shareSyncQrError:"Could not create QR code. Check your internet connection.", shareSyncQrLoading:"Preparing QR code…", shareSyncTapHint:"Tap the QR code to enlarge", syncQrFileHint:"QR code — quickly transfer your stations and favorite songs. Export/Import — to transfer everything, including settings, statistics, and the equalizer.", importSyncTitle:"Import stations?", importOneTitle:"Add station?", importOneDesc:"Add station «{name}» to your list and start playing it?", importOneYes:"Add and listen", iconUrlShort:"link", iconUploadShort:"file", syncImportPh:"Paste a link to import", syncImportHint:"Import: paste a link from the Share button to add a single station, or a quick-sync link to add all stations at once.", importSyncYes:"Import", importSyncSummary:"New: {n}. Updated: {u}. Favorite songs: {f}.", importSyncDone:"Imported: {n} new, {u} updated", importSyncNoStations:"The link contains no stations", defaultIconName:"Default", emptyValueWord:"(empty)", stationWordNum:"Station ", resetSessionConfirm:"Reset session counter?", confirmDeleteSongHistory:"Delete this song from history?", confirmDeleteSongFavorite:"Remove this song from favorites?", confirmDeleteStationStats:"Remove «{name}» from statistics?", songRemovedToast:"Song removed from history", favoriteRemovedToast:"Removed from favorites", stationStatsRemovedToast:"Station removed from statistics", resetSyncParamsTitle: "Reset settings to defaults", resetSyncParamsDone: "Settings reset to defaults" }
 };
 function t(key) { const lang = state.settings.language || "uk"; return (I18N[lang] && I18N[lang][key]) || I18N.uk[key] || key; }
 function applyI18nDom() {
@@ -2765,9 +2786,7 @@ function applyI18nDom() {
   document.querySelectorAll("[data-i18n-alt]").forEach(el => { const k = el.getAttribute("data-i18n-alt"); el.alt = t(k); });
   document.querySelectorAll("[data-i18n-title]").forEach(el => { const k = el.getAttribute("data-i18n-title"); el.title = t(k); });
   document.querySelectorAll("[data-i18n-aria]").forEach(el => { const k = el.getAttribute("data-i18n-aria"); el.setAttribute("aria-label", t(k)); });
-  const langMap = { uk:"Моє%20радіо%20—%20відгук", pl:"Moje%20radio%20—%20opinia", en:"My%20radio%20—%20feedback" };
-  const contactLink = document.getElementById("contactLink");
-  if (contactLink) contactLink.href = "mailto:tsuand@gmail.com?subject=" + (langMap[state.settings.language] || langMap.uk);
+  applyContactLink();
   document.querySelectorAll("#viewToggle button [data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
   document.querySelectorAll(".eq-system-link").forEach(el => el.textContent = "⚙️ " + t("eqSystemLink"));
   try { eqSelectBuild(); } catch (e) {}
@@ -2927,7 +2946,55 @@ function applyPsHtmlClasses() {
     document.documentElement.classList.toggle("ps-blur-off", psBlurOff());
   } catch (e) {}
 }
-function realVizWanted() { return !!(state.settings.realVizEnabled && state.settings.centerMode === "viz"); }
+// «Аварійні вимикачі»: список з тегу <disabled_features> у Google-файлі (eq, realviz).
+// Фіча з списку повністю вимкнена, а її налаштування приховані; вибір користувача не стирається.
+function isFeatureOff(name) { const l = state.settings.disabledFeatures; return Array.isArray(l) && l.indexOf(name) >= 0; }
+function applyDisabledFeatures() {
+  const eq = document.getElementById("eqToggle");
+  const eqBlock = eq && eq.closest(".settingBlock");
+  if (eqBlock) eqBlock.classList.toggle("ffOff", isFeatureOff("eq"));
+  const rv = document.getElementById("realVizToggle");
+  const rvRow = rv && rv.closest(".checkLine");
+  if (rvRow) rvRow.classList.toggle("ffOff", isFeatureOff("realviz"));
+  const hv = document.getElementById("hoverPreviewToggle");
+  const hvRow = hv && hv.closest(".checkLine");
+  if (hvRow) hvRow.classList.toggle("ffOff", isFeatureOff("hoverpreview"));
+}
+
+// ---- Healthcheck: тихий пінг раз на N хвилин (для власної статистики) ----
+let healthcheckTimer = null;
+function startHealthcheck() {
+  if (healthcheckTimer) { clearInterval(healthcheckTimer); healthcheckTimer = null; }
+  if (isFeatureOff("healthcheck")) return;
+  const url = state.settings.healthcheckUrl;
+  if (!url || !/^https?:\/\//i.test(url)) return;
+  const ivMin = Math.max(5, Math.min(1440, parseInt(state.settings.healthcheckInterval) || 60));
+  const ping = () => {
+    try {
+      const u = new URL(url);
+      u.searchParams.set("lang", state.settings.language || "uk");
+      let topStation = "";
+      try {
+        const stats = state.listenStats || {};
+        let best = -1, bestName = "";
+        for (const name in stats) {
+          const tot = (stats[name] && stats[name].total) || 0;
+          if (tot > best) { best = tot; bestName = name; }
+        }
+        if (best > 0) topStation = bestName;
+        else if (activeIndex !== -1 && state.stations[activeIndex]) topStation = state.stations[activeIndex].name || "";
+      } catch (e) {}
+      if (topStation) u.searchParams.set("station", topStation);
+      const d = new Date();
+      u.searchParams.set("h", String(d.getHours()));
+      u.searchParams.set("d", String(d.getDay()));
+      fetch(u.toString(), { mode: "no-cors", cache: "no-store" }).catch(() => {});
+    } catch (e) {}
+  };
+  ping();
+  healthcheckTimer = setInterval(ping, ivMin * 60 * 1000);
+}
+function realVizWanted() { return !!(!isFeatureOff("realviz") && state.settings.realVizEnabled && state.settings.centerMode === "viz"); }
 function applyBrowserChromeColor(th) {
   // Колір системної шапки/статус-бару: як у шапки додатку. Safari на iOS надійно підхоплює
   // зміну лише коли <meta theme-color> перестворюється; плюс фон html/body (iOS 26 бере його).
@@ -3126,6 +3193,8 @@ const DEFAULT_BACKUP_SEARCH_URL = "https://streamurl.link/";
 // Сайт додатку для посилань «поділитись станцією», якщо файл недоступний, а додаток відкрито локально.
 const DEFAULT_PWA_SITE = "https://mojeradio.pages.dev/";
 const DEFAULT_PWA_SITE_BACKUP = "https://mojeradio.github.io/";
+// Адреса кнопки «Контакт з розробником». Якщо у файлі є тег <contact_email>, береться звідти.
+const DEFAULT_CONTACT_EMAIL = "tsuand@gmail.com";
 // Сторінка, що відкривається кліком на підпис автора; можна замінити тегом <author_site> у Google-файлі.
 const DEFAULT_AUTHOR_SITE = "https://github.com/MojeRadio/MojeRadio.github.io";
 // УВАГА: версія вказується у ДВОХ місцях — тут і в тексті «Версія …» (#versionLine) у HTML. Міняти обидва.
@@ -3339,7 +3408,7 @@ let state = {
     language: "en", theme: "classic", autoThemeEnabled: false, autoThemeMode: "device",
     devMode: false, devToasts: false, showVolIOS: false,  hideCaps: false, landscapeCompact: false, landscapeUserSet: false, forceLandscape: false, forcePortrait: false, forceProxy: false, showRaw: false, altStationStyle: true, wakeLock: false, visitorCounterEnabled: true, visitorCounterUseLegacy: false, realVizEnabled: !(/iPad|iPhone|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)), blackWhiteStations: true,
     swipeEnabled: false, gridLongPressEdit: false, autoSwitchOnError: false, sleepEnabled: false, sleepMinutes: 30, showPrevNextButtons: true,
-    psNoAnim: false, psNoBlur: false, psNoViz: false, psDebounceSave: false, httpsFirst: true, centerMode: "viz", vizShowLogo: true,
+    psNoAnim: false, psNoBlur: false, psNoViz: false, psDebounceSave: false, httpsFirst: true, httpsFirstUserSet: false, contactEmailFromFile: "", disabledFeatures: [], healthcheckUrl: "", healthcheckInterval: 60, centerMode: "viz", vizShowLogo: true,
     forceTouchMode: false, forceDesktopMode: false,
     hoverPreviewEnabled: true,
     overridePoll: false, pollMs: 5000,
@@ -3361,6 +3430,7 @@ let state = {
     lastSyncTime: null, lastSyncOk: null, lastSyncSuccessTime: null,
     listViewEnabled: false,
     syncIntervalMinutes: 60,
+    overrideSyncInterval: false,
     animTransitions: true,
     autoRecover: true,
     searchCache: true,
@@ -3579,6 +3649,13 @@ function loadState() {
       // parsed.searchCache (старі збереження) більше не завантажуємо — кеш пошуку лише в пам'яті
       if (parsed.streamRoutes) state.streamRoutes = parsed.streamRoutes;
       if (parsed.settings && typeof parsed.settings.httpsFirst === "boolean") state.settings.httpsFirst = parsed.settings.httpsFirst;
+      // Якщо в збереженому стані ще немає прапорця overrideSyncInterval — це користувач
+      // зі старої версії. Поважаємо його вибір: якщо інтервал відрізняється від стандартного
+      // (60), вважаємо, що він його міняв сам, і не перетираємо значенням з файлу.
+      if (typeof state.settings.overrideSyncInterval === "undefined") {
+        const custom = state.settings.syncIntervalMinutes && state.settings.syncIntervalMinutes !== 60;
+        state.settings.overrideSyncInterval = !!custom;
+      }
     }
   } catch (e) { errLogPush("STORAGE: не вдалося прочитати збережений стан — " + (e && e.name || e)); }
   cleanStationNames();
@@ -3741,7 +3818,7 @@ let eqPreNode = null;
 let normGainNode = null, normLimiter = null, normAnalyser = null, normAgcBuf = null;
 let normMeasureTimer = null;
 function needsAudioGraph() {
-  return !!(state.settings.eqEnabled || realVizWanted() || state.settings.volumeNormalization);
+  return !!((state.settings.eqEnabled && !isFeatureOff("eq")) || realVizWanted() || state.settings.volumeNormalization);
 }
 
 let playStartTs = null;
@@ -7373,6 +7450,7 @@ function releasePausedStream() {
 }
 
 function canResumePausedStream(url) {
+  if (isFeatureOff("softpause")) return false;
   if (!pausedStreamAlive || pausedUrl !== url) return false;
   if (Date.now() - pausedAtTs >= PAUSE_GRACE_MS) return false;
   if (!audioEl.getAttribute("src")) return false;
@@ -7413,6 +7491,7 @@ function fadeRun(up, ms, done) {
   }, 16);
 }
 function canFadeVolume() {
+  if (isFeatureOff("fade")) return false;
   return false;   // плавні наростання/затухання вимкнено (давали клацання)
   if (document.hidden) return false;                 // у фоні таймери пригальмовуються — fade вийшов би рваним
   if (isIOSDevice && !gainNode) return false;
@@ -10451,7 +10530,7 @@ function setupEqualizer() {
   if (normAnalyser) { try { normAnalyser.disconnect(); } catch(e) {} }
 
   let lastNode = sourceNode;
-  if (state.settings.eqEnabled) {
+  if (state.settings.eqEnabled && !isFeatureOff("eq")) {
     const freqs = [60, 230, 910, 3600, 14000];
     const gains = state.settings.eqGains || [0,0,0,0,0];
     // Попередній підсилювач: лише легке притишення при дуже великому підйомі баса (див. eqUpdatePreamp).
@@ -10590,6 +10669,7 @@ document.querySelectorAll('#eqControls input[type=range]').forEach((input, idx) 
 });
 
 function updateEqVisibility() {
+  applyDisabledFeatures();
   const visible = state.settings.eqEnabled;
   document.getElementById("eqControls").classList.toggle('visible', visible);
   document.getElementById("eqToggle").checked = visible;
@@ -11566,7 +11646,7 @@ function getHoverTitle(s) {
 stationsEl.addEventListener("pointerover", (e) => {
   // Суворо перевіряємо, що це пристрій з мишею (ПК)
   if (e.pointerType === "touch" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  if (state.settings.hoverPreviewEnabled === false) return; // налаштування «Підказка при наведенні» вимкнене
+  if (state.settings.hoverPreviewEnabled === false || isFeatureOff("hoverpreview")) return; // налаштування «Підказка при наведенні» вимкнене
   
   const btn = e.target.closest && e.target.closest(".stationBtn[data-index]");
   if (!btn) return;
@@ -11783,6 +11863,15 @@ function openModal() {
   document.getElementById("sleepToggle").checked = state.settings.sleepEnabled;
   renderSleepOptions();
   document.getElementById("syncIntervalInput").value = state.settings.syncIntervalMinutes || 60;
+  {
+    const cb = document.getElementById("syncIntervalFromFile");
+    const icn = document.getElementById("syncIntervalSyncIcon");
+    if (cb) {
+      cb.checked = !state.settings.overrideSyncInterval;
+      document.getElementById("syncIntervalInput").disabled = cb.checked;
+      if (icn) icn.innerHTML = cb.checked ? SYNC_ICON_SVG : "";
+    }
+  }
   document.getElementById("eqToggle").checked = state.settings.eqEnabled || false;
   document.getElementById("loudnessToggle").checked = !!state.settings.volumeNormalization;
   const view = state.settings.listViewEnabled ? 'list' : 'grid';
@@ -13581,6 +13670,13 @@ document.getElementById("syncIntervalInput").onchange = (e) => {
   saveState();
   setupAutoSync();
 };
+document.getElementById("syncIntervalFromFile").onchange = (e) => {
+  state.settings.overrideSyncInterval = !e.target.checked;
+  document.getElementById("syncIntervalInput").disabled = e.target.checked;
+  document.getElementById("syncIntervalSyncIcon").innerHTML = e.target.checked ? SYNC_ICON_SVG : "";
+  saveState();
+  setupAutoSync();
+};
 
 function updateVizLogoLine() {
   const line = document.getElementById("vizLogoLine");
@@ -13704,6 +13800,7 @@ document.getElementById("powerSaveToggle").onchange = (e) => {
 };
 document.getElementById("httpsFirstToggle").onchange = (e) => {
   state.settings.httpsFirst = e.target.checked;
+  state.settings.httpsFirstUserSet = true; // ручний вибір сильніший за тег <https_first> у файлі
   saveState();
 };
 // Повзунки еквалайзера: поки палець на повзунку, список/панель не скролиться і не «гумиться»
@@ -14783,6 +14880,15 @@ function fillSettingsUI() {
   document.getElementById("httpsFirstToggle").checked = state.settings.httpsFirst !== false;
   document.getElementById("autoSwitchToggle").checked = !!state.settings.autoSwitchOnError;
   document.getElementById("syncIntervalInput").value = state.settings.syncIntervalMinutes || 60;
+  {
+    const cb = document.getElementById("syncIntervalFromFile");
+    const icn = document.getElementById("syncIntervalSyncIcon");
+    if (cb) {
+      cb.checked = !state.settings.overrideSyncInterval;
+      document.getElementById("syncIntervalInput").disabled = cb.checked;
+      if (icn) icn.innerHTML = cb.checked ? SYNC_ICON_SVG : "";
+    }
+  }
   document.getElementById("eqToggle").checked = state.settings.eqEnabled || false;
   document.getElementById("loudnessToggle").checked = !!state.settings.volumeNormalization;
   const view = state.settings.listViewEnabled ? 'list' : 'grid';
@@ -14822,6 +14928,86 @@ function updateSyncStatusUI() {
     successLine.textContent = "(" + t("lastSuccessLabel") + ": " + new Date(state.settings.lastSyncSuccessTime).toLocaleString() + ")";
   } else { successLine.textContent = ""; }
 }
+// Логіка кнопки скидання налаштувань синхронізації
+(function() {
+  const btn = document.getElementById("resetSyncParamsBtn");
+  if (!btn) return;
+  
+  const originalSvg = btn.innerHTML;
+  let confirming = false;
+  let confirmTimer = null;
+
+  btn.onclick = () => {
+    // 1. Перший клік — режим підтвердження
+    if (!confirming) {
+      confirming = true;
+      btn.classList.add('confirming');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e05a5a" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+      btn.style.borderColor = '#e05a5a';
+      btn.style.opacity = '1';
+      btn.style.background = 'rgba(224,90,90,0.1)';
+      
+      clearTimeout(confirmTimer);
+      confirmTimer = setTimeout(() => {
+        confirming = false;
+        btn.classList.remove('confirming');
+        btn.innerHTML = originalSvg;
+        btn.style.borderColor = 'rgba(128,128,128,0.35)';
+        btn.style.opacity = '0.7';
+        btn.style.background = 'none';
+      }, 3000);
+      return;
+    }
+
+    // 2. Другий клік — виконуємо скидання
+    confirming = false;
+    btn.classList.remove('confirming');
+    clearTimeout(confirmTimer);
+    btn.innerHTML = originalSvg;
+    btn.style.borderColor = 'rgba(128,128,128,0.35)';
+    btn.style.opacity = '0.7';
+    btn.style.background = 'none';
+
+    // Скидаємо всі ручні перевизначення
+    state.settings.overrideWorkerUrl = false;
+    state.settings.overrideSyncInterval = false;
+    state.settings.overridePoll = false;
+    state.settings.overrideMessage = false;
+    state.settings.overrideManual = false;
+    state.settings.overrideStopWords = false;
+    state.settings.overrideBackupSearch = false;
+    state.settings.httpsFirstUserSet = false;
+    
+    // Очищаємо ручні значення
+    state.settings.workerManual = "";
+    state.settings.workerFromFile = "";
+    state.settings.backupSearchUrlManual = "";
+    state.settings.stopWordsManual = "";
+    
+    // ВАЖЛИВО: Оновлюємо елементи поза #paramList (вони не оновлюються автоматично)
+    const syncIntInp = document.getElementById("syncIntervalInput");
+    const syncIntCb = document.getElementById("syncIntervalFromFile");
+    const syncIntIcon = document.getElementById("syncIntervalSyncIcon");
+    if (syncIntInp) {
+       syncIntInp.disabled = true;
+       syncIntInp.value = state.settings.syncIntervalMinutes || 60;
+    }
+    if (syncIntCb) syncIntCb.checked = true;
+    if (syncIntIcon) syncIntIcon.innerHTML = SYNC_ICON_SVG;
+    
+    // Застосовуємо зміни
+    saveState();
+    renderParamList();
+    if (typeof renderOtherParamsSpoiler === "function") renderOtherParamsSpoiler();
+    applyWorkerBase(resolveWorkerBase());
+    
+    // Запускаємо синхронізацію
+    syncStationsFromFile(true);
+    
+    showToast(t("resetSyncParamsDone"));
+  };
+})();
+
 function renderParamList() {
   const el = document.getElementById("paramList");
   el.innerHTML = "";
@@ -15184,6 +15370,7 @@ function normalizeIconUrlForDedupe(url) {
   }
 }
 async function fetchImageSearchIcons(query) {
+  if (isFeatureOff("iconsearch")) return [];
   // Справжній пошук зображень (DuckDuckGo) — напряму з браузера це блокує CORS,
   // тому запит іде через власний Cloudflare Worker, який робить сам пошук на сервері.
   try {
@@ -15888,9 +16075,11 @@ async function fetchTextSmartOnce(url) {
     } catch (e) {}
   }
   // Воркер (перший) — 12 с; публічні проксі лише запасні — 5 с кожен, щоб не чекати довго, коли лежить усе.
-  for (let i = 0; i < CORS_PROXIES.length; i++) {
+  // Якщо вимкнено «publicproxies» — працюємо лише з воркером.
+  const proxies = isFeatureOff("publicproxies") ? [CORS_PROXIES[0]] : CORS_PROXIES;
+  for (let i = 0; i < proxies.length; i++) {
     try {
-      const txt = await fetchTextBounded(CORS_PROXIES[i] + encodeURIComponent(url), i === 0 ? 12000 : 5000, 4194304);
+      const txt = await fetchTextBounded(proxies[i] + encodeURIComponent(url), i === 0 ? 12000 : 5000, 4194304);
       if (txt && txt.length > 0) return txt;
     } catch (e) { continue; }
   }
@@ -15999,7 +16188,7 @@ function tag(text, name) {
 }
 function extractOtherParams(text) {
   // Показуємо ВСІ теги з файлу, крім тих, що вже є окремими полями у вкладці «Синхр.» вище.
-  const knownPattern = /stantion|^onair$|^profspilka_url$|^insta_url$|^vk_group_url$|^stil_zamovlen_url$|^chat_url$|^live_url$|^autodj_url$|^worker_url$|^backup_search_url$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$/;
+  const knownPattern = /stantion|^onair$|^profspilka_url$|^insta_url$|^vk_group_url$|^stil_zamovlen_url$|^chat_url$|^live_url$|^autodj_url$|^worker_url$|^backup_search_url$|^message_show$|^message$|^manual_mode$|^songname_manual$|^stop_words$|^healthcheck_url$|^healthcheck_interval$|^sync_interval$|^clock_song$|^contact_email$/;
   const results = [];
   const seen = new Set();
   const re = /<([a-zA-Z0-9_]+)>([\s\S]*?)<\/\1>/g;
@@ -16028,6 +16217,25 @@ function extractOtherParams(text) {
   }
   return results;
 }
+// Адреса для кнопки «Контакт»: з Google-файлу (<contact_email>), інакше вбудована.
+function normalizeContactEmail(v) {
+  const e = String(v || "").trim();
+  return /^[^\s@<>"'?&]+@[^\s@<>"'?&]+\.[^\s@<>"'?&]+$/.test(e) ? e : "";
+}
+function applyContactLink() {
+  const el = document.getElementById("contactLink");
+  if (!el) return;
+  const subjects = { uk:"Моє%20радіо%20—%20відгук", pl:"Moje%20radio%20—%20opinia", en:"My%20radio%20—%20feedback" };
+  const mail = normalizeContactEmail(state.settings.contactEmailFromFile) || DEFAULT_CONTACT_EMAIL;
+  el.href = "mailto:" + mail + "?subject=" + (subjects[state.settings.language] || subjects.uk);
+}
+// true/false з тексту тегу; усе інше (порожньо, сміття) — null, тобто «не змінювати».
+function parseBoolTag(v) {
+  const x = String(v == null ? "" : v).trim().toLowerCase();
+  if (/^(true|1|yes|on|так)$/.test(x)) return true;
+  if (/^(false|0|no|off|ні)$/.test(x)) return false;
+  return null;
+}
 function parseStationsText(rawText) {
   const sanitized = sanitizeSyncData(rawText);
   const text = extractPlainTextFromMaybeHtml(sanitized);
@@ -16043,6 +16251,7 @@ function parseStationsText(rawText) {
       result.stations.push({ name: btn, fullName, url: path, color: SWATCHES[(n - 1) % SWATCHES.length], adminSongUrl: song });
     }
     result.clockSong = tag(trimmed, "clock_song");
+    result.syncInterval = tag(trimmed, "sync_interval");
     result.messageShow = tag(trimmed, "message_show");
     result.message = tag(trimmed, "message");
     result.manualMode = tag(trimmed, "manual_mode");
@@ -16057,6 +16266,11 @@ function parseStationsText(rawText) {
     result.authorText = tag(trimmed, "author_text");
     result.workerUrl = tag(trimmed, "worker_url");
     result.backupSearchUrl = tag(trimmed, "backup_search_url");
+    result.httpsFirst = tag(trimmed, "https_first");
+    result.contactEmail = tag(trimmed, "contact_email");
+    result.disabledFeatures = tag(trimmed, "disabled_features");
+    result.healthcheckUrl = tag(trimmed, "healthcheck_url");
+    result.healthcheckInterval = tag(trimmed, "healthcheck_interval");
     // Секції з замінами станцій під конкретну мову — див. шаблон у Google-файлі.
     result.stationChangesPl = tag(trimmed, "station_changes_pl");
     result.stationChangesEn = tag(trimmed, "station_changes_en");
@@ -16137,6 +16351,15 @@ async function syncStationsFromFile(manual) {
       }
     });
     if (parsed.clockSong && !state.settings.overridePoll) { state.settings.pollMs = Math.max(1000, parseInt(parsed.clockSong) || 5000); if (trackTimer) setupTrackPolling(); }
+    if (parsed.syncInterval && !state.settings.overrideSyncInterval) {
+      const newInterval = Math.max(1, Math.min(1440, parseInt(parsed.syncInterval) || 60));
+      if (newInterval !== state.settings.syncIntervalMinutes) {
+        state.settings.syncIntervalMinutes = newInterval;
+        setupAutoSync();
+        const inp = document.getElementById("syncIntervalInput");
+        if (inp) inp.value = newInterval;
+      }
+    }
     if (!state.settings.overrideMessage) { state.settings.messageShow = parsed.messageShow === "true"; state.settings.message = parsed.message || ""; }
     if (!state.settings.overrideManual) { state.settings.manualMode = parsed.manualMode === "true"; state.settings.manualSongName = parsed.manualSongName || ""; }
     // Стоп-слова з файлу застосовуємо лише якщо користувач не перевів їх у
@@ -16166,6 +16389,28 @@ async function syncStationsFromFile(manual) {
     if (parsed.workerUrl) {
       const w = normalizeWorkerBase(parsed.workerUrl);
       if (w) { state.settings.workerFromFile = w; applyWorkerBase(resolveWorkerBase()); }
+    }
+    const fileHttpsFirst = parseBoolTag(parsed.httpsFirst);
+    if (fileHttpsFirst !== null && !state.settings.httpsFirstUserSet) {
+      state.settings.httpsFirst = fileHttpsFirst;
+      const hf = document.getElementById("httpsFirstToggle");
+      if (hf) hf.checked = fileHttpsFirst;
+    }
+    if (parsed.contactEmail != null) {
+      state.settings.contactEmailFromFile = normalizeContactEmail(parsed.contactEmail);
+      applyContactLink();
+    }
+    // Тег є, але порожній — усе знову увімкнено; тегу немає взагалі — нічого не змінюємо.
+    if (parsed.disabledFeatures != null) {
+      state.settings.disabledFeatures = String(parsed.disabledFeatures).toLowerCase().split(/[\s,;]+/).filter(Boolean);
+      applyDisabledFeatures();
+    }
+    if (parsed.healthcheckUrl != null) {
+      const raw = String(parsed.healthcheckUrl).trim();
+      state.settings.healthcheckUrl = /^https?:\/\//i.test(raw) ? raw : "";
+      const iv = parseInt(parsed.healthcheckInterval);
+      state.settings.healthcheckInterval = (iv >= 5 && iv <= 1440) ? iv : 60;
+      startHealthcheck();
     }
     checkForNewerVersion(parsed.newestVersionWebapp);
     state.settings.lastSyncTime = Date.now(); state.settings.lastSyncOk = true; state.settings.lastSyncSuccessTime = Date.now();
@@ -16391,6 +16636,7 @@ function findTitleInJson(obj, depth) {
   return null;
 }
 async function tryFetchIcyTitle(streamUrl) {
+  if (isFeatureOff("icy")) return null;
   if (!streamUrl || streamUrl === "null" || streamUrl === "undefined") return null;
   try {
     const res = await fetchWithTimeout(ICY_WORKER_URL + encodeURIComponent(streamUrl), 6000);
@@ -16962,6 +17208,148 @@ function updateVisitorCountUI() {
     </div>`;
 }
 
+// ===== ПРИХОВАНА СТАТИСТИКА: 5 натискань на блок відвідувачів =====
+(function setupHiddenHealthStats() {
+  const HEALTH_STAT_LABELS = {
+    today: "Всього сьогодні",
+    last7days: "Останні 7 днів",
+    countries: "Країни",
+    cities: "Міста",
+    asn: "Провайдери (ASN)",
+    device: "Пристрої",
+    os: "ОС",
+    browser: "Браузери",
+    lang: "Мови",
+    stations: "Станції",
+    hour: "По годинах",
+    dow: "Дні тижня"
+  };
+  const DOW_LABELS = ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+  let taps = 0, tapTimer = null;
+
+  document.addEventListener("click", (e) => {
+    const el = e.target && e.target.closest && e.target.closest("#visitorCountHint");
+    if (!el) return;
+    taps++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { taps = 0; }, 1500);
+    if (taps >= 5) {
+      taps = 0;
+      clearTimeout(tapTimer);
+      openHealthStats();
+    }
+  });
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function section(title, content) {
+    return '<div style="margin-bottom:14px;">' +
+      '<div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.6; margin-bottom:6px;">' + esc(title) + '</div>' +
+      content +
+      '</div>';
+  }
+
+  function barList(obj, max) {
+    const entries = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, max || 15);
+    if (!entries.length) return '<div class="hint" style="opacity:0.5; font-size:12px;">—</div>';
+    const sum = entries.reduce((s, x) => s + x[1], 0);
+    return entries.map(([k, v]) => {
+      const pct = sum ? Math.round(v / sum * 100) : 0;
+      return '<div style="display:flex; align-items:center; gap:8px; padding:3px 0; font-size:12.5px;">' +
+        '<span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + esc(k) + '</span>' +
+        '<span style="opacity:0.7; font-variant-numeric:tabular-nums;">' + v + ' <span style="opacity:0.5; font-size:10.5px;">(' + pct + '%)</span></span>' +
+        '</div>';
+    }).join('');
+  }
+
+  function barChart(arr, labels) {
+    if (!Array.isArray(arr) || !arr.length) return '<div class="hint">—</div>';
+    const max = Math.max.apply(null, arr.concat([1]));
+    const bars = arr.map((v, i) => {
+      const h = Math.max(1, Math.round((v / max) * 100));
+      return '<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;" title="' + v + '">' +
+        '<div style="width:100%; background:' + (v > 0 ? 'var(--accent)' : 'rgba(128,128,128,0.18)') + '; border-radius:2px 2px 0 0; height:' + (v > 0 ? h : 0) + '%;"></div>' +
+        '</div>';
+    }).join('');
+    const lbl = arr.map((v, i) => '<div style="flex:1; text-align:center; overflow:hidden;">' + (labels ? esc(labels[i]) : i) + '</div>').join('');
+    return '<div style="display:flex; gap:2px; height:50px; align-items:flex-end; margin-top:4px;">' + bars + '</div>' +
+      '<div style="display:flex; gap:2px; font-size:9px; opacity:0.55; margin-top:3px;">' + lbl + '</div>';
+  }
+
+  function render(data) {
+    const body = document.getElementById("healthStatsBody");
+    if (!body) return;
+    const L = HEALTH_STAT_LABELS;
+    const days = Array.isArray(data.last7days) ? data.last7days : [];
+    const dayCounts = days.slice().reverse().map(d => d.count || 0);
+    const dayLabels = days.slice().reverse().map(d => (d.date || "").slice(5));
+    const sevenTotal = days.reduce((s, d) => s + (d.count || 0), 0);
+
+    let html = '';
+    html += '<div style="display:flex; gap:8px; margin-bottom:14px;">' +
+      '<div style="flex:1; background:rgba(128,128,128,0.12); border-radius:8px; padding:10px; text-align:center;">' +
+        '<div style="font-size:22px; font-weight:800;">' + (data.today || 0) + '</div>' +
+        '<div style="font-size:10.5px; opacity:0.7; text-transform:uppercase;">' + esc(L.today) + '</div>' +
+      '</div>' +
+      '<div style="flex:1; background:rgba(128,128,128,0.12); border-radius:8px; padding:10px; text-align:center;">' +
+        '<div style="font-size:22px; font-weight:800;">' + sevenTotal + '</div>' +
+        '<div style="font-size:10.5px; opacity:0.7; text-transform:uppercase;">' + esc(L.last7days) + '</div>' +
+      '</div>' +
+    '</div>';
+
+    html += section(L.last7days, barChart(dayCounts, dayLabels));
+    html += section(L.hour, barChart(data.hour || [], Array.from({ length: 24 }, (_, i) => i)));
+    html += section(L.dow, barChart(data.dow || [], DOW_LABELS));
+    html += section(L.device, barList(data.device, 5));
+    html += section(L.os, barList(data.os, 10));
+    html += section(L.browser, barList(data.browser, 12));
+    html += section(L.lang, barList(data.lang, 15));
+    html += section(L.countries, barList(data.countries, 30));
+    html += section(L.cities, barList(data.cities, 30));
+    html += section(L.asn, barList(data.asn, 20));
+    html += section(L.stations, barList(data.stations, 30));
+    body.innerHTML = html;
+  }
+
+  async function openHealthStats() {
+    const bg = document.getElementById("healthStatsBg");
+    const body = document.getElementById("healthStatsBody");
+    if (!bg || !body) return;
+    body.innerHTML = '<div class="hint" style="text-align:center; padding:20px;">Завантаження…</div>';
+    bg.classList.add("open");
+    const hc = state.settings.healthcheckUrl || "";
+    const m = hc.match(/^(https?:\/\/[^/]+)/);
+    const base = m ? m[1] : WORKER_BASE;
+    try {
+      const res = await fetch(base + "/health-stats?_=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      render(data);
+    } catch (e) {
+      body.innerHTML = '<div class="hint" style="text-align:center; padding:20px;">Не вдалось завантажити статистику</div>';
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const bg = document.getElementById("healthStatsBg");
+    if (!bg || !bg.classList.contains("open")) return;
+    if (e.target && e.target.id === "healthStatsBg") bg.classList.remove("open");
+  });
+  document.addEventListener("click", (e) => {
+    if (e.target && e.target.closest && e.target.closest("#healthStatsCloseX")) {
+      const bg = document.getElementById("healthStatsBg");
+      if (bg) bg.classList.remove("open");
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const bg = document.getElementById("healthStatsBg");
+    if (bg && bg.classList.contains("open")) { bg.classList.remove("open"); e.preventDefault(); }
+  }, true);
+})();
+
 // ===================== Користувацький масштаб =====================
 const SCALE_MIN = 50;
 const SCALE_MAX = 150;
@@ -17102,6 +17490,7 @@ applyAuthorLine();
   }
   applyMessageAndManual();
   setupAutoSync();
+  startHealthcheck();
   renderStations();
   fillSettingsUI();
   applySideButtonsVisibility();
