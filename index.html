@@ -11519,6 +11519,11 @@ function showTip(el, text, opts) {
 // Hover-підказка на станціях (лише миша/перо): повна назва + поточний трек ще до натискання Play.
 const HOVER_TITLE_TTL = 45000;
 const hoverTitleCache = new Map();
+// Короткий in-flight кеш (2.5 с): запобігає дублюванню запитів, коли pollTrackTick
+// і getHoverTitle одночасно хочуть дізнатися назву треку тієї самої станції.
+// НЕ впливає на частоту основного опитування — лише прибирає дублікати.
+const inflightTitleCache = new Map();
+const INFLIGHT_TITLE_TTL = 2500;
 let hoverTipTimer = null, hoverTipBtn = null, hoverTipIdx = -1, hoverTipToken = 0;
 function hoverTipStop() {
   clearTimeout(hoverTipTimer); hoverTipTimer = null;
@@ -11532,18 +11537,30 @@ function getHoverTitle(s) {
   const gu = trackFetchGiveUpSet[s.name];
   if (gu && Date.now() - gu < 60000) return Promise.resolve(null);
   const key = (s.url || s.name) + "|" + mode;
+
+  // 1. Довгий кеш (45 с) — щоб hover не смикав мережу на кожен рух мишки
   const c = hoverTitleCache.get(key);
   if (c && Date.now() - c.at < HOVER_TITLE_TTL) return c.p;
   if (hoverTitleCache.size > 100) hoverTitleCache.clear();
-  
-  // Тут fetchTrackTitleForStation вже робить всю роботу
+
+  // 2. Короткий кеш (2.5 с): якщо pollTrackTick щойно запитав те саме —
+  //    не дублюємо. Результат звідти кладемо і в довгий кеш, щоб не запитувати ще раз.
+  const inflight = inflightTitleCache.get(key);
+  if (inflight && Date.now() - inflight.at < INFLIGHT_TITLE_TTL) {
+    hoverTitleCache.set(key, { at: Date.now(), p: inflight.p });
+    return inflight.p;
+  }
+  if (inflightTitleCache.size > 50) inflightTitleCache.clear();
+
+  // 3. Свіжий запит — пишемо в обидва кеші
   const p = fetchTrackTitleForStation(s, mode).then(r => {
     if (!r || isBadTrackTitle(r)) return null;
     const cleaned = stripStationFromTitle(r, s);
     return (cleaned || r).trim() || null;
   }).catch(() => null);
-  
+
   hoverTitleCache.set(key, { at: Date.now(), p });
+  inflightTitleCache.set(key, { at: Date.now(), p });
   return p;
 }
 stationsEl.addEventListener("pointerover", (e) => {
@@ -16566,8 +16583,22 @@ async function refreshTrackInfoNow() {
       trackInfo.textContent = t("loading");
     }
   }
-  let result = await fetchTrackTitleForStation(s, mode);
-  if (myToken !== trackFetchToken || activeIndex !== requestedIndex) return;
+const modeKey = (s.url || s.name) + "|" + mode;
+
+// 1. Перевіряємо короткий in-flight кеш — якщо хтось (hover, інший виклик
+//    pollTrackTick) уже запустив запит тієї самої станції менше ніж 2.5 с
+//    тому, просто чекаємо його результат. Свій мережевий запит не робимо.
+let result = null;
+const inflight = inflightTitleCache.get(modeKey);
+if (inflight && Date.now() - inflight.at < INFLIGHT_TITLE_TTL) {
+  result = await inflight.p;
+} else {
+  result = await fetchTrackTitleForStation(s, mode);
+  // Кладемо, щоб hover (або паралельний виклик) ним скористався
+  inflightTitleCache.set(modeKey, { at: Date.now(), p: Promise.resolve(result) });
+}
+
+if (myToken !== trackFetchToken || activeIndex !== requestedIndex) return;
   if (result && isBadTrackTitle(result)) {
     result = null;
     if (mode !== "off") {
