@@ -2149,7 +2149,7 @@ html.lc .tabs button {
   <div id="stationTopRow" style="display:flex; gap:6px; align-items:center; margin: 2px 0 6px;">
     <div id="stationFilterWrap" style="display:none; flex:1 1 0; min-width:0;">
       <div style="position:relative;">
-        <input type="text" id="stationFilterInput" data-i18n-ph="stationFilterPh" placeholder="Пошук серед моїх станцій" autocomplete="off" enterkeyhint="search" style="width:100%; box-sizing:border-box; padding:5px 28px 5px 10px; font-size:13px; line-height:1.2; height:32px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); text-overflow:ellipsis;">
+        <input type="text" id="stationFilterInput" data-i18n-aria="stationFilterPh" data-i18n-ph="stationFilterPh" placeholder="Пошук серед моїх станцій" autocomplete="off" enterkeyhint="search" style="width:100%; box-sizing:border-box; padding:5px 28px 5px 10px; font-size:13px; line-height:1.2; height:32px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); text-overflow:ellipsis;">
         <button type="button" id="stationFilterClear" aria-label="×" style="display:none; position:absolute; right:2px; top:0; height:32px; width:26px; border:none; background:none; color:inherit; opacity:0.6; font-size:18px; line-height:1; cursor:pointer;">×</button>
       </div>
       <div class="hint" id="stationFilterEmpty" data-i18n="stationFilterEmpty" style="display:none; margin-top:6px;">Нічого не знайдено</div>
@@ -2160,7 +2160,7 @@ html.lc .tabs button {
     </div>
   </div>
     <div class="folderNewRow" id="folderNewRow">
-      <input type="text" id="folderNewInput" data-i18n-ph="folderNamePh" placeholder="Назва папки" autocomplete="off" maxlength="40" enterkeyhint="done">
+      <input type="text" id="folderNewInput" data-i18n-aria="folderNamePh" data-i18n-ph="folderNamePh" placeholder="Назва папки" autocomplete="off" maxlength="40" enterkeyhint="done">
       <button type="button" class="primaryBtn" id="folderNewOk" style="padding:5px 12px;">OK</button>
     </div>
   <div id="stationList"></div>
@@ -2182,12 +2182,12 @@ html.lc .tabs button {
           <div id="addForm">
             <div class="searchRow" style="align-items:stretch;">
               <div style="flex:1; display:flex; flex-direction:column; gap:8px; min-width:0;">
-                <form id="searchForm" action="javascript:void(0)" autocomplete="off" style="display:contents;"><input enterkeyhint="search" type="text" id="searchQuery" data-i18n-ph="searchNewStations" placeholder="Пошук нових станцій" style="width:100%;"></form>
+                <form id="searchForm" action="javascript:void(0)" autocomplete="off" style="display:contents;"><input enterkeyhint="search" type="text" id="searchQuery" data-i18n-aria="searchNewStations" data-i18n-ph="searchNewStations" placeholder="Пошук нових станцій" style="width:100%;"></form>
                 <div class="searchFiltersRow" style="display:flex; gap:8px;">
-                  <select id="searchGenreFilter" style="flex:1; min-width:0; padding:6px 8px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); font-size:12.5px;">
+                  <select id="searchGenreFilter" data-i18n-aria="filterAnyGenre" style="flex:1; min-width:0; padding:6px 8px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); font-size:12.5px;">
                     <option value="" data-i18n="filterAnyGenre">Будь-який жанр</option>
                   </select>
-                  <select id="searchCountryFilter" style="flex:1; min-width:0; padding:6px 8px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); font-size:12.5px;">
+                  <select id="searchCountryFilter" data-i18n-aria="filterAnyCountry" style="flex:1; min-width:0; padding:6px 8px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:var(--modalbg); color:var(--modaltext); font-size:12.5px;">
                     <option value="" data-i18n="filterAnyCountry">Будь-яка країна</option>
                   </select>
                 </div>
@@ -2208,8 +2208,8 @@ html.lc .tabs button {
               <div style="display:flex; align-items:flex-start; gap:8px;">
                 <span style="opacity:0.6; font-weight:700; margin-top:9px;">2.</span>
                 <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
-                  <div class="input-wrap"><input type="text" id="newName" data-i18n-ph="phFullName" placeholder="Назва станції"><button class="clear-btn" data-target="newName"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-                  <div class="input-wrap"><input type="url" id="newUrl" data-i18n-ph="phUrl" placeholder="Пряме посилання на потік (https://...)"><button class="clear-btn" data-target="newUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                  <div class="input-wrap"><input type="text" id="newName" data-i18n-aria="phFullName" data-i18n-ph="phFullName" placeholder="Назва станції"><button class="clear-btn" data-target="newName"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+                  <div class="input-wrap"><input type="url" id="newUrl" data-i18n-aria="streamUrlPlaceholder" data-i18n-ph="phUrl" placeholder="Пряме посилання на потік (https://...)"><button class="clear-btn" data-target="newUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
                   <div id="newIconRow" class="station-edit-icon" style="display:flex; align-items:center; justify-content:flex-start; gap:8px; flex-wrap:nowrap; overflow-x:auto;">
                     <img id="newIconPreview" alt="" style="display:none; flex-shrink:0; width:32px; height:32px; border-radius:4px; object-fit:cover;">
                     <span class="hint" id="newIconLabel" data-i18n="newIconLabel" style="margin:0; white-space:nowrap; flex-shrink:0;">Іконка</span>
@@ -2234,7 +2234,7 @@ html.lc .tabs button {
         <div id="tabSync" class="tabPane">
           <div class="checkLine"><input type="checkbox" id="syncToggle" checked><label for="syncToggle" data-i18n="syncEnableLabel">Зв'язок додатку з сервером</label> <span id="mainSyncIcon"></span></div>
           <div class="hint" style="margin-top:-4px;" data-i18n="syncFileDesc">Посилання на файл, звідки береться список станцій і налаштування нижче. Редагуй, якщо файл переїхав.</div>
-          <input type="url" id="stationsFileUrlInput" placeholder="https://.../onair.txt">
+          <input type="url" id="stationsFileUrlInput" aria-label="Посилання на файл синхронізації" placeholder="https://.../onair.txt">
           <div class="syncStatusRow">
             <span class="statusDot" id="syncStatusDot"></span>
             <span id="syncStatusText">ще не синхронізовано</span>
@@ -2243,7 +2243,7 @@ html.lc .tabs button {
           <div class="hint" id="syncLastSuccessLine" style="margin-top:-2px;"></div>
           <div class="paramBlock">
             <div class="prow"><span data-i18n="syncIntervalLabel">Інтервал синхронізації (хвилин):</span></div>
-            <div class="prow"><input type="number" id="syncIntervalInput" min="1" max="1440" value="60" style="max-width:80px;"></div>
+            <div class="prow"><input type="number" id="syncIntervalInput" aria-label="Інтервал синхронізації (хвилин)" min="1" max="1440" value="60" style="max-width:80px;"></div>
           </div>
           <div id="paramList"></div>
           <details style="margin-top:12px;">
@@ -2389,7 +2389,7 @@ html.lc .tabs button {
                 <label for="sleepToggle" data-i18n="sleepLabel">Сон-таймер</label>
                 <div class="swSub">
                   <select id="sleepMinutes" aria-label="Sleep timer"></select>
-                  <span id="sleepCustomWrap" style="display:none; align-items:center; gap:4px;"><input type="number" id="sleepCustomInput" inputmode="numeric" min="1" max="1440" placeholder="45" style="width:58px;"><span data-i18n="minutesWord">хв</span></span>
+                  <span id="sleepCustomWrap" style="display:none; align-items:center; gap:4px;"><input type="number" id="sleepCustomInput" aria-label="Своє значення сон-таймера (хвилин)" inputmode="numeric" min="1" max="1440" placeholder="45" style="width:58px;"><span data-i18n="minutesWord">хв</span></span>
                 </div>
               </div>
               <input type="checkbox" id="sleepToggle" class="switch">
@@ -2552,8 +2552,8 @@ html.lc .tabs button {
       <div class="editSection">
         <div class="editSectionTitle" data-i18n="editSectionBasic">Основне</div>
         <div style="display:flex; flex-direction:column; gap:8px;">
-          <div class="input-wrap"><input type="text" id="editName" data-i18n-ph="phFullName" placeholder="Назва"><button class="clear-btn" data-target="editName"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-          <div class="input-wrap"><input type="url" id="editUrl" placeholder="Посилання на потік" data-i18n-ph="streamUrlPlaceholder"><button class="clear-btn" data-target="editUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+          <div class="input-wrap"><input type="text" id="editName" data-i18n-aria="phFullName" data-i18n-ph="phFullName" placeholder="Назва"><button class="clear-btn" data-target="editName"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+          <div class="input-wrap"><input type="url" id="editUrl" data-i18n-aria="streamUrlPlaceholder" placeholder="Посилання на потік" data-i18n-ph="streamUrlPlaceholder"><button class="clear-btn" data-target="editUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
         </div>
       </div>
       <div class="editSection">
@@ -2587,7 +2587,7 @@ html.lc .tabs button {
         <div class="radioLine"><input type="radio" name="editTrackMode" id="etAdmin"><label for="etAdmin" data-i18n="etAdmin">З серверу адміністратора (якщо є)</label></div>
         <div class="radioLine"><input type="radio" name="editTrackMode" id="etManual"><label for="etManual" data-i18n="etManual">Вручну за посиланням</label></div>
         <div class="radioLine"><input type="radio" name="editTrackMode" id="etIcy"><label for="etIcy" data-i18n="etIcy">Автоматично з потоку (ICY)</label></div>
-        <div class="input-wrap" id="editTrackUrlWrap"><input type="url" id="editTrackUrl" placeholder="https://.../nowplaying.txt"><button class="clear-btn" data-target="editTrackUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="input-wrap" id="editTrackUrlWrap"><input type="url" id="editTrackUrl" aria-label="Посилання для визначення назви треку" placeholder="https://.../nowplaying.txt"><button class="clear-btn" data-target="editTrackUrl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
         <div id="etIcyHint" style="display:none; font-size:11px; color:var(--modaltext); opacity:0.65; margin:2px 0 4px;" data-i18n="etIcyHint">Назва визначатиметься з метаданих самого аудіопотоку станції — окреме посилання не потрібне.</div>
         <button id="autoDetectBtn" style="margin-top:6px; background:none; border:1px solid rgba(128,128,128,0.3); border-radius:6px; color:var(--modaltext); padding:4px 8px; font-size:11px; cursor:pointer;" data-i18n="autoDetectBtn">Спробувати визначити зараз</button>
       </div>
@@ -2656,7 +2656,7 @@ html.lc .tabs button {
       <div class="hint" id="shareSyncQrHint" style="display:none; text-align:center; margin:0 0 10px; font-size:11px; opacity:0.7;" data-i18n="shareSyncTapHint">Натисніть на QR-код, щоб збільшити</div>
       <div class="hint" id="shareSyncQrNote" style="display:none; text-align:center; margin:8px 0;"></div>
       <div class="hint" data-i18n="shareSyncDesc" style="margin-bottom:8px;">Відскануйте QR-код або надішліть посилання на інший пристрій. Дані передаються лише через QR-код і посилання, без сервера.</div>
-      <input type="text" id="shareSyncLink" readonly style="width:100%; box-sizing:border-box; font-size:11px; padding:8px 10px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:rgba(128,128,128,0.1); color:var(--modaltext); margin-bottom:10px;">
+      <input type="text" id="shareSyncLink" aria-label="Посилання для синхронізації" readonly style="width:100%; box-sizing:border-box; font-size:11px; padding:8px 10px; border-radius:8px; border:1px solid rgba(128,128,128,0.35); background:rgba(128,128,128,0.1); color:var(--modaltext); margin-bottom:10px;">
       <div style="display:flex; gap:8px;">
         <button class="primaryBtn" id="shareSyncCopyBtn" style="flex:1;" data-i18n="copyTip">Копіювати</button>
         <button class="ghostBtn" id="shareSyncShareBtn" style="flex:1; margin-top:0;" data-i18n="shareWord">Поділитися</button>
@@ -2664,7 +2664,7 @@ html.lc .tabs button {
       <div style="margin-top:14px; padding-top:14px; border-top:1px dotted rgba(128,128,128,0.45);">
         <div class="hint" data-i18n="syncImportHint" style="margin:0 0 8px; font-size:11.5px; line-height:1.45;">Імпорт: вставте посилання з кнопки «Поділитись» — додасться одна станція, або посилання швидкої синхронізації — усі станції одразу.</div>
         <div style="display:flex; gap:8px; align-items:stretch;">
-          <input type="text" id="shareSyncImportInput" autocomplete="off" autocapitalize="off" spellcheck="false" data-i18n-ph="syncImportPh" placeholder="Вставте посилання для імпорту" style="flex:1 1 auto; width:auto; min-width:0; box-sizing:border-box; padding-right:10px; font-size:12px;">
+          <input type="text" id="shareSyncImportInput" data-i18n-aria="syncImportPh" autocomplete="off" autocapitalize="off" spellcheck="false" data-i18n-ph="syncImportPh" placeholder="Вставте посилання для імпорту" style="flex:1 1 auto; width:auto; min-width:0; box-sizing:border-box; padding-right:10px; font-size:12px;">
           <button class="primaryBtn" id="shareSyncImportBtn" style="flex:0 0 auto; width:auto; margin-top:0; padding:8px 14px; font-size:13px;" data-i18n="importSyncYes">Імпортувати</button>
         </div>
       </div>
