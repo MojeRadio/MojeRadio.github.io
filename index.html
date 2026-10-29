@@ -1181,7 +1181,7 @@ html.ios #modalBg .modal { height: 100%; max-height: 100%; }
   @keyframes toastCheck { to { stroke-dashoffset: 0; } }
   .springPop { animation: btnSpring 0.6s ease-out; }
   @keyframes btnSpring { 0% { scale: 1; } 22% { scale: 1.28; } 45% { scale: 0.92; } 68% { scale: 1.07; } 85% { scale: 0.98; } 100% { scale: 1; } }
-  .tipBubble { position: fixed; z-index: 1000; left: 0; top: 0; width: max-content; max-width: min(260px, 90vw); background: rgba(0,0,0,0.88); color: #fff; font-size: 12.5px; line-height: 1.3; padding: 6px 11px; border-radius: 10px; text-align: center; pointer-events: none; opacity: 0; transform: translateY(-4px) scale(0.96); transition: opacity 0.15s, transform 0.15s; }
+  .tipBubble { white-space: pre-line; position: fixed; z-index: 1000; left: 0; top: 0; width: max-content; max-width: min(260px, 90vw); background: rgba(0,0,0,0.88); color: #fff; font-size: 12.5px; line-height: 1.3; padding: 6px 11px; border-radius: 10px; text-align: center; pointer-events: none; opacity: 0; transform: translateY(-4px) scale(0.96); transition: opacity 0.15s, transform 0.15s; }
   .tipBubble.above { transform: translateY(4px) scale(0.96); }
   .tipBubble.show { opacity: 1; transform: none; }
   #heartBurst {
@@ -11394,13 +11394,15 @@ function hideTip() {
   clearTimeout(tipTimer); clearTimeout(tipHideTimer);
   if (tipEl) tipEl.classList.remove("show");
 }
-function showTip(el, text) {
+function showTip(el, text, opts) {
+  const o = opts || {};
   if (!tipEl) {
     tipEl = document.createElement("div");
     tipEl.className = "tipBubble";
     document.body.appendChild(tipEl);
   }
-  tipEl.classList.remove("show");
+  const keep = !!(o.keep && tipEl.classList.contains("show"));
+  if (!keep) tipEl.classList.remove("show");
   tipEl.textContent = text;
   const r = el.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
   const above = r.bottom + h + 12 > window.innerHeight;
@@ -11408,11 +11410,77 @@ function showTip(el, text) {
   tipEl.style.left = x + "px";
   tipEl.style.top = (above ? r.top - h - 8 : r.bottom + 8) + "px";
   tipEl.classList.toggle("above", above);
-  void tipEl.offsetWidth;
+  if (!keep) void tipEl.offsetWidth;
   tipEl.classList.add("show");
   clearTimeout(tipHideTimer);
-  tipHideTimer = setTimeout(hideTip, 4000);
+  tipHideTimer = setTimeout(hideTip, o.sticky ? 15000 : 4000);
 }
+// Hover-підказка на станціях (лише миша/перо): повна назва + поточний трек ще до натискання Play.
+const HOVER_TITLE_TTL = 45000;
+const hoverTitleCache = new Map();
+let hoverTipTimer = null, hoverTipBtn = null, hoverTipIdx = -1, hoverTipToken = 0;
+function hoverTipStop() {
+  clearTimeout(hoverTipTimer); hoverTipTimer = null;
+  hoverTipBtn = null; hoverTipIdx = -1; hoverTipToken++;
+  hideTip();
+}
+// Кеш разом із запитами «в польоті»: порожні відповіді теж кешуються, щоб не смикати станції без метаданих.
+function getHoverTitle(s) {
+  const mode = s.trackMode || "off";
+  if (mode === "off") return Promise.resolve(null);
+  const gu = trackFetchGiveUpSet[s.name];
+  if (gu && Date.now() - gu < 60000) return Promise.resolve(null);
+  const key = (s.url || s.name) + "|" + mode;
+  const c = hoverTitleCache.get(key);
+  if (c && Date.now() - c.at < HOVER_TITLE_TTL) return c.p;
+  if (hoverTitleCache.size > 100) hoverTitleCache.clear();
+  const p = fetchTrackTitleForStation(s, mode).then(r => {
+    if (!r || isBadTrackTitle(r)) return null;
+    const cleaned = stripStationFromTitle(r, s);
+    return (cleaned || r).trim() || null;
+  }).catch(() => null);
+  hoverTitleCache.set(key, { at: Date.now(), p });
+  return p;
+}
+stationsEl.addEventListener("pointerover", (e) => {
+  if (e.pointerType === "touch") return;
+  const btn = e.target.closest && e.target.closest(".stationBtn[data-index]");
+  if (!btn) return;
+  if (e.relatedTarget && btn.contains(e.relatedTarget)) return;
+  const idx = +btn.dataset.index;
+  // Кнопки перемальовуються (зміна треку тощо) просто під курсором — не перезапускаємо підказку
+  if (idx === hoverTipIdx) { hoverTipBtn = btn; return; }
+  hoverTipStop();
+  hoverTipBtn = btn; hoverTipIdx = idx;
+  const my = hoverTipToken;
+  hoverTipTimer = setTimeout(() => {
+    if (my !== hoverTipToken || !btn.isConnected) return;
+    const s = state.stations[idx];
+    if (!s) return;
+    const name = (s.fullName || s.name || "").trim();
+    const isCur = idx === activeIndex && isPlaying;
+    const needFetch = !isCur && (s.trackMode || "off") !== "off";
+    if (name && name !== (s.name || "").trim()) showTip(btn, name, { sticky: true });
+    if (!needFetch) return;
+    getHoverTitle(s).then(title => {
+      if (my !== hoverTipToken || !title) return;
+      const el = hoverTipBtn && hoverTipBtn.isConnected ? hoverTipBtn : btn;
+      if (!el.isConnected) return;
+      showTip(el, name + "\n" + title, { sticky: true, keep: true });
+    });
+  }, 550);
+});
+stationsEl.addEventListener("pointerout", (e) => {
+  if (!hoverTipBtn || e.pointerType === "touch") return;
+  const to = e.relatedTarget;
+  if (to && hoverTipBtn.contains(to)) return;
+  hoverTipStop();
+});
+stationsEl.addEventListener("pointerdown", () => { if (hoverTipBtn) hoverTipStop(); });
+stationsEl.addEventListener("scroll", () => { if (hoverTipBtn) hoverTipStop(); }, { passive: true });
+stationsEl.addEventListener("dragstart", () => { if (hoverTipBtn) hoverTipStop(); });
+window.addEventListener("blur", () => { if (hoverTipBtn) hoverTipStop(); });
+
 function attachTooltip(id, i18nKey) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -16281,6 +16349,40 @@ function isBadTrackTitle(title) {
   return false;
 }
 
+// Дістає назву треку для станції за її режимом (без жодних змін в інтерфейсі) — спільне для головного оновлення і hover-підказки.
+async function fetchTrackTitleForStation(s, mode) {
+  let result = null;
+  if (mode === "adminfile" && s.adminSongUrl && s.adminSongUrl.match(/^https?:\/\//)) {
+    result = await tryFetchTitleFromUrl(s.adminSongUrl);
+    if (!result) {
+      for (const c of guessTrackCandidates(s.adminSongUrl)) {
+        result = await tryFetchTitleFromUrl(c);
+        if (result) break;
+      }
+    }
+  } else if (mode === "manual" && s.trackUrl) result = await tryFetchTitleFromUrl(s.trackUrl, s.trackKey);
+  else if (mode === "icy") {
+    result = s.url ? await tryFetchIcyTitle(s.url) : null;
+    if (!result && s.adminSongUrl && s.adminSongUrl.match(/^https?:\/\//)) {
+      result = await tryFetchTitleFromUrl(s.adminSongUrl);
+      if (!result) {
+        for (const c of guessTrackCandidates(s.adminSongUrl)) {
+          result = await tryFetchTitleFromUrl(c);
+          if (result) break;
+        }
+      }
+    }
+    if (!result && s.url) {
+      for (const c of guessTrackCandidates(s.url)) {
+        result = await tryFetchTitleFromUrl(c);
+        if (result) break;
+      }
+    }
+  }
+  else if (mode === "auto") { for (const c of guessTrackCandidates(s.url)) { result = await tryFetchTitleFromUrl(c); if (result) break; } }
+  return result;
+}
+
 async function refreshTrackInfoNow() {
   if (activeIndex === -1 && !isSearchPlayback) return;
   if (isPlaybackError) return;
@@ -16328,35 +16430,7 @@ async function refreshTrackInfoNow() {
       trackInfo.textContent = t("loading");
     }
   }
-  let result = null;
-  if (mode === "adminfile" && s.adminSongUrl && s.adminSongUrl.match(/^https?:\/\//)) {
-    result = await tryFetchTitleFromUrl(s.adminSongUrl);
-    if (!result) {
-      for (const c of guessTrackCandidates(s.adminSongUrl)) {
-        result = await tryFetchTitleFromUrl(c);
-        if (result) break;
-      }
-    }
-  } else if (mode === "manual" && s.trackUrl) result = await tryFetchTitleFromUrl(s.trackUrl, s.trackKey);
-  else if (mode === "icy") {
-    result = s.url ? await tryFetchIcyTitle(s.url) : null;
-    if (!result && s.adminSongUrl && s.adminSongUrl.match(/^https?:\/\//)) {
-      result = await tryFetchTitleFromUrl(s.adminSongUrl);
-      if (!result) {
-        for (const c of guessTrackCandidates(s.adminSongUrl)) {
-          result = await tryFetchTitleFromUrl(c);
-          if (result) break;
-        }
-      }
-    }
-    if (!result && s.url) {
-      for (const c of guessTrackCandidates(s.url)) {
-        result = await tryFetchTitleFromUrl(c);
-        if (result) break;
-      }
-    }
-  }
-  else if (mode === "auto") { for (const c of guessTrackCandidates(s.url)) { result = await tryFetchTitleFromUrl(c); if (result) break; } }
+  let result = await fetchTrackTitleForStation(s, mode);
   if (myToken !== trackFetchToken || activeIndex !== requestedIndex) return;
   if (result && isBadTrackTitle(result)) {
     result = null;
