@@ -15022,15 +15022,15 @@ async function fetchIconCandidatesFor(name, homepage, streamUrl) {
           if (res.ok) {
             const data = await res.json();
             if (data && data.length) {
-            for (const st of data) {
-              if (st.favicon && st.favicon.trim() && st.favicon !== DEFAULT_STATION_ICON) {
-                // ДОДАНО ПЕРЕВІРКУ:
-                if (!isIconBroken(st.favicon)) {
-                  rawIcons.push({ url: st.favicon, source: 'radio-browser', name: st.name });
+              for (const st of data) {
+                if (st.favicon && st.favicon.trim() && st.favicon !== DEFAULT_STATION_ICON) {
+                  if (!isIconBroken(st.favicon)) {
+                    rawIcons.push({ url: st.favicon, source: 'radio-browser', name: st.name });
+                  }
                 }
               }
+              break; // Зупиняємо цикл, якщо знайшли дані
             }
-            break;
           }
         } catch (e) { continue; }
       }
