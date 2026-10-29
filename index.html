@@ -2460,7 +2460,7 @@ html.lc .tabs button {
             <span class="title" data-i18n="visualsTitle">Візуалізація та вигляд</span>
             <div class="checkLine" id="forceTouchModeRow" style="display:none;"><input type="checkbox" id="forceTouchModeToggle"><label for="forceTouchModeToggle" data-i18n="forceTouchModeLabel">Мобільний вигляд</label></div>
             <div class="checkLine" id="forceDesktopModeRow" style="display:none;"><input type="checkbox" id="forceDesktopModeToggle"><label for="forceDesktopModeToggle" data-i18n="forceDesktopModeLabel">Десктопний вигляд</label></div>
-            <div class="checkLine" id="hoverPreviewRow"><input type="checkbox" id="hoverPreviewToggle"><label for="hoverPreviewToggle" data-i18n="hoverPreviewLabel">Підказка з назвою пісні при наведенні</label></div>
+            <div class="checkLine" id="hoverPreviewRow"><input type="checkbox" id="hoverPreviewToggle"><label for="hoverPreviewToggle" data-i18n="hoverPreviewLabel">Підказка з назвою пісні при наведенні мишки</label></div>
             <div class="checkLine"><input type="checkbox" id="realVizToggle"><label for="realVizToggle" data-i18n="realVizLabel">Вимкнути псевдо-візуалізатор</label></div>
             <div class="checkLine" id="showVolIOSRow" style="display:none;"><input type="checkbox" id="showVolIOSToggle"><label for="showVolIOSToggle" data-i18n="showVolIOSLabel">Показувати слайдер гучності на iOS</label></div>
             <div class="checkLine"><input type="checkbox" id="hideCapsToggle"><label for="hideCapsToggle" data-i18n="hideCapsLabel">Вимкнути додаткові ефекти візуалізатора</label></div>
@@ -11453,6 +11453,7 @@ function getHoverTitle(s) {
 stationsEl.addEventListener("pointerover", (e) => {
   // Суворо перевіряємо, що це пристрій з мишею (ПК)
   if (e.pointerType === "touch" || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (state.settings.hoverPreviewEnabled === false) return; // налаштування «Підказка при наведенні» вимкнене
   
   const btn = e.target.closest && e.target.closest(".stationBtn[data-index]");
   if (!btn) return;
@@ -14664,7 +14665,6 @@ function fillSettingsUI() {
   updateHideCapsRow();
   document.getElementById("forceProxy").checked = state.settings.forceProxy;
   document.getElementById("altStationStyleToggle").checked = state.settings.altStationStyle;
-  document.getElementById("hoverPreviewToggle").checked = state.settings.hoverPreviewEnabled !== false;
   document.getElementById("powerSaveToggle").checked = !!state.settings.powerSaveMode;
   { const ft = document.getElementById("foldersToggle"); if (ft) ft.checked = !!state.settings.foldersEnabled; updateFolderToolbar(); }
   document.getElementById("httpsFirstToggle").checked = state.settings.httpsFirst !== false;
