@@ -3184,11 +3184,20 @@ try {
   if (Array.isArray(saved)) brokenIconsSet = new Set(saved);
 } catch (e) {}
 
+// Список доменів, які постійно видають помилки (404, 402, 502). 
+// Додавайте сюди нові, якщо бачите їх у консолі.
+const BLOCKED_ICON_DOMAINS = [
+  "laut.fm",
+  "firebasestorage.googleapis.com",
+  "meloradio.pl",
+  "24dubstep.pl",
+  "smcdn.pl" // Додано, бо SMCDN часто блокує запити до xspf
+];
+
 function markIconBroken(url) {
   if (!url || url === DEFAULT_STATION_ICON) return;
   if (!brokenIconsSet.has(url)) {
     brokenIconsSet.add(url);
-    // Обмежуємо розмір списку, щоб не переповнити localStorage (зберігаємо останні 500)
     let arr = Array.from(brokenIconsSet);
     if (arr.length > 500) {
       arr = arr.slice(arr.length - 500);
@@ -3199,7 +3208,10 @@ function markIconBroken(url) {
 }
 
 function isIconBroken(url) {
-  return url && brokenIconsSet.has(url);
+  if (!url) return false;
+  if (brokenIconsSet.has(url)) return true;
+  // Перевіряємо, чи URL містить заборонений домен
+  return BLOCKED_ICON_DOMAINS.some(domain => url.includes(domain));
 }
 // ========================================================================
 
@@ -8835,6 +8847,7 @@ function loadIconPixels(url) {
 }
 async function colorFromIconUrl(url) {
   if (!url || url === "null" || url === "undefined" || url === DEFAULT_STATION_ICON) return null;
+  if (isIconBroken(url)) return null; // <-- ДОДАТИ ЦЕЙ РЯДОК (якщо іконка бита, не намагаємось взяти колір)
   const tries = [];
   // Спочатку пробуємо через проксі (він віддає правильні CORS-заголовки), потім напряму
   if (!url.startsWith("data:")) tries.push(STREAM_PROXIES[0] + encodeURIComponent(url));
@@ -11195,6 +11208,7 @@ function pixelsAreWhiteLogo(px) {
 }
 async function detectWhiteLogo(src) {
   if (!src || src === "null" || src === "undefined" || src === DEFAULT_STATION_ICON) return false;
+  if (isIconBroken(url)) return null; // <-- ДОДАТИ ЦЕЙ РЯДОК (якщо іконка бита, не намагаємось взяти колір)
   const tries = [];
   // Спочатку пробуємо через проксі, щоб уникнути помилок CORS у консолі
   if (!src.startsWith("data:") && !isProxiedStreamUrl(src)) tries.push(STREAM_PROXIES[0] + encodeURIComponent(src));
@@ -15880,11 +15894,15 @@ async function syncStationsFromFile(manual) {
     parsed.stations.forEach(p => {
       if (isStationDeleted(p)) return;
       const existing = state.stations.find(s => stationsMatch(s, p));
-      if (existing) {
+            if (existing) {
         if (existing.manuallyEdited) return;
         existing.url = p.url || existing.url;
         existing.fullName = p.fullName || existing.fullName;
         if (p.adminSongUrl) existing.adminSongUrl = p.adminSongUrl;
+        // ДОДАЙТЕ ЦЕ: Якщо іконка з файлу вже відома як бита, не відновлюємо її
+        if (existing.favicon && isIconBroken(existing.favicon)) {
+          existing.favicon = "";
+        }
       } else {
         state.stations.push({
           name: p.name,
